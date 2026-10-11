@@ -819,7 +819,58 @@ async function readPhoto(file){sheet(`<h2>Reading your list…</h2><p class="mut
   showParsed(Array.isArray(arr)?arr:[],"Read from your photo")}catch(e){sheet(`<h2>Couldn't read that photo</h2><p class="muted">${e.code==="not_granted"?"The assistant wasn't allowed in this view.":"Try a clearer, well-lit photo of the list."}</p><button class="btn block" data-a="demoList">Try the sample list instead</button>`)}}
 
 /* ================= AI ASSISTANT ================= */
-let _sample; function getSample(){if(_sample===undefined)_sample=(window.claude&&claude.use)?claude.use("sample").catch(()=>null):Promise.resolve(null);return _sample}
+let _sample; function getSample(){if(_sample===undefined)_sample=(window.claude&&claude.use)?claude.use("sample").catch(()=>null):serverSample();return _sample}
+
+/* Outside claude.ai (e.g. on Render), the same AI features run through this
+   site's own server (server.js). This shim mirrors the small part of the
+   claude.ai sampling interface the app uses: limits(), sample(turns, opts) and
+   sample.json(prompt, opts). Tools still run here in the browser. */
+async function serverSample(){
+ try{const r=await fetch("api/health",{cache:"no-store"});if(!r.ok)return null;const h=await r.json();if(!h.ai)return null}catch(e){return null}
+ const fail=(code,text)=>Object.assign(new Error(code),{code,text});
+ const merge=turns=>{const out=[];for(const t of turns){const last=out[out.length-1];
+  if(last&&last.role===t.role&&typeof last.content==="string"&&typeof t.content==="string")last.content+="\n\n"+t.content;else out.push({role:t.role,content:t.content})}return out};
+ async function sample(turns,opts={}){
+  const tools=opts.tools||[];const apiTools=tools.map(t=>({name:t.name,description:t.description,input_schema:t.inputSchema}));
+  // The app sends its instructions as a leading user turn; send them as the system prompt.
+  const lead=turns.length>1&&turns[0].role==="user"&&turns[1].role==="user";
+  const system=lead?String(turns[0].content):"";let messages=merge(lead?turns.slice(1):turns);
+  let all="";
+  for(let round=0;round<6;round++){
+   const sep=all?"\n\n":"";let part="";
+   let res;try{res=await fetch("api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({system,messages,tools:apiTools}),signal:opts.signal})}
+   catch(e){throw e.name==="AbortError"?fail("cancelled",all):fail("network",all)}
+   if(!res.ok){const b=await res.json().catch(()=>({}));throw fail(b.code||"upstream_error",all)}
+   const reader=res.body.getReader(),dec=new TextDecoder();let buf="",final=null;
+   try{for(;;){const{value,done}=await reader.read();if(done)break;buf+=dec.decode(value,{stream:true});let i;
+    while((i=buf.indexOf("\n"))>=0){const line=buf.slice(0,i);buf=buf.slice(i+1);if(!line)continue;const ev=JSON.parse(line);
+     if(ev.t==="d"){part+=ev.v;opts.onText?.({text:all+sep+part})}else if(ev.t==="m")final=ev;else if(ev.t==="e")throw fail(ev.code,all+sep+part)}}}
+   catch(e){if(e.code)throw e;throw e.name==="AbortError"?fail("cancelled",all+sep+part):fail("network",all+sep+part)}
+   if(!final)throw fail("network",all+sep+part);
+   if(part)all+=sep+part;
+   if(final.stop_reason==="refusal")throw fail("refused",all);
+   const calls=final.content.filter(b=>b.type==="tool_use");
+   if(final.stop_reason!=="tool_use"||!calls.length)return{text:all};
+   const results=[];
+   for(const c of calls){const tool=tools.find(t=>t.name===c.name);
+    try{if(!tool||!c.input||typeof c.input!=="object")throw new Error("Unknown tool or invalid input");const out=await tool.execute(c.input);results.push({type:"tool_result",tool_use_id:c.id,content:typeof out==="string"?out:JSON.stringify(out)})}
+    catch(e){results.push({type:"tool_result",tool_use_id:c.id,content:String(e.message||e),is_error:true})}}
+   messages=[...messages,{role:"assistant",content:final.content},{role:"user",content:results}];
+  }
+  return{text:all};
+ }
+ async function toImage(file){
+  // Downscale phone photos so uploads stay small; 1568px is plenty for reading a list.
+  const url=URL.createObjectURL(file);try{const img=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=url});
+   const k=Math.min(1,1568/Math.max(img.width,img.height)),c=document.createElement("canvas");c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);
+   c.getContext("2d").drawImage(img,0,0,c.width,c.height);return{media_type:"image/jpeg",data:c.toDataURL("image/jpeg",0.85).split(",")[1]}}
+  finally{URL.revokeObjectURL(url)}}
+ sample.limits=async()=>({tools:true,images:{mediaTypes:["image/jpeg","image/png","image/webp","image/gif"]}});
+ sample.json=async(prompt,opts={})=>{const image=opts.images?await toImage(Array.isArray(opts.images)?opts.images[0]:opts.images):undefined;
+  let res;try{res=await fetch("api/json",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt,image})})}catch(e){throw fail("network")}
+  const b=await res.json().catch(()=>({}));if(!res.ok)throw fail(b.code||"upstream_error");return b.json};
+ return sample;
+}
 let aiOff=false, ctl=null;
 function catalogText(){return P.map(p=>`${p.id} | ${p.en} | ${p.ta} | ${p.units.map(u=>u[0]+" ₹"+u[1]).join(", ")} | ${p.tags.join(",")} | ${p.allergens.join(",")||"-"} | ${FARMS[p.farm].loc}`).join("\n")}
 function rulesText(){const pr=S.profile,b=bill();const cur=S.route.name==="product"?`product page: ${PM[S.route.id]?.en}`:S.route.name==="recipe"?`recipe page: ${RM[S.route.id]?.en}`:S.route.name;

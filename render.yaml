@@ -1,13 +1,21 @@
-# Render Blueprint: deploys the Vayal prototype as a free static site.
+# Render Blueprint: runs the Vayal storefront plus its AI backend (server.js).
 services:
   - type: web
     name: vayal
-    runtime: static
-    buildCommand: ""
-    staticPublishPath: .
+    runtime: node
+    plan: free
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/health
     autoDeployTrigger: commit
-    pullRequestPreviewsEnabled: false
-    headers:
-      - path: /*
-        name: X-Content-Type-Options
-        value: nosniff
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      # Your Anthropic API key. Render asks for it when you create the Blueprint.
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      # Optional limits to control spend (defaults shown).
+      - key: AI_REQUESTS_PER_IP_PER_HOUR
+        value: "60"
+      - key: AI_REQUESTS_PER_DAY
+        value: "2000"

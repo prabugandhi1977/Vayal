@@ -164,6 +164,24 @@ label.fld{display:grid;gap:4px;font-size:.85rem;font-weight:600}
 .tabbar button{border:0;background:none;padding:10px 12px;font-weight:700;color:var(--muted);border-bottom:2.5px solid transparent;white-space:nowrap}
 .tabbar button[aria-selected="true"]{color:var(--ink);border-color:var(--turmeric)}
 .list{margin:0;padding-left:1.1rem;display:grid;gap:6px}
+.cam{position:relative;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:#0d1b12;color:#fff}
+.cam .sky{position:absolute;inset:0;background:linear-gradient(#9fd3ee,#e9f5df 62%)}
+.cam .ground{position:absolute;left:0;right:0;bottom:0;height:42%;background:linear-gradient(#6aa84f,#3f7d3a)}
+.cam .hill{position:absolute;bottom:38%;left:-10%;width:70%;height:30%;border-radius:50%;background:#7fb86a}.cam .hill.b{left:35%;width:80%;background:#6aa557}
+.cam .sun{position:absolute;top:10%;right:12%;width:9%;aspect-ratio:1;border-radius:50%;background:#ffd45c;box-shadow:0 0 28px 10px #ffe9a1;animation:pulse 4s ease-in-out infinite}
+.cam .row-e{position:absolute;left:0;right:0;display:flex;justify-content:space-around;font-size:clamp(20px,5vw,40px)}
+.cam .row-e span{display:inline-block;transform-origin:50% 100%;animation:sway 3s ease-in-out infinite}.cam .row-e span:nth-child(2n){animation-delay:-1.1s}.cam .row-e span:nth-child(3n){animation-delay:-2s}
+.cam .walker{position:absolute;font-size:clamp(24px,6vw,46px);animation:walk 18s linear infinite}
+.cam .bird{position:absolute;top:18%;font-size:clamp(12px,2.4vw,20px);animation:fly 14s linear infinite}
+.cam .shed{position:absolute;inset:0;background:linear-gradient(#caa97a,#8b6b43)}
+.cam .live{position:absolute;top:10px;left:10px;display:flex;gap:6px;align-items:center;background:rgba(0,0,0,.6);padding:4px 9px;border-radius:99px;font-size:.75rem;font-weight:700}
+.cam .live i{width:8px;height:8px;border-radius:50%;background:#ff3b30;animation:pulse 1.2s infinite}
+.cam .hud{position:absolute;left:10px;right:10px;bottom:8px;display:flex;justify-content:space-between;font-size:.72rem;text-shadow:0 1px 3px #000;gap:8px;flex-wrap:wrap}
+.cam iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+@keyframes sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}@keyframes pulse{50%{opacity:.55}}
+@keyframes walk{from{left:-8%}to{left:104%}}@keyframes fly{from{left:-5%;top:18%}50%{top:10%}to{left:105%;top:20%}}
+@media (prefers-reduced-motion:reduce){.cam *{animation:none!important}}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
 .farm{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center}
 .farm-av{width:48px;height:48px;border-radius:50%;background:var(--turmeric-soft);display:grid;place-items:center;font-weight:800;font-family:var(--f-display);color:var(--ink)}
 .trace{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;font-size:.72rem;text-align:center}
@@ -311,12 +329,12 @@ const CATS=[
 const TAGS={diabetic:{en:"Diabetic-friendly",ta:"சர்க்கரை நோய்க்கு ஏற்றது"},protein:{en:"High protein",ta:"அதிக புரதம்"},heart:{en:"Heart-healthy",ta:"இதய நலம்"},weight:{en:"Weight-loss friendly",ta:"எடை குறைப்பு"},vegan:{en:"Vegan",ta:"வீகன்"},gf:{en:"Gluten-free",ta:"க்ளூட்டன் இல்லை"},kids:{en:"Great for kids",ta:"குழந்தைகளுக்கு"},iron:{en:"Iron-rich",ta:"இரும்புச்சத்து"}};
 const ALLERGENS={dairy:"Dairy",nuts:"Nuts / peanuts",gluten:"Gluten",egg:"Egg"};
 const FARMS={
- selvi:{name:"Selvi Organic Farm",who:"Selvi Murugan",loc:"Oddanchatram, Dindigul",km:420,cert:"PGS-India Organic"},
- kaveri:{name:"Kaveri Delta Collective",who:"R. Ilango",loc:"Thiruvaiyaru, Thanjavur",km:340,cert:"NPOP Organic"},
- nilgiri:{name:"Nilgiri Hill Growers",who:"Mathi Gowder",loc:"Kotagiri, Nilgiris",km:560,cert:"PGS-India Organic"},
- kongu:{name:"Kongu Millet Farmers FPO",who:"Saravanan K.",loc:"Kangeyam, Tiruppur",km:470,cert:"NPOP Organic"},
- ecr:{name:"Vayal Partner Dairy",who:"Lakshmi Dairy Co-op",loc:"Chengalpattu",km:55,cert:"A2 Gir & native breeds"},
- tvm:{name:"Chekku Oil Mill",who:"Anbu Chekku",loc:"Tiruvannamalai",km:190,cert:"Wooden cold-pressed"}
+ selvi:{name:"Selvi Organic Farm",who:"Selvi Murugan",loc:"Oddanchatram, Dindigul",km:420,cert:"PGS-India Organic",lat:10.4833,lng:77.75,kind:"field"},
+ kaveri:{name:"Kaveri Delta Collective",who:"R. Ilango",loc:"Thiruvaiyaru, Thanjavur",km:340,cert:"NPOP Organic",lat:10.8833,lng:79.1,kind:"field"},
+ nilgiri:{name:"Nilgiri Hill Growers",who:"Mathi Gowder",loc:"Kotagiri, Nilgiris",km:560,cert:"PGS-India Organic",lat:11.4,lng:76.86,kind:"field"},
+ kongu:{name:"Kongu Millet Farmers FPO",who:"Saravanan K.",loc:"Kangeyam, Tiruppur",km:470,cert:"NPOP Organic",lat:11.0,lng:77.56,kind:"field"},
+ ecr:{name:"Vayal Partner Dairy",who:"Lakshmi Dairy Co-op",loc:"Chengalpattu",km:55,cert:"A2 Gir & native breeds",lat:12.69,lng:79.98,kind:"dairy"},
+ tvm:{name:"Chekku Oil Mill",who:"Anbu Chekku",loc:"Tiruvannamalai",km:190,cert:"Wooden cold-pressed",lat:12.2253,lng:79.0747,kind:"mill"}
 };
 // n = [kcal, protein g, fibre g, carbs g] per 100 g approx.
 const P=[
@@ -424,7 +442,7 @@ const DEF={cart:{"moringaleaf|0":1,"thinai|0":1},
  orders:seedOrders,
  subs:[{id:"s1",pid:"a2milk",ui:0,q:2,freq:"daily",slot:"6–7 AM",status:"active",skips:[]},{id:"s2",pid:"amaranth",ui:0,q:1,freq:"wedsat",slot:"6–7 AM",status:"active",skips:[]}],
  plan:{0:{b:"ragidosa",m:"sambar"},1:{b:"pongal",m:"keerai"},2:{b:"kambukoozh",m:null},3:{b:null,m:"sundal"},4:{b:null,m:null},5:{b:null,m:null},6:{b:null,m:null}},
- points:240,wallet:640};
+ points:240,wallet:640,visits:[]};
 const DEF_JSON=JSON.stringify(DEF),cloneDef=()=>JSON.parse(DEF_JSON);
 const S={
  lang:store.get("lang","en"),
@@ -436,11 +454,12 @@ const S={
  points:store.get("points",DEF.points), wallet:store.get("wallet",DEF.wallet),
  route:{name:"home"}, slot:null, coupon:null, usePoints:false, farmerFund:true, crate:true, pay:"upi", addr:0,
  shop:{cat:"all",q:"",tag:null,sort:"rel"}, pdTab:"benefits", pdUnit:{}, recipeServ:{},
- users:store.get("users",{}), user:null,
+ visits:store.get("visits",DEF.visits),
+ users:store.get("users",{}), user:null, farmView:"selvi", cam:0,
  phone:false, chatOpen:false, chat:[], busy:false
 };
 {const sid=store.get("session",null);if(sid&&S.users[sid])S.user=S.users[sid]}
-function save(){store.set("lang",S.lang);store.set("cart",S.cart);store.set("profile",S.profile);store.set("orders",S.orders);store.set("subs",S.subs);store.set("plan",S.plan);store.set("points",S.points);store.set("wallet",S.wallet);if(S.user){S.user.data={profile:S.profile,orders:S.orders,subs:S.subs,plan:S.plan,points:S.points,wallet:S.wallet};S.users[S.user.id]=S.user;store.set("users",S.users)}}
+function save(){store.set("lang",S.lang);store.set("cart",S.cart);store.set("profile",S.profile);store.set("orders",S.orders);store.set("subs",S.subs);store.set("plan",S.plan);store.set("points",S.points);store.set("wallet",S.wallet);store.set("visits",S.visits);if(S.user){S.user.data={profile:S.profile,orders:S.orders,subs:S.subs,plan:S.plan,points:S.points,wallet:S.wallet,visits:S.visits};S.users[S.user.id]=S.user;store.set("users",S.users)}}
 
 /* ================= I18N ================= */
 const T={
@@ -450,7 +469,7 @@ const T={
  goals:["Picked for your goals","உங்கள் இலக்குகளுக்கு"],buyAgain:["Running low? Buy again","மீண்டும் வாங்க"],cookWeek:["Cook this week","இந்த வாரம் சமைக்க"],
  categories:["Shop by category","வகைகள்"],harvest:["This week's harvest","இந்த வார அறுவடை"],
  benefits:["Health benefits","ஆரோக்கிய நன்மைகள்"],usage:["How to use","பயன்படுத்தும் முறை"],recipesT:["Recipes","சமையல் குறிப்புகள்"],nutrition:["Nutrition","ஊட்டச்சத்து"],farmT:["From the farm","பண்ணையிலிருந்து"],
- placeOrder:["Place order","ஆர்டர் செய்"],hello:["Vanakkam","வணக்கம்"]
+ farm:["Live farm","நேரடி பண்ணை"],placeOrder:["Place order","ஆர்டர் செய்"],hello:["Vanakkam","வணக்கம்"]
 };
 const t=k=>(T[k]||[k,k])[S.lang==="ta"?1:0];
 const nm=o=>S.lang==="ta"?o.ta:o.en; const nm2=o=>S.lang==="ta"?o.en:o.ta;
@@ -471,7 +490,7 @@ const ic={
  mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/>',spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/>',
  x:'<path d="M6 6l12 12M18 6L6 18"/>',back:'<path d="M15 5l-7 7 7 7"/>',check:'<path d="M5 12l5 5 9-10"/>',leaf:'<path d="M5 19c0-9 6-14 15-14 0 9-5 15-14 15"/><path d="M5 19l8-8"/>',
  truck:'<path d="M3 6h11v10H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>',warn:'<path d="M12 3l10 18H2z"/><path d="M12 10v4M12 17.5v.5"/>',
- phone:'<rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/>',send:'<path d="M4 12l16-8-6 16-2-6z"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>'
+ pin:'<path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>',phone:'<rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/>',send:'<path d="M4 12l16-8-6 16-2-6z"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>'
 };
 const svg=(n,extra="")=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" ${extra} aria-hidden="true">${ic[n]}</svg>`;
 
@@ -525,14 +544,14 @@ const back=(r,label)=>`<button class="back" data-a="go" data-r="${r}">${svg("bac
 
 <script>
 /* ================= VIEWS ================= */
-const NAV=[["home","home"],["shop","grid"],["plan","cal"],["subs","repeat"],["orders",null],["account","user"]];
+const NAV=[["home","home"],["shop","grid"],["plan","cal"],["subs","repeat"],["farm","pin"],["orders",null],["account","user"]];
 const ADDR=[{lbl:"Home",line:"12, 3rd Cross St, Thiruvanmiyur, Chennai 600041"},{lbl:"Office",line:"Guindy Industrial Estate, Chennai 600032"}];
 function renderTop(){
  const r=S.route.name, n=cartCount();
  $("#topbar").innerHTML=`
  <button class="logo" data-a="go" data-r="home" aria-label="Vayal home"><span class="logo-mark">${svg("leaf",'width="18" height="18"')}</span><span>Vayal<small>வயல் · farm to kitchen</small></span></button>
  <button class="deliver" data-a="addr"><span class="tiny muted">${t("deliverTo")} ${esc(ADDR[S.addr].lbl)}</span><b>${esc(ADDR[S.addr].line.split(",").slice(1,3).join(","))}</b></button>
- <nav class="nav" aria-label="Sections">${NAV.map(([k])=>`<button data-a="go" data-r="${k}" ${r===k||(k==="shop"&&r==="product")||(k==="plan"&&r==="recipe")||(k==="orders"&&r==="track")?'aria-current="page"':""}>${t(k)}</button>`).join("")}</nav>
+ <nav class="nav" aria-label="Sections">${NAV.map(([k])=>`<button data-a="go" data-r="${k}" ${r===k||(k==="shop"&&r==="product")||(k==="plan"&&r==="recipe")||(k==="orders"&&r==="track")||(k==="farm"&&r==="farm")?'aria-current="page"':""}>${t(k)}</button>`).join("")}</nav>
  <div class="top-actions">
   <div class="lang" role="group" aria-label="Language"><button data-a="lang" data-v="en" aria-pressed="${S.lang==="en"}">EN</button><button data-a="lang" data-v="ta" aria-pressed="${S.lang==="ta"}">தமிழ்</button></div>
   <button class="pill-btn preview-btn" data-a="phone">${svg("phone",'width="15" height="15" style="vertical-align:-3px"')} App preview</button>
@@ -570,7 +589,7 @@ function vHome(){
  ${low.length?`<section><div class="sec-head"><h2>${t("buyAgain")}</h2><button class="link" data-a="addAllLow">Add all</button></div><div class="hscroll">${low.map(x=>pcard(PM[x.id],` · <span style="color:var(--chili)">${Math.round((Date.now()-x.date)/DAY)}d ago</span>`)).join("")}</div></section>`:""}
  <section><div class="sec-head"><h2>${t("cookWeek")}</h2><button class="link" data-a="go" data-r="plan">Open meal plan</button></div>
   <div class="hscroll">${RECIPES.filter(r=>r.tags.some(g=>pr.goals.includes(g))).concat(RECIPES.filter(r=>!r.tags.some(g=>pr.goals.includes(g)))).map(rcard).join("")}</div></section>
- <section class="card pad farm"><div class="farm-av">SM</div><div><p class="eyebrow">Farmer of the week</p><b>Selvi Murugan · Selvi Organic Farm, Oddanchatram</b><p class="small muted">4 acres, rain-fed, 11 years chemical-free. 5% of every order goes to our farmer resilience fund.</p><button class="link" data-a="go" data-r="product" data-id="moringaleaf" style="margin-top:6px">Shop her moringa →</button></div></section>`;
+ <section class="card pad farm"><div class="farm-av">SM</div><div><p class="eyebrow">Farmer of the week</p><b>Selvi Murugan · Selvi Organic Farm, Oddanchatram</b><p class="small muted">4 acres, rain-fed, 11 years chemical-free. 5% of every order goes to our farmer resilience fund.</p><div class="row" style="margin-top:6px"><button class="link" data-a="go" data-r="product" data-id="moringaleaf">Shop her moringa →</button><button class="link" data-a="farmGo" data-v="selvi">● Watch live &amp; visit →</button></div></div></section>`;
 }
 
 function vShop(){
@@ -598,7 +617,7 @@ function vProduct(id){
   benefits:`<ul class="list">${p.benefits.map(b=>`<li>${esc(b)}</li>`).join("")}</ul><p class="tiny muted" style="margin-top:10px">General nutrition information, not medical advice. If you manage a condition such as diabetes, check portions with your doctor or dietitian.</p>`,
   usage:`<ul class="list">${p.usage.map(b=>`<li>${esc(b)}</li>`).join("")}</ul><p style="margin-top:10px"><b>Storage.</b> ${esc(p.storage)}</p>`,
   recipes:recs.length?`<div class="hscroll">${recs.map(rcard).join("")}</div>`:`<p class="muted">Ask Mitra for a recipe idea with ${esc(p.en)}.</p><button class="btn ghost" data-a="askAbout" data-v="Give me a simple Tamil-style recipe with ${esc(p.en)}" style="margin-top:8px">${svg("spark")} Get a recipe</button>`,
-  farm:`<div class="farm"><div class="farm-av">${esc(fm.who.split(" ").map(w=>w[0]).join("").slice(0,2))}</div><div><b>${esc(fm.name)}</b><p class="small muted">${esc(fm.who)} · ${esc(fm.loc)} · ${fm.km} km away</p><span class="chip good" style="margin-top:4px">${esc(fm.cert)}</span></div></div>
+  farm:`<div class="farm"><div class="farm-av">${esc(fm.who.split(" ").map(w=>w[0]).join("").slice(0,2))}</div><div><b>${esc(fm.name)}</b><p class="small muted">${esc(fm.who)} · ${esc(fm.loc)} · ${fm.km} km away</p><span class="chip good" style="margin-top:4px">${esc(fm.cert)}</span><div><button class="link" data-a="farmGo" data-v="${esc(p.farm)}" style="margin-top:6px">● Watch live &amp; book a visit →</button></div></div></div>
    <div class="trace" style="margin-top:14px"><div><b>Harvested</b><br>${harvest.toLocaleTimeString("en-IN",{hour:"numeric",minute:"2-digit"})} ${fmtDate(harvest,{weekday:"short"})}</div><div><b>Graded</b><br>Farm shed</div><div><b>Hub QC</b><br>Chennai, 4°C</div><div style="border-color:var(--turmeric)"><b>You</b><br>Next slot</div></div>
    <p class="small muted" style="margin-top:10px">Batch VY-${id.slice(0,3).toUpperCase()}-${new Date().getDate()}${new Date().getMonth()+1}. Residue test report available on request.</p>`
  };
@@ -762,7 +781,7 @@ function vAccount(){
  <section class="card pad"><h2>Saved addresses</h2>${ADDR.map((a,i)=>`<div class="toggle"><span><b>${esc(a.lbl)}</b><br><span class="small muted">${esc(a.line)}</span></span>${S.addr===i?`<span class="chip good">Default</span>`:`<button class="link" data-a="setAddr" data-v="${i}">Make default</button>`}</div>`).join("")}</section>
  <p class="tiny muted">Vayal is a prototype. Health information is general guidance, not medical advice.</p>`;
 }
-const VIEWS={home:vHome,shop:vShop,product:()=>vProduct(S.route.id),cart:vCart,checkout:vCheckout,track:()=>vTrack(S.route.id),orders:vOrders,subs:vSubs,plan:vPlan,recipe:()=>vRecipe(S.route.id),account:vAccount};
+const VIEWS={home:vHome,shop:vShop,product:()=>vProduct(S.route.id),cart:vCart,checkout:vCheckout,track:()=>vTrack(S.route.id),orders:vOrders,subs:vSubs,plan:vPlan,recipe:()=>vRecipe(S.route.id),account:vAccount,farm:()=>vFarm()};
 </script>
 
 <script>
@@ -978,6 +997,79 @@ Vary the week; don't repeat a dish on consecutive days. Reply with only JSON: {"
   (res.days||[]).slice(0,7).forEach((d,i)=>{S.plan[i]={b:RM[d.b]&&RM[d.b].meal==="breakfast"?d.b:null,m:RM[d.m]&&RM[d.m].meal!=="breakfast"?d.m:null}});save();render();toast(res.note?String(res.note).slice(0,140):"Week planned")}
  catch(e){if(["not_granted","sampling_disabled"].includes(e.code)){autoPlan()}else{toast("Couldn't plan with AI just now. Try again.")}render()}}
 
+/* ================= LIVE FARM ================= */
+const CAMS={
+ field:[["Field","🌾"],["Harvest shed","🧺"]],dairy:[["Cow shed","🐄"],["Milking parlour","🥛"]],mill:[["Chekku press","🫗"],["Bottling","🍶"]]};
+const VISIT_SLOTS=["8–10 AM","10 AM–12 PM","4–6 PM"],VISIT_WHY=["Farm tour","Pick your own vegetables","Buy direct from the farm","Kids' farm workshop"];
+const mapsUrl=f=>`https://www.google.com/maps/search/?api=1&query=${f.lat},${f.lng}`;
+function camScene(f,ci){
+ const crops=f.kind==="field"?["🌾","🌿","🍅","🌾","🌿","🥬","🌾"]:f.kind==="dairy"?["🐄","🐄","🐃","🐄","🐄"]:["🫗","🥜","🫗","🌴","🫗"];
+ if(ci===1)return `<div class="shed"></div><div class="row-e" style="bottom:12%">${["📦","🧺","📦","🧺","📦"].map(x=>`<span>${x}</span>`).join("")}</div><div class="row-e" style="bottom:42%">${["🥬","🍅","🥛","🥕","🍌"].map(x=>`<span>${x}</span>`).join("")}</div><div class="walker" style="bottom:26%">🧑‍🌾</div>`;
+ return `<div class="sky"></div><div class="sun"></div><div class="hill"></div><div class="hill b"></div><div class="ground"></div><div class="bird">🕊️</div>
+  <div class="row-e" style="bottom:30%">${crops.map(x=>`<span>${x}</span>`).join("")}</div><div class="row-e" style="bottom:8%">${crops.slice().reverse().map(x=>`<span>${x}</span>`).join("")}</div><div class="walker" style="bottom:18%">${f.kind==="field"?"🚜":f.kind==="dairy"?"🧑‍🌾":"🛺"}</div>`}
+function vFarm(){
+ const key=FARMS[S.route.id]?S.route.id:S.farmView,f=FARMS[key];S.farmView=key;
+ const cams=CAMS[f.kind],ci=Math.min(S.cam,cams.length-1),viewers=12+(key.length*7+new Date().getMinutes())%40;
+ const mine=S.visits.filter(v=>v.farm===key).sort((a,b)=>a.date.localeCompare(b.date));
+ return `<section class="between" style="flex-wrap:wrap;gap:8px"><div><p class="eyebrow">Live from the farm</p><h1>${esc(f.name)}</h1><p class="small muted">${esc(f.who)} · ${esc(f.loc)} · ${esc(f.cert)}</p></div></section>
+ <div class="seg" role="group" aria-label="Farm" style="flex-wrap:wrap">${Object.entries(FARMS).map(([k,x])=>`<button data-a="farmGo" data-v="${k}" aria-pressed="${k===key}">${esc(x.name.split(" ").slice(0,2).join(" "))}</button>`).join("")}</div>
+ <section class="cam" aria-label="Live camera: ${esc(cams[ci][0])}">${f.stream?`<iframe src="${esc(f.stream)}" title="Live stream" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`:camScene(f,ci)}
+  <div class="live"><i></i> LIVE · ${esc(cams[ci][0])}</div>
+  <div class="hud"><span id="camClock"></span><span>${viewers} watching${f.stream?"":" · demo feed"}</span></div></section>
+ <div class="seg" role="group" aria-label="Camera">${cams.map(([l,e],i)=>`<button data-a="cam" data-v="${i}" aria-pressed="${i===ci}">${e} ${esc(l)}</button>`).join("")}</div>
+ ${f.stream?"":`<p class="tiny muted">This is a demo feed. Farms are placeholders; the real app plays each farm's own camera stream here.</p>`}
+ <div class="grid2"><section class="card pad" style="display:grid;gap:10px"><h2>Location</h2><p><b>${esc(f.name)}</b><br><span class="small muted">${esc(f.loc)} · ${f.km} km from Chennai</span></p>
+  <p class="tiny muted">Approximate position (${f.lat.toFixed(3)}, ${f.lng.toFixed(3)}). The exact gate location is sent with your booking confirmation.</p>
+  <div class="row"><a class="btn ghost" href="${mapsUrl(f)}" target="_blank" rel="noopener">Open in Maps</a><button class="btn ghost" data-a="farmShare" data-v="${key}">Share location</button><button class="btn ghost" data-a="farmDist" data-v="${key}">Distance from me</button></div><p id="distOut" class="small muted" aria-live="polite"></p></section>
+ <section class="card pad" style="display:grid;gap:10px"><h2>Book a farm visit</h2><p class="small muted">Meet the farmer, see how your food grows and buy straight from the farm. Free, 8 visitors max.</p>
+  <button class="btn" data-a="visitNew" data-v="${key}">Book an appointment</button></section></div>
+ <section class="card pad" style="display:grid;gap:10px"><h2>Your visits here</h2>${mine.length?mine.map(v=>`<div class="between" style="flex-wrap:wrap;gap:8px"><span><b>${fmtDate(new Date(v.date+"T00:00:00").getTime(),{weekday:"short",day:"numeric",month:"short"})} · ${esc(v.slot)}</b><br><span class="small muted">${v.people} visitor${v.people>1?"s":""} · ${esc(v.why)} · <span class="mono">${esc(v.id)}</span></span></span><span class="row"><button class="link" data-a="visitView" data-id="${v.id}">Details</button><button class="link" style="color:var(--chili)" data-a="visitCancel" data-id="${v.id}">Cancel</button></span></div>`).join(""):`<p class="small muted">No visits booked yet.</p>`}</section>`}
+function tickCam(){const e=$("#camClock");if(e)e.textContent=new Date().toLocaleTimeString("en-IN",{timeZone:"Asia/Kolkata",hour12:true})+" IST"}
+setInterval(tickCam,1000);
+function sheetVisit(key){if(!S.user)return needAuth(()=>sheetVisit(key));
+ const f=FARMS[key],iso=ms=>new Date(ms-new Date(ms).getTimezoneOffset()*6e4).toISOString().slice(0,10),min=iso(Date.now()+DAY),max=iso(Date.now()+30*DAY);
+ sheet(`<h2>Book a visit · ${esc(f.name)}</h2><p class="small muted">${esc(f.loc)}</p>
+ <label class="fld">Date<input id="vs-date" type="date" min="${min}" max="${max}" value="${min}"></label>
+ <label class="fld">Time slot<select id="vs-slot">${VISIT_SLOTS.map(x=>`<option>${x}</option>`).join("")}</select></label>
+ <label class="fld">Visitors<select id="vs-n">${[1,2,3,4,5,6,7,8].map(n=>`<option ${n===2?"selected":""}>${n}</option>`).join("")}</select></label>
+ <label class="fld">Purpose<select id="vs-why">${VISIT_WHY.map(x=>`<option>${x}</option>`).join("")}</select></label>
+ <label class="fld">Note for the farmer (optional)<input id="vs-note" maxlength="140" placeholder="Wheelchair access, kids' ages…"></label>
+ <label class="toggle"><span><b>Share my location with the farmer</b><br><span class="small muted">So they can guide you and track your arrival. Asked only when you tick this.</span></span><input class="sw" type="checkbox" id="vs-loc"></label>
+ <p class="small muted">Confirmation goes to ${esc(S.user.email)} and +91 ${esc(S.user.phone)}.</p>
+ <p id="vs-err" class="small" role="alert" style="color:var(--chili);min-height:1.2em"></p>
+ <button class="btn block" data-a="visitOk" data-v="${key}">Confirm booking</button>`)}
+async function visitOk(key){const v=id=>$("#"+id).value,err=m=>{$("#vs-err").textContent=m};
+ const date=v("vs-date"),slot=v("vs-slot");
+ if(!date||date<$("#vs-date").min||date>$("#vs-date").max)return err("Pick a date in the next 30 days.");
+ if(S.visits.some(x=>x.farm===key&&x.date===date&&x.slot===slot))return err("You already have a visit at this farm in that slot.");
+ let loc=null;
+ if($("#vs-loc").checked){
+  if(!navigator.geolocation)return err("This browser can't share location. Untick it to continue.");
+  const btn=$("[data-a=visitOk]");btn.disabled=true;btn.textContent="Getting your location…";
+  try{const pos=await new Promise((ok,no)=>navigator.geolocation.getCurrentPosition(ok,no,{timeout:10000,maximumAge:6e4}));loc={lat:+pos.coords.latitude.toFixed(4),lng:+pos.coords.longitude.toFixed(4)}}
+  catch(e){btn.disabled=false;btn.textContent="Confirm booking";return err("Couldn't get your location. Allow it in the browser, or untick the option.")}}
+ const b={id:"FV-"+Math.random().toString(36).slice(2,7).toUpperCase(),farm:key,date,slot,people:+v("vs-n"),why:v("vs-why"),note:v("vs-note").trim(),loc,created:Date.now()};
+ S.visits.push(b);save();sheetVisitDone(b.id);render()}
+function sheetVisitDone(id){const b=S.visits.find(x=>x.id===id);if(!b)return;const f=FARMS[b.farm];
+ sheet(`<h2>${svg("check",'width="22" height="22" style="vertical-align:-4px;color:var(--leaf)"')} Visit booked</h2>
+ <div class="card pad"><b>${esc(f.name)}</b><p class="small muted">${fmtDate(new Date(b.date+"T00:00:00").getTime(),{weekday:"long",day:"numeric",month:"long"})} · ${esc(b.slot)}<br>${b.people} visitor${b.people>1?"s":""} · ${esc(b.why)}<br>Ref <span class="mono">${esc(b.id)}</span>${b.loc?"<br>Your location shared with the farmer":""}</p></div>
+ <p class="small muted">${esc(f.loc)}. Show your booking ref at the gate.</p>
+ <div class="row"><a class="btn ghost" href="${mapsUrl(f)}" target="_blank" rel="noopener">Open in Maps</a><button class="btn ghost" data-a="farmShare" data-v="${b.farm}" data-id="${b.id}">Share location</button><button class="btn ghost" data-a="visitIcs" data-id="${b.id}">Add to calendar</button></div>
+ <button class="btn block" data-a="closeSheet">Done</button>`)}
+async function farmShare(key,id){const f=FARMS[key],b=id&&S.visits.find(x=>x.id===id);
+ const text=`${b?`Vayal farm visit ${b.id}: ${b.date}, ${b.slot}\n`:""}${f.name}, ${f.loc}\n${mapsUrl(f)}`;
+ try{if(navigator.share){await navigator.share({title:f.name,text});return}}catch(e){if(e.name==="AbortError")return}
+ try{await navigator.clipboard.writeText(text);toast("Location copied. Paste it in WhatsApp or a message")}catch(e){toast(mapsUrl(f))}}
+function farmDist(key){const f=FARMS[key],out=$("#distOut");if(!navigator.geolocation){out.textContent="This browser can't share location.";return}
+ out.textContent="Getting your location…";
+ navigator.geolocation.getCurrentPosition(pos=>{const r=x=>x*Math.PI/180,a=r(f.lat-pos.coords.latitude),o=r(f.lng-pos.coords.longitude);
+  const h=Math.sin(a/2)**2+Math.cos(r(pos.coords.latitude))*Math.cos(r(f.lat))*Math.sin(o/2)**2,km=2*6371*Math.asin(Math.sqrt(h));
+  out.textContent=`About ${Math.round(km)} km from you in a straight line. Your location stays on this device.`},()=>{out.textContent="Couldn't get your location. Allow it in the browser and try again."},{timeout:10000,maximumAge:6e4})}
+function visitIcs(id){const b=S.visits.find(x=>x.id===id),f=b&&FARMS[b.farm];if(!b)return;
+ const st={"8–10 AM":["080000","100000"],"10 AM–12 PM":["100000","120000"],"4–6 PM":["160000","180000"]}[b.slot],d=b.date.replace(/-/g,"");
+ const ics=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Vayal//EN","BEGIN:VEVENT","UID:"+b.id+"@vayal","DTSTAMP:"+new Date().toISOString().replace(/[-:]|\.\d+/g,""),`DTSTART;TZID=Asia/Kolkata:${d}T${st[0]}`,`DTEND;TZID=Asia/Kolkata:${d}T${st[1]}`,"SUMMARY:Farm visit · "+f.name,"LOCATION:"+f.name+", "+f.loc,"DESCRIPTION:Ref "+b.id+" "+mapsUrl(f),"END:VEVENT","END:VCALENDAR"].join("\r\n");
+ const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([ics],{type:"text/calendar"}));a.download=b.id+".ics";document.body.append(a);a.click();a.remove()}
+
 /* ================= ACCOUNTS (prototype: kept in this browser only, not secure) ================= */
 let afterAuth=null;
 const digits=v=>String(v||"").replace(/\D/g,"").replace(/^91(?=\d{10}$)/,"");
@@ -1007,7 +1099,7 @@ async function authSubmit(mode){const v=id=>($("#"+id)?.value||"").trim(),err=m=
   const salt=Math.random().toString(36).slice(2),id="u"+Date.now().toString(36);
   const d=cloneDef();d.profile.name=name;
   const u={id,name,phone,email,salt,hash:await hashPw(salt,pw),created:Date.now(),
-   data:{profile:d.profile,orders:[],subs:[],plan:{0:{b:null,m:null},1:{b:null,m:null},2:{b:null,m:null},3:{b:null,m:null},4:{b:null,m:null},5:{b:null,m:null},6:{b:null,m:null}},points:0,wallet:0}};
+   data:{profile:d.profile,orders:[],subs:[],plan:{0:{b:null,m:null},1:{b:null,m:null},2:{b:null,m:null},3:{b:null,m:null},4:{b:null,m:null},5:{b:null,m:null},6:{b:null,m:null}},points:0,wallet:0,visits:[]}};
   S.users[id]=u;startSession(u);toast("Welcome to Vayal, "+name.split(" ")[0]);
  }else{
   const idv=v("au-id").toLowerCase(),ph=digits(idv);
@@ -1015,12 +1107,14 @@ async function authSubmit(mode){const v=id=>($("#"+id)?.value||"").trim(),err=m=
   if(!u||u.hash!==await hashPw(u.salt,pw))return err("Email, mobile or password is incorrect.");
   startSession(u);toast("Welcome back, "+u.name.split(" ")[0]);
  }}
-function startSession(u){S.user=u;Object.assign(S,u.data,{cart:S.cart});store.set("session",u.id);save();closeSheet();
+function startSession(u){S.user=u;Object.assign(S,{visits:[]},u.data,{cart:S.cart});store.set("session",u.id);save();closeSheet();
  const next=afterAuth;afterAuth=null;render();if(next)next()}
 function signOut(){save();S.user=null;store.set("session",null);Object.assign(S,cloneDef());save();go("home");toast("Signed out")}
 
 /* ================= EVENTS ================= */
 const A={
+ farmGo:d=>{S.cam=0;go("farm",d.v);tickCam()}, cam:d=>{S.cam=+d.v;render();tickCam()}, visitNew:d=>sheetVisit(d.v), visitOk:d=>visitOk(d.v), farmShare:d=>farmShare(d.v,d.id), farmDist:d=>farmDist(d.v), visitView:d=>sheetVisitDone(d.id), visitIcs:d=>visitIcs(d.id),
+ visitCancel:d=>{S.visits=S.visits.filter(x=>x.id!==d.id);save();render();toast("Visit cancelled")},
  auth:d=>sheetAuth(d.v||"signin"), authSubmit:d=>authSubmit(d.v), signout:signOut,
  go:d=>{if(d.chat&&!isWide())closeChat();go(d.r,d.id||undefined)},
  inc:d=>addCart(d.id,+d.ui||0,1,!!d.chat), dec:d=>addCart(d.id,+d.ui||0,-1),

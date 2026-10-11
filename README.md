@@ -44,7 +44,7 @@ Without AI: open `index.html` in a browser. On a wide screen it works as the sto
 
 - **Sign up / sign in** — customers create an account (name, mobile, email, password) from the top bar or the Account tab; placing an order asks guests to sign up first. Each account keeps its own orders, subscriptions, wallet and health profile. Browser-only, see Limitations.
 - **Live from the farm** — a Live farm page per partner farm with switchable camera views (demo feed), farm location with Open in Maps, Share location and distance from you, and a farm-visit booking (date, slot, visitors, purpose, optional share-my-location, confirmation with calendar file). To show a real stream, add a `stream` URL (an embeddable YouTube or HLS player page) to the farm in `FARMS`.
-- **Shop** — 35 products across 8 categories, Tamil/Tanglish search ("thakkali", "keerai"), health-goal filters, pack sizes.
+- **Shop** — 43 products across 11 categories, including fish & seafood, chicken and mutton & lamb (red non-veg mark, warned against a vegetarian or vegan health profile), Tamil/Tanglish search ("thakkali", "keerai"), health-goal filters, pack sizes.
 - **Product pages** — health benefits, nutrition, usage, storage, recipes and farm traceability.
 - **Cart & checkout** — delivery slots, coupons, reward points, returnable crate, farmer-fund option, UPI/card/wallet/COD, sample GST invoice (no real payment).
 - **Orders** — tracking with handover OTP, freshness rating, quality-issue refunds, reorder, "running low? buy again".

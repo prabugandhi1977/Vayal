@@ -96,6 +96,7 @@ main>*{min-width:0}
 .btn svg{width:18px;height:18px}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
 .pad{padding:14px}
+.vm{display:inline-block;width:12px;height:12px;border:1.5px solid #2e8b3d;border-radius:2px;position:relative;vertical-align:-1px;margin-right:6px;flex:none}.vm::after{content:"";position:absolute;inset:2px;border-radius:50%;background:#2e8b3d}.vm.nv{border-color:#c0392b}.vm.nv::after{background:#c0392b}
 .chip{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:3px 9px;font-size:.74rem;font-weight:600;background:var(--sunk);color:var(--ink);white-space:nowrap}
 .chip.good{background:var(--leaf-soft);color:var(--leaf)}
 .chip.warn{background:var(--chili-soft);color:var(--chili)}
@@ -323,17 +324,23 @@ const CATS=[
  {id:"dairy",en:"Dairy & Eggs",ta:"பால் பொருட்கள்",e:"🥛",hue:"#5B8FB9"},
  {id:"millet",en:"Millets & Rice",ta:"சிறுதானியம்",e:"🌾",hue:"#B8893A"},
  {id:"dal",en:"Dals & Nuts",ta:"பருப்பு வகைகள்",e:"🫘",hue:"#A0552F"},
+ {id:"fish",en:"Fish & Seafood",ta:"மீன் & கடல் உணவு",e:"🐟",hue:"#2F7FA8"},
+ {id:"chicken",en:"Chicken",ta:"கோழி",e:"🍗",hue:"#D98A3D"},
+ {id:"mutton",en:"Mutton & Lamb",ta:"ஆட்டிறைச்சி",e:"🍖",hue:"#B23A3A"},
  {id:"oil",en:"Oils & Ghee",ta:"எண்ணெய் & நெய்",e:"🫗",hue:"#C9A227"},
  {id:"pantry",en:"Spices & Sweeteners",ta:"மசாலா & இனிப்பு",e:"🍯",hue:"#B5572B"}
 ];
 const TAGS={diabetic:{en:"Diabetic-friendly",ta:"சர்க்கரை நோய்க்கு ஏற்றது"},protein:{en:"High protein",ta:"அதிக புரதம்"},heart:{en:"Heart-healthy",ta:"இதய நலம்"},weight:{en:"Weight-loss friendly",ta:"எடை குறைப்பு"},vegan:{en:"Vegan",ta:"வீகன்"},gf:{en:"Gluten-free",ta:"க்ளூட்டன் இல்லை"},kids:{en:"Great for kids",ta:"குழந்தைகளுக்கு"},iron:{en:"Iron-rich",ta:"இரும்புச்சத்து"}};
-const ALLERGENS={dairy:"Dairy",nuts:"Nuts / peanuts",gluten:"Gluten",egg:"Egg"};
+const ALLERGENS={dairy:"Dairy",nuts:"Nuts / peanuts",gluten:"Gluten",egg:"Egg",fish:"Fish & shellfish"};
 const FARMS={
  selvi:{name:"Selvi Organic Farm",who:"Selvi Murugan",loc:"Oddanchatram, Dindigul",km:420,cert:"PGS-India Organic",lat:10.4833,lng:77.75,kind:"field"},
  kaveri:{name:"Kaveri Delta Collective",who:"R. Ilango",loc:"Thiruvaiyaru, Thanjavur",km:340,cert:"NPOP Organic",lat:10.8833,lng:79.1,kind:"field"},
  nilgiri:{name:"Nilgiri Hill Growers",who:"Mathi Gowder",loc:"Kotagiri, Nilgiris",km:560,cert:"PGS-India Organic",lat:11.4,lng:76.86,kind:"field"},
  kongu:{name:"Kongu Millet Farmers FPO",who:"Saravanan K.",loc:"Kangeyam, Tiruppur",km:470,cert:"NPOP Organic",lat:11.0,lng:77.56,kind:"field"},
  ecr:{name:"Vayal Partner Dairy",who:"Lakshmi Dairy Co-op",loc:"Chengalpattu",km:55,cert:"A2 Gir & native breeds",lat:12.69,lng:79.98,kind:"dairy"},
+ kasimedu:{name:"Kasimedu Fishers' Co-op",who:"Kasimedu Fishermen Society",loc:"Kasimedu, Chennai",km:12,cert:"Day-boat catch, iced at landing",lat:13.126,lng:80.295,kind:"fish"},
+ namakkal:{name:"Namakkal Free-range Poultry",who:"Kumar P.",loc:"Namakkal",km:340,cert:"Free-range, FSSAI licensed",lat:11.2189,lng:78.1677,kind:"poultry"},
+ vellaadu:{name:"Salem Vellaadu Goat & Sheep Farm",who:"Murugesan T.",loc:"Attur, Salem",km:340,cert:"Grazed Salem Black goats & Mecheri sheep, FSSAI licensed",lat:11.5964,lng:78.5998,kind:"goat"},
  tvm:{name:"Chekku Oil Mill",who:"Anbu Chekku",loc:"Tiruvannamalai",km:190,cert:"Wooden cold-pressed",lat:12.2253,lng:79.0747,kind:"mill"}
 };
 // n = [kcal, protein g, fibre g, carbs g] per 100 g approx.
@@ -374,6 +381,22 @@ const P=[
   benefits:["Made by the bilona method from cultured curd","Fat-soluble vitamins A, D, E, K"],usage:["A spoon on hot rice and dal; tempering for pongal"],storage:"Room temperature, dry spoon only; 6 months.",recipes:["pongal"]},
  {id:"paneer",en:"Fresh paneer",ta:"பன்னீர்",al:"paneer cottage cheese",cat:"dairy",e:"🧀",units:[["200 g",95,110]],farm:"ecr",tags:["protein","gf","diabetic"],allergens:["dairy"],n:[265,18,0,3.6],sub:false,
   benefits:["18 g protein per 100 g","Low carb"],usage:["Soak in warm water before cooking to soften"],storage:"Fridge in water, change daily; 3 days.",recipes:[]},
+ {id:"vanjaram",en:"Seer fish (Vanjaram) steaks",ta:"வஞ்சிரம் மீன்",al:"vanjaram vanjiram seer king fish meen",cat:"fish",e:"🐟",units:[["500 g",640,720]],farm:"kasimedu",tags:["protein","heart","weight","diabetic","kids","gf"],allergens:["fish"],n:[133,21,0,0],sub:false,nv:true,
+  benefits:["Lean protein with omega-3 fatty acids","Firm, few bones: good for frying and curries"],usage:["Marinate in turmeric, chilli and lemon for 20 minutes, then shallow-fry","Also good for kuzhambu"],storage:"Fridge 1 day on ice, or freeze up to 2 months. Cook fully before eating.",recipes:[]},
+ {id:"mathi",en:"Sardine (Mathi), cleaned",ta:"மத்தி மீன்",al:"mathi sardine meen",cat:"fish",e:"🐟",units:[["500 g",160,185]],farm:"kasimedu",tags:["protein","heart","kids","diabetic","weight","gf"],allergens:["fish"],n:[135,20,0,0],sub:false,nv:true,
+  benefits:["Small oily fish rich in omega-3","Eaten whole, so you also get calcium from the soft bones"],usage:["Mathi fry and mathi kuzhambu","Cleaned and gutted; rinse before cooking"],storage:"Fridge 1 day, or freeze up to 2 months. Cook fully before eating.",recipes:[]},
+ {id:"eral",en:"Tiger prawns (Eral), deveined",ta:"இறால்",al:"eral prawn shrimp meen",cat:"fish",e:"🦐",units:[["250 g",260,300],["500 g",500,580]],farm:"kasimedu",tags:["protein","weight","diabetic","gf"],allergens:["fish"],n:[85,20,0,0.2],sub:false,nv:true,
+  benefits:["Low in fat, high in protein","Shellfish: a common allergen"],usage:["Eral thokku, masala fry or prawn curry","Cook until pink and firm, about 4 minutes"],storage:"Fridge 1 day, or freeze up to 2 months. Cook fully before eating.",recipes:[]},
+ {id:"nattukozhi",en:"Country chicken (Naatu kozhi), curry cut",ta:"நாட்டுக் கோழி",al:"naatu kozhi country chicken kozhi",cat:"chicken",e:"🍗",units:[["500 g",290,330],["1 kg",560,640]],farm:"namakkal",tags:["protein","iron","kids","gf"],allergens:[],n:[160,20,0,0],sub:false,nv:true,
+  benefits:["Free-range birds with firmer, more flavourful meat","Good source of protein and B vitamins"],usage:["Pepper chicken, kozhi kuzhambu, chettinad curry","Needs longer cooking than broiler: pressure-cook 4 to 5 whistles"],storage:"Fridge 1 day, or freeze up to 3 months. Cook to 75 °C inside.",recipes:[]},
+ {id:"chickenbreast",en:"Farm chicken breast, boneless",ta:"கோழி மார்பு (எலும்பில்லாதது)",al:"chicken breast boneless kozhi",cat:"chicken",e:"🍗",units:[["500 g",245,280]],farm:"namakkal",tags:["protein","weight","diabetic","heart","gf","kids"],allergens:[],n:[120,23,0,0],sub:false,nv:true,
+  benefits:["Very lean, high-protein cut","Cooks fast and suits grills, stir-fries and salads"],usage:["Slice thin for stir-fry; do not overcook or it dries out","Keep raw chicken away from vegetables and wash the board after use"],storage:"Fridge 1 day, or freeze up to 3 months. Cook to 75 °C inside.",recipes:[]},
+ {id:"goatmutton",en:"Goat mutton (Vellaadu), curry cut",ta:"ஆட்டிறைச்சி",al:"mutton aadu kari goat vellaadu",cat:"mutton",e:"🍖",units:[["500 g",480,540],["1 kg",940,1060]],farm:"vellaadu",tags:["protein","iron","gf"],allergens:[],n:[109,20,0,0],sub:false,nv:true,
+  benefits:["Rich in iron, zinc and vitamin B12","Grass-fed goats give leaner meat"],usage:["Mutton kuzhambu, biryani and pepper fry","Pressure-cook 6 to 8 whistles with turmeric and ginger-garlic paste"],storage:"Fridge 1 day, or freeze up to 3 months. Cook fully before eating.",recipes:[]},
+ {id:"muttonkeema",en:"Mutton keema (minced)",ta:"ஆட்டுக் கொத்துக்கறி",al:"keema kothukari kothu kari minced mutton",cat:"mutton",e:"🍖",units:[["500 g",520,580]],farm:"vellaadu",tags:["protein","iron","gf"],allergens:[],n:[160,19,0,0],sub:false,nv:true,
+  benefits:["Quick-cooking mince","Iron and protein in an easy form for dosa, rolls or curry"],usage:["Keema masala, keema dosa, kola urundai","Cook through; no pink should remain"],storage:"Fridge 1 day, or freeze up to 3 months. Cook fully before eating.",recipes:[]},
+ {id:"lambleg",en:"Lamb leg, boneless (Mecheri sheep)",ta:"செம்மறி ஆட்டுக்கறி",al:"lamb sheep semmari aadu mutton",cat:"mutton",e:"🍖",units:[["500 g",560,620]],farm:"vellaadu",tags:["protein","iron","gf"],allergens:[],n:[200,17,0,0],sub:false,nv:true,
+  benefits:["Tender young sheep meat with a milder taste than mutton","Good source of iron and zinc"],usage:["Slow-roast or cube for curries and kebabs","Rest the meat 10 minutes after cooking"],storage:"Fridge 1 day, or freeze up to 3 months. Cook fully before eating.",recipes:[]},
  {id:"eggs",en:"Country eggs",ta:"நாட்டுக் கோழி முட்டை",al:"muttai egg",cat:"dairy",e:"🥚",units:[["6 pcs",78,90]],farm:"kongu",tags:["protein","kids","gf"],allergens:["egg"],n:[143,12.6,0,0.7],sub:true,
   benefits:["Complete protein with choline","Free-range, smaller and richer yolks"],usage:["Boil 9 minutes for a firm yolk"],storage:"Fridge, pointed end down; 3 weeks.",recipes:[]},
  {id:"ragi",en:"Sprouted ragi flour",ta:"கேழ்வரகு மாவு",al:"kezhvaragu keppai finger millet",cat:"millet",e:"🌾",units:[["500 g",40,45],["1 kg",72,85]],farm:"kongu",tags:["diabetic","iron","gf","vegan","kids"],allergens:[],n:[328,7.3,11.5,72],sub:false,
@@ -497,11 +520,13 @@ const svg=(n,extra="")=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentCol
 function fit(p){
  const pr=S.profile, good=pr.goals.filter(g=>p.tags.includes(g)), warn=[];
  p.allergens.forEach(a=>{if(pr.allergens.includes(a))warn.push("Contains "+ALLERGENS[a].toLowerCase())});
+ if(p.nv&&pr.diet!=="all")warn.push("Non-vegetarian");
  if(pr.diet==="vegan"&&(p.allergens.includes("dairy")||p.allergens.includes("egg")))warn.push("Not vegan");
  if(pr.diet==="veg"&&p.allergens.includes("egg"))warn.push("Contains egg");
  if(pr.goals.includes("diabetic")&&(p.id==="karupatti"||p.id==="honey"))warn.push("High sugar: limit if diabetic");
  return {good,warn,ok:!warn.length&&good.length>0};
 }
+const vmark=p=>p.nv?`<span class="vm nv" role="img" aria-label="Non-vegetarian" title="Non-vegetarian"></span>`:p.allergens.includes("egg")?"":`<span class="vm" role="img" aria-label="Vegetarian" title="Vegetarian"></span>`;
 function fitChip(p){const f=fit(p);if(f.warn.length)return `<span class="chip warn tag">${esc(f.warn[0])}</span>`;if(f.good.length)return `<span class="chip good tag">${svg("check",'width="12" height="12"')} ${esc(TAGS[f.good[0]][S.lang==="ta"?"ta":"en"])}</span>`;return ""}
 
 /* cart */
@@ -528,7 +553,7 @@ function pcard(p,extra=""){
  const ui=S.pdUnit[p.id]||0,u=p.units[ui],q=cartQty(p.id,ui),c=catOf(p);
  return `<article class="pcard">
   <button class="pimg" style="${tint(c.hue)}" data-a="go" data-r="product" data-id="${p.id}" aria-label="${esc(p.en)}">${p.e}${fitChip(p)}</button>
-  <button class="pname" data-a="go" data-r="product" data-id="${p.id}">${esc(nm(p))}<span class="ta">${esc(nm2(p))}</span></button>
+  <button class="pname" data-a="go" data-r="product" data-id="${p.id}">${vmark(p)}${esc(nm(p))}<span class="ta">${esc(nm2(p))}</span></button>
   <div class="small muted">${esc(u[0])} · ${esc(FARMS[p.farm].loc.split(",")[0])}${extra}</div>
   <div class="pfoot"><div class="price"><b>${inr(u[1])}</b>${u[2]>u[1]?`<s>${inr(u[2])}</s>`:""}</div>
   ${q?`<div class="stepper"><button data-a="dec" data-id="${p.id}" data-ui="${ui}" aria-label="Remove one">−</button><span>${q}</span><button data-a="inc" data-id="${p.id}" data-ui="${ui}" aria-label="Add one">+</button></div>`
@@ -618,7 +643,7 @@ function vProduct(id){
   usage:`<ul class="list">${p.usage.map(b=>`<li>${esc(b)}</li>`).join("")}</ul><p style="margin-top:10px"><b>Storage.</b> ${esc(p.storage)}</p>`,
   recipes:recs.length?`<div class="hscroll">${recs.map(rcard).join("")}</div>`:`<p class="muted">Ask Mitra for a recipe idea with ${esc(p.en)}.</p><button class="btn ghost" data-a="askAbout" data-v="Give me a simple Tamil-style recipe with ${esc(p.en)}" style="margin-top:8px">${svg("spark")} Get a recipe</button>`,
   farm:`<div class="farm"><div class="farm-av">${esc(fm.who.split(" ").map(w=>w[0]).join("").slice(0,2))}</div><div><b>${esc(fm.name)}</b><p class="small muted">${esc(fm.who)} · ${esc(fm.loc)} · ${fm.km} km away</p><span class="chip good" style="margin-top:4px">${esc(fm.cert)}</span><div><button class="link" data-a="farmGo" data-v="${esc(p.farm)}" style="margin-top:6px">● Watch live &amp; book a visit →</button></div></div></div>
-   <div class="trace" style="margin-top:14px"><div><b>Harvested</b><br>${harvest.toLocaleTimeString("en-IN",{hour:"numeric",minute:"2-digit"})} ${fmtDate(harvest,{weekday:"short"})}</div><div><b>Graded</b><br>Farm shed</div><div><b>Hub QC</b><br>Chennai, 4°C</div><div style="border-color:var(--turmeric)"><b>You</b><br>Next slot</div></div>
+   <div class="trace" style="margin-top:14px"><div><b>${p.cat==="fish"?"Landed":p.nv?"Processed":"Harvested"}</b><br>${harvest.toLocaleTimeString("en-IN",{hour:"numeric",minute:"2-digit"})} ${fmtDate(harvest,{weekday:"short"})}</div><div><b>${p.nv?"Cleaned":"Graded"}</b><br>${p.nv?"Licensed unit":"Farm shed"}</div><div><b>Hub QC</b><br>Chennai, 4°C</div><div style="border-color:var(--turmeric)"><b>You</b><br>Next slot</div></div>
    <p class="small muted" style="margin-top:10px">Batch VY-${id.slice(0,3).toUpperCase()}-${new Date().getDate()}${new Date().getMonth()+1}. Residue test report available on request.</p>`
  };
  return `${back("shop",nm(c))}
@@ -626,7 +651,7 @@ function vProduct(id){
   <div style="display:grid;gap:12px"><div class="pd-art" style="${tint(c.hue,26)}">${p.e}</div>
    <div class="facts">${[["kcal",p.n[0]],["protein",p.n[1]+"g"],["fibre",p.n[2]+"g"],["carbs",p.n[3]+"g"]].map(([l,v])=>`<div class="fact"><b>${v}</b><span>${l} / 100 g</span></div>`).join("")}</div></div>
   <div class="pd-buy">
-   <div><p class="eyebrow">${esc(nm(c))} · ${esc(fm.loc)}</p><h1>${esc(nm(p))}</h1><p class="muted ta" style="font-size:1.05rem">${esc(nm2(p))}</p></div>
+   <div><p class="eyebrow">${esc(nm(c))} · ${esc(fm.loc)}</p><h1>${vmark(p)}${esc(nm(p))}</h1><p class="muted ta" style="font-size:1.05rem">${esc(nm2(p))}</p></div>
    <div class="chips">${p.tags.map(g=>`<span class="chip ${S.profile.goals.includes(g)?"good":""}">${esc(TAGS[g][S.lang==="ta"?"ta":"en"])}</span>`).join("")}</div>
    ${fi.warn.length?`<div class="fit warn">${svg("warn")}<div><b>Check before you buy.</b> ${esc(fi.warn.join(". "))}. Based on your health profile.</div></div>`:fi.good.length?`<div class="fit good">${svg("check")}<div><b>Fits your goals:</b> ${fi.good.map(g=>esc(TAGS[g].en)).join(", ")}.</div></div>`:""}
    <div class="variant" role="group" aria-label="Pack size">${p.units.map((x,i)=>`<button data-a="unit" data-id="${id}" data-v="${i}" aria-pressed="${i===ui}">${esc(x[0])}<br><span class="mono">${inr(x[1])}</span></button>`).join("")}</div>
@@ -814,7 +839,7 @@ function sheetPlanCart(){const L=planIngredients();
  sheet(`<h2>Add this week's ingredients</h2><p class="small muted">${S.profile.household} servings per meal. Items already in your cart are unticked.</p>
   <div class="card pad">${L.map((x,i)=>`<label class="toggle"><span>${x.p.e} ${esc(nm(x.p))} <span class="small muted">× ${x.packs} ${esc(x.p.units[0][0])}</span></span><input type="checkbox" id="pc${i}" data-pc="${x.p.id}" data-n="${Math.max(0,x.packs-x.have)}" ${x.have>=x.packs?"":"checked"} style="accent-color:var(--leaf);width:20px;height:20px"></label>`).join("")}</div>
   <button class="btn block" data-a="planCartOk">Add to cart</button>`)}
-function sheetInvoice(id){const o=S.orders.find(x=>x.id===id);const rate=p=>({veg:0,greens:0,fruit:0,dairy:0,millet:5,dal:5,oil:5,pantry:5})[p.cat]+(p.id==="ghee"?7:0)+(p.id==="paneer"?5:0);
+function sheetInvoice(id){const o=S.orders.find(x=>x.id===id);const rate=p=>({veg:0,greens:0,fruit:0,dairy:0,fish:0,chicken:0,mutton:0,millet:5,dal:5,oil:5,pantry:5})[p.cat]+(p.id==="ghee"?7:0)+(p.id==="paneer"?5:0);
  let tx=0,gst=0;const rows=o.items.map(([pid,ui,q,pr])=>{const p=PM[pid],r=rate(p),amt=pr*q,base=amt/(1+r/100);tx+=base;gst+=amt-base;return `<tr><td>${esc(p.en)}</td><td class="mono">${q}</td><td class="mono">${r}%</td><td class="mono" style="text-align:right">${inr(amt)}</td></tr>`}).join("");
  sheet(`<h2>Tax invoice · ${esc(o.id)}</h2><p class="small muted">Vayal Farm Fresh Pvt Ltd (prototype) · ${fmtDate(o.date,{day:"numeric",month:"long",year:"numeric"})}</p>
  <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:.88rem"><thead><tr class="muted" style="text-align:left"><th>Item</th><th>Qty</th><th>GST</th><th style="text-align:right">Amount</th></tr></thead><tbody>${rows}</tbody></table></div>
@@ -999,14 +1024,14 @@ Vary the week; don't repeat a dish on consecutive days. Reply with only JSON: {"
 
 /* ================= LIVE FARM ================= */
 const CAMS={
- field:[["Field","🌾"],["Harvest shed","🧺"]],dairy:[["Cow shed","🐄"],["Milking parlour","🥛"]],mill:[["Chekku press","🫗"],["Bottling","🍶"]]};
+ field:[["Field","🌾"],["Harvest shed","🧺"]],fish:[["Landing jetty","🚤"],["Ice & sorting","🧊"]],poultry:[["Free-range yard","🐓"],["Packing room","📦"]],goat:[["Grazing field","🐐"],["Cutting room","🔪"]],dairy:[["Cow shed","🐄"],["Milking parlour","🥛"]],mill:[["Chekku press","🫗"],["Bottling","🍶"]]};
 const VISIT_SLOTS=["8–10 AM","10 AM–12 PM","4–6 PM"],VISIT_WHY=["Farm tour","Pick your own vegetables","Buy direct from the farm","Kids' farm workshop"];
 const mapsUrl=f=>`https://www.google.com/maps/search/?api=1&query=${f.lat},${f.lng}`;
 function camScene(f,ci){
- const crops=f.kind==="field"?["🌾","🌿","🍅","🌾","🌿","🥬","🌾"]:f.kind==="dairy"?["🐄","🐄","🐃","🐄","🐄"]:["🫗","🥜","🫗","🌴","🫗"];
+ const crops=f.kind==="fish"?["🐟","🦐","🐠","🐟","🦀"]:f.kind==="poultry"?["🐓","🐔","🐥","🐓","🐔"]:f.kind==="goat"?["🐐","🐑","🐐","🐑","🐐"]:f.kind==="field"?["🌾","🌿","🍅","🌾","🌿","🥬","🌾"]:f.kind==="dairy"?["🐄","🐄","🐃","🐄","🐄"]:["🫗","🥜","🫗","🌴","🫗"];
  if(ci===1)return `<div class="shed"></div><div class="row-e" style="bottom:12%">${["📦","🧺","📦","🧺","📦"].map(x=>`<span>${x}</span>`).join("")}</div><div class="row-e" style="bottom:42%">${["🥬","🍅","🥛","🥕","🍌"].map(x=>`<span>${x}</span>`).join("")}</div><div class="walker" style="bottom:26%">🧑‍🌾</div>`;
- return `<div class="sky"></div><div class="sun"></div><div class="hill"></div><div class="hill b"></div><div class="ground"></div><div class="bird">🕊️</div>
-  <div class="row-e" style="bottom:30%">${crops.map(x=>`<span>${x}</span>`).join("")}</div><div class="row-e" style="bottom:8%">${crops.slice().reverse().map(x=>`<span>${x}</span>`).join("")}</div><div class="walker" style="bottom:18%">${f.kind==="field"?"🚜":f.kind==="dairy"?"🧑‍🌾":"🛺"}</div>`}
+ return `<div class="sky"></div><div class="sun"></div><div class="hill"></div><div class="hill b"></div><div class="ground"${f.kind==="fish"?` style="background:linear-gradient(#3c8dbc,#1d5f8a)"`:""}></div><div class="bird">🕊️</div>
+  <div class="row-e" style="bottom:30%">${crops.map(x=>`<span>${x}</span>`).join("")}</div><div class="row-e" style="bottom:8%">${crops.slice().reverse().map(x=>`<span>${x}</span>`).join("")}</div><div class="walker" style="bottom:18%">${f.kind==="field"?"🚜":f.kind==="fish"?"🚤":f.kind==="mill"?"🛺":"🧑‍🌾"}</div>`}
 function vFarm(){
  const key=FARMS[S.route.id]?S.route.id:S.farmView,f=FARMS[key];S.farmView=key;
  const cams=CAMS[f.kind],ci=Math.min(S.cam,cams.length-1),viewers=12+(key.length*7+new Date().getMinutes())%40;

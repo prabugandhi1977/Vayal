@@ -1,0 +1,13 @@
+# Render Blueprint: deploys the Vayal prototype as a free static site.
+services:
+  - type: web
+    name: vayal
+    runtime: static
+    buildCommand: ""
+    staticPublishPath: .
+    autoDeployTrigger: commit
+    pullRequestPreviewsEnabled: false
+    headers:
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff

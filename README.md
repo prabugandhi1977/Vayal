@@ -7,7 +7,7 @@
 | Where | Link | AI features |
 |---|---|---|
 | GitHub Pages | https://prabugandhi1977.github.io/Vayal/ | Offline product guide |
-| Render | https://vayal.onrender.com *(once the Render Blueprint is deployed; Render may assign a different name)* | Full AI, via this repo's backend (`server.js`) |
+| Render | https://vayal.onrender.com | Full AI, via this repo's backend (`server.js`) once `ANTHROPIC_API_KEY` is set |
 | claude.ai | https://claude.ai/artifact/8XiBMeyJ4v1YGdNKysW4t5 | Full AI (Vayal Mitra, photo list, AI meal plan) |
 
 GitHub Pages and Render redeploy automatically when `main` changes.

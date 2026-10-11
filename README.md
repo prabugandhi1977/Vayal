@@ -2,6 +2,18 @@
 
 **Vayal (வயல்) · farm to kitchen** — a clickable web + mobile prototype of an organic farm-to-kitchen grocery store for Chennai.
 
+## Live site
+
+| Where | Link | AI features |
+|---|---|---|
+| GitHub Pages | https://prabugandhi1977.github.io/Vayal/ | Offline product guide |
+| Render | https://vayal.onrender.com *(once the Render Blueprint is deployed; Render may assign a different name)* | Offline product guide |
+| claude.ai | https://claude.ai/artifact/8XiBMeyJ4v1YGdNKysW4t5 | Full AI (Vayal Mitra, photo list, AI meal plan) |
+
+GitHub Pages and Render redeploy automatically when `main` changes.
+
+## Run locally
+
 Open `index.html` in a browser. On a wide screen it works as the storefront; the **App preview** button shows the same app in a phone frame.
 
 ## What's in the prototype

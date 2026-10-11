@@ -120,7 +120,7 @@ app.post("/api/chat", express.json({ limit: "400kb" }), guard, async (req, res) 
     send({ t: "m", content: msg.content, stop_reason: msg.stop_reason });
   } catch (err) {
     if (!(err instanceof Anthropic.APIUserAbortError)) console.error("chat error:", err.status ?? "", err.message);
-    send({ t: "e", code: errorCode(err) });
+    send({ t: "e", code: errorCode(err), upstream: err.status ?? null, detail: String(err.message || "").slice(0, 300) });
   }
   res.end();
 });
@@ -156,7 +156,7 @@ app.post("/api/json", express.json({ limit: "8mb" }), guard, async (req, res) =>
   } catch (err) {
     if (err instanceof SyntaxError) return res.status(502).json({ code: "bad_output" });
     console.error("json error:", err.status ?? "", err.message);
-    res.status(err instanceof Anthropic.RateLimitError ? 429 : 502).json({ code: errorCode(err) });
+    res.status(err instanceof Anthropic.RateLimitError ? 429 : 502).json({ code: errorCode(err), upstream: err.status ?? null, detail: String(err.message || "").slice(0, 300) });
   }
 });
 

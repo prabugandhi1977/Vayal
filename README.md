@@ -42,6 +42,7 @@ Without AI: open `index.html` in a browser. On a wide screen it works as the sto
 
 ## What's in the prototype
 
+- **Sign up / sign in** — customers create an account (name, mobile, email, password) from the top bar or the Account tab; placing an order asks guests to sign up first. Each account keeps its own orders, subscriptions, wallet and health profile. Browser-only, see Limitations.
 - **Shop** — 35 products across 8 categories, Tamil/Tanglish search ("thakkali", "keerai"), health-goal filters, pack sizes.
 - **Product pages** — health benefits, nutrition, usage, storage, recipes and farm traceability.
 - **Cart & checkout** — delivery slots, coupons, reward points, returnable crate, farmer-fund option, UPI/card/wallet/COD, sample GST invoice (no real payment).
@@ -54,8 +55,8 @@ Without AI: open `index.html` in a browser. On a wide screen it works as the sto
 
 ## Limitations
 
-- Prototype only: no payments, delivery, accounts or real farms (farm names are placeholders). The only backend is the AI relay.
-- Cart, profile and orders are stored in the browser's `localStorage`.
+- Prototype only: no payments, delivery, real accounts or real farms (farm names are placeholders). The only backend is the AI relay.
+- Accounts, cart, profile and orders are stored in the browser's `localStorage`. Signup is a prototype: no server account, no email/OTP verification, no password reset, and nothing syncs across devices.
 - Voice search is not wired up in the web preview.
 - Nutrition figures are rough estimates and health text needs expert review before launch.
 

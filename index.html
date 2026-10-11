@@ -419,19 +419,28 @@ const seedOrders=[
  {id:"VY-24731",date:now-15*DAY,items:[["a2milk",0,2,42],["tomato",1,1,48],["shallot",1,1,55],["toor",0,1,88],["ragi",1,1,72],["curryleaf",0,1,15],["guava",0,1,50]],total:412,stage:4,pay:"UPI",slot:"6–8 AM",rating:{}},
  {id:"VY-24802",date:now-8*DAY,items:[["tomato",1,1,48],["drumstick",1,1,52],["amaranth",0,2,25],["curd",0,1,45],["thinai",0,1,58],["gingelly",0,1,220],["curryleaf",0,1,15]],total:488,stage:4,pay:"UPI",slot:"8–10 AM",rating:{}}
 ];
+const DEF={cart:{"moringaleaf|0":1,"thinai|0":1},
+ profile:{name:"Prabu",household:4,diet:"veg",goals:["diabetic","heart"],allergens:[],fitOnly:false,notif:{harvest:true,subs:true,whatsapp:true}},
+ orders:seedOrders,
+ subs:[{id:"s1",pid:"a2milk",ui:0,q:2,freq:"daily",slot:"6–7 AM",status:"active",skips:[]},{id:"s2",pid:"amaranth",ui:0,q:1,freq:"wedsat",slot:"6–7 AM",status:"active",skips:[]}],
+ plan:{0:{b:"ragidosa",m:"sambar"},1:{b:"pongal",m:"keerai"},2:{b:"kambukoozh",m:null},3:{b:null,m:"sundal"},4:{b:null,m:null},5:{b:null,m:null},6:{b:null,m:null}},
+ points:240,wallet:640};
+const DEF_JSON=JSON.stringify(DEF),cloneDef=()=>JSON.parse(DEF_JSON);
 const S={
  lang:store.get("lang","en"),
- cart:store.get("cart",{"moringaleaf|0":1,"thinai|0":1}),
- profile:store.get("profile",{name:"Prabu",household:4,diet:"veg",goals:["diabetic","heart"],allergens:[],fitOnly:false,notif:{harvest:true,subs:true,whatsapp:true}}),
- orders:store.get("orders",seedOrders),
- subs:store.get("subs",[{id:"s1",pid:"a2milk",ui:0,q:2,freq:"daily",slot:"6–7 AM",status:"active",skips:[]},{id:"s2",pid:"amaranth",ui:0,q:1,freq:"wedsat",slot:"6–7 AM",status:"active",skips:[]}]),
- plan:store.get("plan",{0:{b:"ragidosa",m:"sambar"},1:{b:"pongal",m:"keerai"},2:{b:"kambukoozh",m:null},3:{b:null,m:"sundal"},4:{b:null,m:null},5:{b:null,m:null},6:{b:null,m:null}}),
- points:store.get("points",240), wallet:store.get("wallet",640),
+ cart:store.get("cart",DEF.cart),
+ profile:store.get("profile",DEF.profile),
+ orders:store.get("orders",DEF.orders),
+ subs:store.get("subs",DEF.subs),
+ plan:store.get("plan",DEF.plan),
+ points:store.get("points",DEF.points), wallet:store.get("wallet",DEF.wallet),
  route:{name:"home"}, slot:null, coupon:null, usePoints:false, farmerFund:true, crate:true, pay:"upi", addr:0,
  shop:{cat:"all",q:"",tag:null,sort:"rel"}, pdTab:"benefits", pdUnit:{}, recipeServ:{},
+ users:store.get("users",{}), user:null,
  phone:false, chatOpen:false, chat:[], busy:false
 };
-function save(){store.set("lang",S.lang);store.set("cart",S.cart);store.set("profile",S.profile);store.set("orders",S.orders);store.set("subs",S.subs);store.set("plan",S.plan);store.set("points",S.points);store.set("wallet",S.wallet)}
+{const sid=store.get("session",null);if(sid&&S.users[sid])S.user=S.users[sid]}
+function save(){store.set("lang",S.lang);store.set("cart",S.cart);store.set("profile",S.profile);store.set("orders",S.orders);store.set("subs",S.subs);store.set("plan",S.plan);store.set("points",S.points);store.set("wallet",S.wallet);if(S.user){S.user.data={profile:S.profile,orders:S.orders,subs:S.subs,plan:S.plan,points:S.points,wallet:S.wallet};S.users[S.user.id]=S.user;store.set("users",S.users)}}
 
 /* ================= I18N ================= */
 const T={
@@ -527,6 +536,7 @@ function renderTop(){
  <div class="top-actions">
   <div class="lang" role="group" aria-label="Language"><button data-a="lang" data-v="en" aria-pressed="${S.lang==="en"}">EN</button><button data-a="lang" data-v="ta" aria-pressed="${S.lang==="ta"}">தமிழ்</button></div>
   <button class="pill-btn preview-btn" data-a="phone">${svg("phone",'width="15" height="15" style="vertical-align:-3px"')} App preview</button>
+  ${S.user?"":`<button class="pill-btn" data-a="auth">Sign in</button>`}
   <button class="icon-btn" data-a="go" data-r="cart" aria-label="Cart, ${n} items">${svg("cart")}${n?`<span class="badge">${n}</span>`:""}</button>
  </div>`;
  const tabs=[["home","home"],["shop","grid"],["plan","cal"],["subs","repeat"],["account","user"]];
@@ -736,8 +746,9 @@ function vRecipe(id){
 
 function vAccount(){
  const pr=S.profile;
- return `<section class="card pad farm"><div class="farm-av">${esc(pr.name[0])}</div><div class="between" style="flex-wrap:wrap"><div><h1 style="font-size:1.4rem">${esc(pr.name)}</h1><p class="small muted">Member since 2025 · ${S.orders.length} orders</p></div><div class="row"><span class="chip gold">${S.points} Vayal points</span><span class="chip">${inr(S.wallet)} wallet</span></div></div></section>
- <div class="row"><button class="btn ghost" data-a="go" data-r="orders">${t("orders")}</button><button class="btn ghost" data-a="go" data-r="subs">${t("subs")}</button><button class="btn ghost" data-a="refer">Refer a friend · ₹100</button></div>
+ const u=S.user;
+ return (u?"":`<section class="card pad between" style="flex-wrap:wrap;gap:12px"><div><h2>Create your Vayal account</h2><p class="small muted">You're browsing as a guest with demo data. Sign up to start your own orders, subscriptions and health profile.</p></div><div class="row"><button class="btn" data-a="auth" data-v="signup">Sign up</button><button class="btn ghost" data-a="auth" data-v="signin">Sign in</button></div></section>`)+`<section class="card pad farm"><div class="farm-av">${esc((pr.name||"V")[0])}</div><div class="between" style="flex-wrap:wrap"><div><h1 style="font-size:1.4rem">${esc(pr.name)}</h1><p class="small muted">${u?`${esc(u.email)} · +91 ${esc(u.phone)} · Member since ${new Date(u.created).getFullYear()}`:"Member since 2025"} · ${S.orders.length} orders</p></div><div class="row"><span class="chip gold">${S.points} Vayal points</span><span class="chip">${inr(S.wallet)} wallet</span></div></div></section>
+ <div class="row"><button class="btn ghost" data-a="go" data-r="orders">${t("orders")}</button><button class="btn ghost" data-a="go" data-r="subs">${t("subs")}</button><button class="btn ghost" data-a="refer">Refer a friend · ₹100</button>${u?`<button class="btn ghost" data-a="signout">Sign out</button>`:""}</div>
  <section class="card pad" style="display:grid;gap:14px"><div><h2>Health profile</h2><p class="small muted">Used to badge products, filter the shop, plan meals and guide Mitra's answers. Stored on this device only.</p></div>
   <div><p class="eyebrow">Diet</p><div class="seg">${[["veg","Vegetarian"],["vegan","Vegan"],["egg","Eggetarian"],["all","Everything"]].map(([k,l])=>`<button data-a="diet" data-v="${k}" aria-pressed="${pr.diet===k}">${l}</button>`).join("")}</div></div>
   <div><p class="eyebrow">Goals</p><div class="seg" style="flex-wrap:wrap">${["diabetic","heart","weight","protein","iron","kids"].map(g=>`<button data-a="goal" data-v="${g}" aria-pressed="${pr.goals.includes(g)}">${esc(TAGS[g].en)}</button>`).join("")}</div></div>
@@ -967,8 +978,50 @@ Vary the week; don't repeat a dish on consecutive days. Reply with only JSON: {"
   (res.days||[]).slice(0,7).forEach((d,i)=>{S.plan[i]={b:RM[d.b]&&RM[d.b].meal==="breakfast"?d.b:null,m:RM[d.m]&&RM[d.m].meal!=="breakfast"?d.m:null}});save();render();toast(res.note?String(res.note).slice(0,140):"Week planned")}
  catch(e){if(["not_granted","sampling_disabled"].includes(e.code)){autoPlan()}else{toast("Couldn't plan with AI just now. Try again.")}render()}}
 
+/* ================= ACCOUNTS (prototype: kept in this browser only, not secure) ================= */
+let afterAuth=null;
+const digits=v=>String(v||"").replace(/\D/g,"").replace(/^91(?=\d{10}$)/,"");
+async function hashPw(salt,pw){const data=new TextEncoder().encode(salt+":"+pw);
+ if(window.crypto&&crypto.subtle){const b=await crypto.subtle.digest("SHA-256",data);return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}
+ let h=5381;for(const c of data)h=((h<<5)+h+c)>>>0;return "x"+h}
+function needAuth(next){afterAuth=next;sheetAuth("signup");toast("Sign in to place your order")}
+function sheetAuth(mode="signup"){const up=mode==="signup";
+ sheet(`<h2>${up?"Create your account":"Welcome back"}</h2><p class="small muted">${up?"Takes 20 seconds. Get your own orders, subscriptions and health profile.":"Sign in with your email or mobile number."}</p>
+ ${up?`<label class="fld">Full name<input id="au-name" autocomplete="name" maxlength="60"></label>
+ <label class="fld">Mobile number<input id="au-phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="98765 43210" maxlength="14"></label>
+ <label class="fld">Email<input id="au-email" type="email" autocomplete="email" maxlength="80"></label>`:`<label class="fld">Email or mobile number<input id="au-id" autocomplete="username" maxlength="80"></label>`}
+ <label class="fld">Password${up?" (6+ characters)":""}<input id="au-pw" type="password" autocomplete="${up?"new-password":"current-password"}" maxlength="64"></label>
+ <p id="au-err" class="small" role="alert" style="color:var(--chili);min-height:1.2em"></p>
+ <button class="btn block" data-a="authSubmit" data-v="${mode}">${up?"Sign up":"Sign in"}</button>
+ <p class="small muted" style="text-align:center">${up?"Already have an account?":"New to Vayal?"} <button class="link" data-a="auth" data-v="${up?"signin":"signup"}">${up?"Sign in":"Sign up"}</button></p>
+ <p class="tiny muted">Prototype: your details are stored in this browser only. There is no server account or real verification.</p>`)}
+async function authSubmit(mode){const v=id=>($("#"+id)?.value||"").trim(),err=m=>{$("#au-err").textContent=m};
+ const pw=$("#au-pw").value;
+ if(mode==="signup"){
+  const name=v("au-name"),phone=digits(v("au-phone")),email=v("au-email").toLowerCase();
+  if(name.length<2)return err("Enter your name.");
+  if(!/^[6-9]\d{9}$/.test(phone))return err("Enter a 10-digit Indian mobile number.");
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return err("Enter a valid email.");
+  if(pw.length<6)return err("Password needs at least 6 characters.");
+  if(Object.values(S.users).some(u=>u.email===email||u.phone===phone))return err("An account with this email or mobile already exists. Sign in instead.");
+  const salt=Math.random().toString(36).slice(2),id="u"+Date.now().toString(36);
+  const d=cloneDef();d.profile.name=name;
+  const u={id,name,phone,email,salt,hash:await hashPw(salt,pw),created:Date.now(),
+   data:{profile:d.profile,orders:[],subs:[],plan:{0:{b:null,m:null},1:{b:null,m:null},2:{b:null,m:null},3:{b:null,m:null},4:{b:null,m:null},5:{b:null,m:null},6:{b:null,m:null}},points:0,wallet:0}};
+  S.users[id]=u;startSession(u);toast("Welcome to Vayal, "+name.split(" ")[0]);
+ }else{
+  const idv=v("au-id").toLowerCase(),ph=digits(idv);
+  const u=Object.values(S.users).find(x=>x.email===idv||(ph&&x.phone===ph));
+  if(!u||u.hash!==await hashPw(u.salt,pw))return err("Email, mobile or password is incorrect.");
+  startSession(u);toast("Welcome back, "+u.name.split(" ")[0]);
+ }}
+function startSession(u){S.user=u;Object.assign(S,u.data,{cart:S.cart});store.set("session",u.id);save();closeSheet();
+ const next=afterAuth;afterAuth=null;render();if(next)next()}
+function signOut(){save();S.user=null;store.set("session",null);Object.assign(S,cloneDef());save();go("home");toast("Signed out")}
+
 /* ================= EVENTS ================= */
 const A={
+ auth:d=>sheetAuth(d.v||"signin"), authSubmit:d=>authSubmit(d.v), signout:signOut,
  go:d=>{if(d.chat&&!isWide())closeChat();go(d.r,d.id||undefined)},
  inc:d=>addCart(d.id,+d.ui||0,1,!!d.chat), dec:d=>addCart(d.id,+d.ui||0,-1),
  shopCat:d=>{S.shop.cat=d.v;go("shop")}, tag:d=>{S.shop.tag=S.shop.tag===d.v?null:d.v;render()}, tagShop:d=>{closeChat();S.shop.tag=d.v;S.shop.cat="all";go("shop")},
@@ -978,7 +1031,7 @@ const A={
  phone:()=>{S.phone=!S.phone;$("#stage").classList.toggle("phone",S.phone);exitBtn();render()},
  addr:sheetAddr, setAddr:d=>{S.addr=+d.v;closeSheet();render();toast("Delivering to "+ADDR[S.addr].lbl)},
  slot:d=>{S.slot=d.v;render()}, coupon:d=>{S.coupon=S.coupon===d.v?null:d.v;render()},
- place:()=>{const b=bill(),sl=slots().find(s=>s.id===S.slot)||slots()[0];
+ place:()=>{if(!S.user)return needAuth(A.place);const b=bill(),sl=slots().find(s=>s.id===S.slot)||slots()[0];
   if(S.pay==="wallet"&&S.wallet<b.total){toast("Wallet balance is low. Top up or pick another method.");return}
   const o={id:"VY-"+(24900+Math.floor(Math.random()*900)),date:Date.now(),items:b.L.map(l=>[l.p.id,l.ui,l.q,l.price]),total:Math.round(b.total),stage:0,pay:{upi:"UPI",card:"Card",wallet:"Wallet",cod:"Pay on delivery"}[S.pay],slot:sl.lbl+" "+sl.time,rating:{},otp:String(1000+Math.floor(Math.random()*9000))};
   if(S.pay==="wallet")S.wallet-=o.total;S.points=S.points-b.pts+Math.floor(b.total/20);S.orders.push(o);S.cart={};S.coupon=null;S.usePoints=false;save();toast("Order placed. The farms have your list.");go("track",o.id)},
@@ -1027,7 +1080,7 @@ document.addEventListener("change",e=>{const el=e.target,k=el.dataset.in;if(!k)r
  if(k==="freq"){const s=S.subs.find(x=>x.id===el.dataset.id);s.freq=el.value}
  save();if(k!=="q")render()});
 document.addEventListener("submit",e=>{if(e.target.id==="composer"){e.preventDefault();if(S.busy){ctl?.abort();return}const i=$("#chatIn");const v=i.value;i.value="";sendChat(v)}});
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){if($("#layer").innerHTML)closeSheet();else if(S.chatOpen)closeChat()}});
+document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id&&e.target.id.startsWith("au-")){e.preventDefault();$("[data-a=authSubmit]")?.click()}if(e.key==="Escape"){if($("#layer").innerHTML)closeSheet();else if(S.chatOpen)closeChat()}});
 $("#fab").addEventListener("click",()=>openChat());
 $("#photoInput").addEventListener("change",e=>{const f=e.target.files[0];if(f)readPhoto(f)});
 function exitBtn(){let b=$("#exitPhone");if(S.phone&&!b){b=document.createElement("button");b.id="exitPhone";b.className="pill-btn";b.dataset.a="phone";b.textContent="← Back to web view";b.style.cssText="justify-self:center;margin-bottom:12px";$("#stage").prepend(b)}else if(!S.phone&&b)b.remove()}

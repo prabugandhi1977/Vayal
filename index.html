@@ -272,11 +272,102 @@ label.fld{display:grid;gap:4px;font-size:.85rem;font-weight:600}
 .sw:before{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .15s}
 .sw:checked{background:var(--leaf)} .sw:checked:before{left:21px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+:root[data-theme="light"]{color-scheme:light}
+
+/* side menu: a drawer on narrow screens, a fixed column on wide ones */
+.side{display:none;flex-direction:column;background:var(--surface);border-right:1px solid var(--line);overflow-y:auto;overscroll-behavior:contain}
+.side.open{display:flex;position:fixed;inset:0 auto 0 0;width:min(300px,86%);z-index:80;box-shadow:0 0 0 100vmax rgba(10,20,14,.45)}
+.side-brand{padding:20px 18px 16px;border-bottom:1px solid var(--line);display:grid;gap:6px}
+.side-brand .logo{font-size:1.5rem}
+.side-brand p{font-size:.7rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.side-group{padding:10px 8px 4px}
+.side-group>button{width:100%;display:flex;justify-content:space-between;align-items:center;border:0;background:none;padding:8px 10px;font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;font-weight:700;color:var(--muted);text-align:left}
+.side-group>button svg{width:16px;height:16px;transition:transform .15s}
+.side-group[data-closed] ul{display:none}
+.side-group[data-closed]>button svg{transform:rotate(-90deg)}
+.side ul{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.side li button{width:100%;display:flex;align-items:center;gap:12px;border:0;background:none;padding:9px 12px;border-radius:10px;font-weight:600;font-size:.95rem;color:var(--ink);text-align:left}
+.side li button svg{width:20px;height:20px;flex:none;color:var(--muted)}
+.side li button:hover{background:var(--sunk)}
+.side li button[aria-current="page"]{background:var(--leaf-soft);color:var(--leaf)}
+.side li button[aria-current="page"] svg{color:var(--leaf)}
+.side li .cnt{margin-left:auto;font-size:.72rem;font-family:var(--f-mono);background:var(--sunk);border-radius:999px;padding:1px 7px;color:var(--muted)}
+.side-foot{margin-top:auto;padding:14px 18px;border-top:1px solid var(--line);font-size:.78rem;color:var(--muted)}
+.menu-btn{display:grid}
+.status{display:none;align-items:center;gap:8px;white-space:nowrap}
+.status .live{display:inline-flex;align-items:center;gap:7px;background:var(--leaf-soft);color:var(--leaf);border-radius:999px;padding:6px 12px;font-weight:700;font-size:.82rem}
+.status .live i{width:8px;height:8px;border-radius:50%;background:currentColor}
+.theme{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--surface)}
+.theme button{border:0;background:none;padding:6px 10px;font-size:.8rem;font-weight:600;color:var(--muted);display:inline-flex;align-items:center;gap:4px}
+.theme button svg{width:14px;height:14px}
+.theme button[aria-pressed="true"]{background:var(--sunk);color:var(--ink)}
+.theme .lbl{display:none}
+.top .theme,.top .lang,.top .signin{display:none}
+.side-foot .theme,.side-foot .lang{margin-top:8px}
+
+/* overview dashboard */
+.page-head{display:flex;gap:16px;align-items:center}
+.page-ico{width:56px;height:56px;border-radius:16px;background:var(--leaf-soft);color:var(--leaf);display:grid;place-items:center;flex:none}
+.page-ico svg{width:28px;height:28px}
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:grid;gap:4px;align-content:start;text-align:left;color:var(--ink)}
+button.kpi:hover{border-color:var(--leaf)}
+.kpi .k-l{font-size:.85rem;color:var(--muted);line-height:1.3}
+.kpi .k-v{font-family:var(--f-display);font-weight:800;font-size:1.9rem;line-height:1.1}
+.kpi .k-s{font-size:.82rem;color:var(--muted)}
+.kpi .k-s.good{color:var(--leaf);font-weight:700}.kpi .k-s.warn{color:var(--chili);font-weight:700}
+.tiles{display:grid;gap:10px;grid-template-columns:minmax(0,1fr)}
+.tile{display:flex;gap:14px;align-items:flex-start;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;color:var(--ink)}
+.tile:hover{border-color:var(--leaf)}
+.tile .page-ico{width:44px;height:44px;border-radius:12px}
+.tile .page-ico svg{width:22px;height:22px}
+
+/* tabs inside a page */
+.ptabs{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto}
+.ptabs button{border:0;background:none;padding:10px 12px;font-weight:700;color:var(--muted);border-bottom:2.5px solid transparent;white-space:nowrap;display:inline-flex;gap:6px;align-items:center}
+.ptabs button svg{width:16px;height:16px}
+.ptabs button[aria-selected="true"]{color:var(--ink);border-color:var(--leaf)}
+
+/* quality companion */
+.meter{height:10px;border-radius:5px;background:var(--sunk);overflow:hidden}
+.meter i{display:block;height:100%;border-radius:5px}
+.grade{width:64px;height:64px;border-radius:16px;display:grid;place-items:center;font-family:var(--f-display);font-weight:800;font-size:1.8rem;flex:none}
+.grade.A{background:var(--leaf-soft);color:var(--leaf)}.grade.B{background:var(--turmeric-soft);color:color-mix(in srgb,var(--turmeric) 60%,var(--ink))}.grade.C,.grade.R{background:var(--chili-soft);color:var(--chili)}
+.cues{display:grid;gap:12px}
+.cues h3{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.cue{display:flex;gap:10px;align-items:flex-start;padding:6px 0}
+.cue input{margin-top:5px;accent-color:var(--leaf);width:18px;height:18px;flex:none}
+.cue.bad input{accent-color:var(--chili)}
+.qprev{width:100%;max-height:260px;object-fit:contain;border-radius:12px;background:var(--sunk)}
+
+/* farmer guide */
+.gantt{width:100%;border-collapse:separate;border-spacing:2px;font-size:.78rem}
+.gantt th{font-weight:600;color:var(--muted);padding:4px 2px;text-align:center}
+.gantt th.now{color:var(--ink);text-decoration:underline;text-decoration-color:var(--turmeric);text-decoration-thickness:3px}
+.gantt td{height:26px;border-radius:5px;background:var(--sunk);text-align:center;font-weight:700;font-size:.68rem}
+.gantt td.c{background:none;text-align:left;font-size:.82rem;white-space:nowrap;padding-right:8px;font-weight:600}
+.gantt td.s{background:var(--leaf-soft);color:var(--leaf)}.gantt td.h{background:var(--turmeric-soft);color:color-mix(in srgb,var(--turmeric) 55%,var(--ink))}.gantt td.sh{background:linear-gradient(135deg,var(--leaf-soft) 50%,var(--turmeric-soft) 50%)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.8rem;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}.legend i{width:14px;height:14px;border-radius:4px;display:inline-block}
+.wx{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+.wxd{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px;display:grid;gap:2px;text-align:center}
+.wxd .e{font-size:1.7rem;line-height:1.2}
+.tbl{width:100%;border-collapse:collapse;font-size:.88rem}
+.tbl th{text-align:left;font-size:.75rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:8px 6px;border-bottom:1px solid var(--line)}
+.tbl td{padding:9px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl tr:last-child td{border-bottom:0}
+.lvl{display:inline-block;font-size:.72rem;font-weight:700;border-radius:999px;padding:2px 8px}
+.lvl.hi{background:var(--chili-soft);color:var(--chili)}.lvl.md{background:var(--turmeric-soft);color:color-mix(in srgb,var(--turmeric) 55%,var(--ink))}.lvl.lo{background:var(--leaf-soft);color:var(--leaf)}
+.scroll-x{overflow-x:auto}
 
 /* ---------- wide (web storefront) ---------- */
 @container app (min-width:820px){
+  .kpis{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .theme .lbl{display:inline}
+  .top .theme,.top .lang{display:inline-flex}.top .signin{display:inline-block}
+  .status{display:flex}
   .deliver{display:flex}
-  .nav{display:flex}
   .top-actions{margin-left:8px}
   .preview-btn{display:inline-flex}
   .tabs{display:none}
@@ -301,9 +392,19 @@ label.fld{display:grid;gap:4px;font-size:.85rem;font-weight:600}
   .day{grid-template-columns:1fr;align-content:start}
   .day .dname{text-align:center}
 }
+@container app (min-width:1180px){.kpis{grid-template-columns:repeat(6,minmax(0,1fr))}}
+/* The sidebar layout needs the real viewport, not the phone-preview frame. */
+@media (min-width:1000px){
+  #stage:not(.phone) #app{display:grid;grid-template-columns:272px minmax(0,1fr);grid-template-rows:auto 1fr;align-items:start}
+  #stage:not(.phone) .side{display:flex;grid-column:1;grid-row:1/span 2;position:sticky;top:0;height:100vh;box-shadow:none;width:auto}
+  #stage:not(.phone) .top,#stage:not(.phone) main{grid-column:2}
+  #stage:not(.phone) main{width:100%}
+  #stage:not(.phone) .top .logo,#stage:not(.phone) .menu-btn{display:none}
+}
 </style>
 
 <div id="stage"><div id="frame"><div id="app">
+  <aside class="side" id="side" aria-label="Menu"></aside>
   <header class="top"><div class="top-in" id="topbar"></div></header>
   <main id="view"></main>
   <nav class="tabs" id="tabs" aria-label="Main"></nav>
@@ -313,6 +414,7 @@ label.fld{display:grid;gap:4px;font-size:.85rem;font-weight:600}
   <div id="chatLayer"></div>
   <div id="toastLayer" aria-live="polite"></div>
   <input type="file" id="photoInput" accept="image/*" hidden>
+  <input type="file" id="qPhoto" accept="image/*" capture="environment" hidden>
 </div></div></div>
 
 <script>
@@ -479,8 +581,13 @@ const S={
  shop:{cat:"all",q:"",tag:null,sort:"rel"}, pdTab:"benefits", pdUnit:{}, recipeServ:{},
  visits:store.get("visits",DEF.visits),
  users:store.get("users",{}), user:null, farmView:"selvi", cam:0,
- phone:false, chatOpen:false, chat:[], busy:false
+ phone:false, chatOpen:false, chat:[], busy:false,
+ theme:store.get("theme","auto"), sideClosed:store.get("sideClosed",[]), sideOpen:false,
+ q:{pid:"tomato",result:null,img:null,busy:false,ticks:{}}, qchecks:store.get("qchecks",[]),
+ fd:store.get("farmDistrict","dindigul"), fcrop:"all", wx:{}, dx:null, offers:store.get("offers",[])
 };
+function applyTheme(){const r=document.documentElement;if(S.theme==="auto")r.removeAttribute("data-theme");else r.setAttribute("data-theme",S.theme)}
+applyTheme();
 {const sid=store.get("session",null);if(sid&&S.users[sid])S.user=S.users[sid]}
 function save(){store.set("lang",S.lang);store.set("cart",S.cart);store.set("profile",S.profile);store.set("orders",S.orders);store.set("subs",S.subs);store.set("plan",S.plan);store.set("points",S.points);store.set("wallet",S.wallet);store.set("visits",S.visits);if(S.user){S.user.data={profile:S.profile,orders:S.orders,subs:S.subs,plan:S.plan,points:S.points,wallet:S.wallet,visits:S.visits};S.users[S.user.id]=S.user;store.set("users",S.users)}}
 
@@ -492,7 +599,11 @@ const T={
  goals:["Picked for your goals","உங்கள் இலக்குகளுக்கு"],buyAgain:["Running low? Buy again","மீண்டும் வாங்க"],cookWeek:["Cook this week","இந்த வாரம் சமைக்க"],
  categories:["Shop by category","வகைகள்"],harvest:["This week's harvest","இந்த வார அறுவடை"],
  benefits:["Health benefits","ஆரோக்கிய நன்மைகள்"],usage:["How to use","பயன்படுத்தும் முறை"],recipesT:["Recipes","சமையல் குறிப்புகள்"],nutrition:["Nutrition","ஊட்டச்சத்து"],farmT:["From the farm","பண்ணையிலிருந்து"],
- farm:["Live farm","நேரடி பண்ணை"],placeOrder:["Place order","ஆர்டர் செய்"],hello:["Vanakkam","வணக்கம்"]
+ farm:["Live farm","நேரடி பண்ணை"],overview:["Overview","கண்ணோட்டம்"],quality:["Quality companion","தர உதவியாளர்"],farmer:["Farmer guide","விவசாயி வழிகாட்டி"],
+ gShop:["Shop & orders","கடை & ஆர்டர்கள்"],gQual:["Vision & quality","பார்வை & தரம்"],gFarm:["Farmer guide","விவசாயி வழிகாட்டி"],gAcc:["Account","கணக்கு"],
+ qScan:["Scan produce","காய்கறியை ஸ்கேன் செய்"],qGuide:["How to choose","தேர்ந்தெடுக்கும் முறை"],qHist:["My checks","என் சோதனைகள்"],
+ fSeason:["Season calendar","பருவ நாட்காட்டி"],fDemand:["Demand & prices","தேவை & விலை"],fWx:["Weather","வானிலை"],fPest:["Pests & disease","பூச்சி & நோய்"],fInputs:["Organic inputs","இயற்கை இடுபொருட்கள்"],
+ light:["Light","வெளிச்சம்"],dark:["Dark","இருள்"],autoT:["Auto","தானியங்கி"],placeOrder:["Place order","ஆர்டர் செய்"],hello:["Vanakkam","வணக்கம்"]
 };
 const t=k=>(T[k]||[k,k])[S.lang==="ta"?1:0];
 const nm=o=>S.lang==="ta"?o.ta:o.en; const nm2=o=>S.lang==="ta"?o.en:o.ta;
@@ -513,6 +624,12 @@ const ic={
  mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/>',spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/>',
  x:'<path d="M6 6l12 12M18 6L6 18"/>',back:'<path d="M15 5l-7 7 7 7"/>',check:'<path d="M5 12l5 5 9-10"/>',leaf:'<path d="M5 19c0-9 6-14 15-14 0 9-5 15-14 15"/><path d="M5 19l8-8"/>',
  truck:'<path d="M3 6h11v10H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>',warn:'<path d="M12 3l10 18H2z"/><path d="M12 10v4M12 17.5v.5"/>',
+ eye:'<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',sprout:'<path d="M12 21v-9"/><path d="M12 12c0-4-3-6-7-6 0 4 3 6 7 6zM12 10c0-4 3-7 8-7 0 5-3 7-8 7z"/>',
+ bug:'<rect x="8" y="7" width="8" height="12" rx="4"/><path d="M12 7V5M9 4l1.5 2M15 4l-1.5 2M4 11h4M16 11h4M4 17l4-1M20 17l-4-1M12 11v8"/>',cloud:'<path d="M7 18h10a4 4 0 00.5-8 6 6 0 00-11.4 1.5A3.3 3.3 0 007 18z"/>',
+ menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+ moon:'<path d="M20 14.5A8 8 0 019.5 4 8 8 0 1020 14.5z"/>',auto:'<circle cx="12" cy="12" r="9"/><path d="M12 3v18" /><path d="M12 3a9 9 0 010 18z" fill="currentColor"/>',chev:'<path d="M6 9l6 6 6-6"/>',
+ bars:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',drop:'<path d="M12 3s6 6.5 6 11a6 6 0 01-12 0c0-4.5 6-11 6-11z"/>',scan:'<path d="M4 8V5a1 1 0 011-1h3M16 4h3a1 1 0 011 1v3M20 16v3a1 1 0 01-1 1h-3M8 20H5a1 1 0 01-1-1v-3"/><path d="M4 12h16"/>',
+ dash:'<rect x="3" y="3" width="7" height="9" rx="2"/><rect x="14" y="3" width="7" height="5" rx="2"/><rect x="14" y="12" width="7" height="9" rx="2"/><rect x="3" y="16" width="7" height="5" rx="2"/>',
  pin:'<path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>',phone:'<rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/>',send:'<path d="M4 12l16-8-6 16-2-6z"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>'
 };
 const svg=(n,extra="")=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" ${extra} aria-hidden="true">${ic[n]}</svg>`;
@@ -574,13 +691,15 @@ const ADDR=[{lbl:"Home",line:"12, 3rd Cross St, Thiruvanmiyur, Chennai 600041"},
 function renderTop(){
  const r=S.route.name, n=cartCount();
  $("#topbar").innerHTML=`
+ <button class="icon-btn menu-btn" data-a="sideOpen" aria-label="Open menu" aria-expanded="${S.sideOpen}" aria-controls="side">${svg("menu")}</button>
  <button class="logo" data-a="go" data-r="home" aria-label="Vayal home"><span class="logo-mark">${svg("leaf",'width="18" height="18"')}</span><span>Vayal<small>வயல் · farm to kitchen</small></span></button>
+ <div class="status"><span class="live"><i></i>${S.lang==="ta"?"அறுவடை நேரலை":"Harvest live"}</span><span class="small muted">${new Date().toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric",timeZone:"Asia/Kolkata"})} · IST</span></div>
  <button class="deliver" data-a="addr"><span class="tiny muted">${t("deliverTo")} ${esc(ADDR[S.addr].lbl)}</span><b>${esc(ADDR[S.addr].line.split(",").slice(1,3).join(","))}</b></button>
- <nav class="nav" aria-label="Sections">${NAV.map(([k])=>`<button data-a="go" data-r="${k}" ${r===k||(k==="shop"&&r==="product")||(k==="plan"&&r==="recipe")||(k==="orders"&&r==="track")||(k==="farm"&&r==="farm")?'aria-current="page"':""}>${t(k)}</button>`).join("")}</nav>
  <div class="top-actions">
   <div class="lang" role="group" aria-label="Language"><button data-a="lang" data-v="en" aria-pressed="${S.lang==="en"}">EN</button><button data-a="lang" data-v="ta" aria-pressed="${S.lang==="ta"}">தமிழ்</button></div>
+  <div class="theme" role="group" aria-label="Colour theme">${[["light","sun","light"],["dark","moon","dark"],["auto","auto","autoT"]].map(([k,i,l])=>`<button data-a="theme" data-v="${k}" aria-pressed="${S.theme===k}" title="${t(l)}" aria-label="${t(l)}">${svg(i)}<span class="lbl" aria-hidden="true">${t(l)}</span></button>`).join("")}</div>
   <button class="pill-btn preview-btn" data-a="phone">${svg("phone",'width="15" height="15" style="vertical-align:-3px"')} App preview</button>
-  ${S.user?"":`<button class="pill-btn" data-a="auth">Sign in</button>`}
+  ${S.user?"":`<button class="pill-btn signin" data-a="auth">Sign in</button>`}
   <button class="icon-btn" data-a="go" data-r="cart" aria-label="Cart, ${n} items">${svg("cart")}${n?`<span class="badge">${n}</span>`:""}</button>
  </div>`;
  const tabs=[["home","home"],["shop","grid"],["plan","cal"],["subs","repeat"],["account","user"]];
@@ -589,15 +708,38 @@ function renderTop(){
  $("#cartbarWrap").innerHTML=n&&!["cart","checkout","track"].includes(r)?`<button class="cartbar" data-a="go" data-r="cart"><span>${n} item${n>1?"s":""} · <span class="mono">${inr(b.sub)}</span></span><span>${t("viewCart")} →</span></button>`:"";
  $("#fab").innerHTML=`${svg("spark")}<span>${t("ask")}</span>`;
  $("#fab").hidden=S.chatOpen;
+ renderSide();
 }
+/* Side menu, grouped like an operations console. Each entry: [route, icon, label key, sub-page id, count]. */
+function sideGroups(){const open=S.orders.filter(o=>o.stage<4).length,act=S.subs.filter(s=>s.status==="active").length;
+ return [["gShop",[["home","dash","overview"],["shop","grid","shop"],["cart","cart","cart",null,cartCount()],["orders","truck","orders",null,open],["subs","repeat","subs",null,act],["plan","cal","plan"]]],
+  ["gQual",[["quality","scan","qScan","scan"],["quality","eye","qGuide","guide"],["quality","check","qHist","history",S.qchecks.length]]],
+  ["gFarm",[["farmer","sprout","fSeason","season"],["farmer","bars","fDemand","demand"],["farmer","cloud","fWx","weather"],["farmer","bug","fPest","pests"],["farmer","drop","fInputs","inputs"],["farm","pin","farm"]]],
+  ["gAcc",[["account","user","account"]]]]}
+function sideCurrent(r,id){const n=S.route.name,sid=S.route.id||(n==="quality"?"scan":n==="farmer"?"season":null);
+ if(r==="shop")return n==="shop"||n==="product";if(r==="plan")return n==="plan"||n==="recipe";if(r==="orders")return n==="orders"||n==="track";if(r==="cart")return n==="cart"||n==="checkout";
+ return n===r&&(!id||sid===id)}
+function renderSide(){
+ $("#side").innerHTML=`<div class="side-brand"><button class="logo" data-a="go" data-r="home" aria-label="Vayal home"><span class="logo-mark">${svg("leaf",'width="18" height="18"')}</span><span>Vayal</span></button><p>Farm · Kitchen · Quality</p></div>
+ ${sideGroups().map(([g,items])=>{const closed=S.sideClosed.includes(g);return `<div class="side-group"${closed?" data-closed":""}><button data-a="sideGroup" data-v="${g}" aria-expanded="${!closed}">${t(g)}${svg("chev")}</button>
+  <ul>${items.map(([r,i,l,id,c])=>`<li><button data-a="side" data-r="${r}" data-id="${id||""}" ${sideCurrent(r,id)?'aria-current="page"':""}>${svg(i)}<span>${t(l)}</span>${c?`<span class="cnt">${c}</span>`:""}</button></li>`).join("")}</ul></div>`}).join("")}
+ <div class="side-foot">${S.user?`Signed in as <b>${esc(S.user.name)}</b> · <button class="link" data-a="signout">Sign out</button>`:`<button class="link" data-a="auth">Sign in</button> to sync orders and checks`}
+  <div class="row" style="gap:6px"><div class="lang" role="group" aria-label="Language"><button data-a="lang" data-v="en" aria-pressed="${S.lang==="en"}">EN</button><button data-a="lang" data-v="ta" aria-pressed="${S.lang==="ta"}">தமிழ்</button></div>
+  <div class="theme" role="group" aria-label="Colour theme">${[["light","sun","light"],["dark","moon","dark"],["auto","auto","autoT"]].map(([k,i,l])=>`<button data-a="theme" data-v="${k}" aria-pressed="${S.theme===k}" title="${t(l)}" aria-label="${t(l)}">${svg(i)}</button>`).join("")}</div></div></div>`;
+ $("#side").classList.toggle("open",S.sideOpen)}
 
 function vHome(){
  const pr=S.profile, goalsP=P.filter(p=>fit(p).ok).slice(0,10), low=runningLow();
  const tmr=new Date(Date.now()+DAY), tk=dkey(tmr);
  const subTmr=S.subs.filter(s=>deliversOn(s,tmr)&&!s.skips.includes(tk));
  return `
- <section class="between" style="align-items:flex-end"><div><p class="eyebrow">${t("hello")}, ${esc(pr.name)}</p><h1>${S.lang==="ta"?"இன்று என்ன சமைக்கலாம்?":"What's cooking this week?"}</h1></div></section>
+ ${pageHead("dash",S.lang==="ta"?`${t("hello")}, ${pr.name}`:`${t("hello")}, ${pr.name}`,S.lang==="ta"?"உங்கள் கூடை, டெலிவரி, தரம் மற்றும் பண்ணை ஒரே பார்வையில்":"Your basket, deliveries, produce quality and farms at a glance")}
+ ${overviewKpis()}
  ${searchBar()}
+ <div class="tiles">
+  <button class="tile" data-a="side" data-r="quality" data-id="scan"><span class="page-ico">${svg("scan")}</span><span><b>${t("quality")}</b><br><span class="small muted">${S.qchecks[0]?`Last check: ${esc(S.qchecks[0].item)}, grade ${esc(S.qchecks[0].grade)} · `:""}Point your camera at produce to check freshness before you buy or accept it.</span></span></button>
+  <button class="tile" data-a="side" data-r="farmer" data-id="season"><span class="page-ico" style="background:var(--turmeric-soft);color:color-mix(in srgb,var(--turmeric) 60%,var(--ink))">${svg("sprout")}</span><span><b>${t("farmer")}</b><br><span class="small muted">${farmerTeaser()}</span></span></button>
+ </div>
  ${subTmr.length?`<section class="card pad between"><div class="row" style="gap:12px">${svg("repeat",'width="22" height="22" style="color:var(--leaf)"')}<div><b>Tomorrow ${esc(subTmr[0].slot)}</b><p class="small muted">${subTmr.map(s=>esc(PM[s.pid].en)+" × "+s.q).join(", ")}</p></div></div><div class="row"><button class="pill-btn" data-a="skipTmr">Skip tomorrow</button><button class="link" data-a="go" data-r="subs">Manage</button></div></section>`:""}
  <section class="hero">
   <p class="eyebrow" style="color:inherit;opacity:.8">${t("harvest")} · ${fmtDate(Date.now(),{day:"numeric",month:"long"})}</p>
@@ -616,6 +758,23 @@ function vHome(){
   <div class="hscroll">${RECIPES.filter(r=>r.tags.some(g=>pr.goals.includes(g))).concat(RECIPES.filter(r=>!r.tags.some(g=>pr.goals.includes(g)))).map(rcard).join("")}</div></section>
  <section class="card pad farm"><div class="farm-av">SM</div><div><p class="eyebrow">Farmer of the week</p><b>Selvi Murugan · Selvi Organic Farm, Oddanchatram</b><p class="small muted">4 acres, rain-fed, 11 years chemical-free. 5% of every order goes to our farmer resilience fund.</p><div class="row" style="margin-top:6px"><button class="link" data-a="go" data-r="product" data-id="moringaleaf">Shop her moringa →</button><button class="link" data-a="farmGo" data-v="selvi">● Watch live &amp; visit →</button></div></div></section>`;
 }
+
+function pageHead(icon,title,sub){return `<section class="page-head"><span class="page-ico">${svg(icon)}</span><div><h1>${esc(title)}</h1><p class="muted">${esc(sub)}</p></div></section>`}
+function overviewKpis(){
+ const b=bill(),n=cartCount(),tmr=new Date(Date.now()+DAY),tk=dkey(tmr);
+ const subT=S.subs.filter(x=>deliversOn(x,tmr)&&!x.skips.includes(tk)),live=S.orders.filter(o=>o.stage<4).sort((a,b)=>b.date-a.date)[0];
+ const m0=new Date();m0.setDate(1);m0.setHours(0,0,0,0);const month=S.orders.filter(o=>o.date>=m0.getTime());
+ const stars=S.orders.flatMap(o=>Object.values(o.rating||{})),avg=stars.length?stars.reduce((a,x)=>a+x,0)/stars.length:0;
+ const fitN=P.filter(p=>fit(p).ok).length,clash=b.L.filter(l=>fit(l.p).warn.length).length;
+ const k=(l,v,sub,cls,a)=>`<${a?`button class="kpi" ${a}`:`div class="kpi"`}><span class="k-l">${l}</span><span class="k-v mono">${v}</span><span class="k-s ${cls||""}">${sub}</span></${a?"button":"div"}>`;
+ return `<section class="kpis" aria-label="Summary">
+  ${k("In your basket",n,n?`${inr(b.sub)} · ${b.sub>=499?"free delivery":`${inr(499-b.sub)} to free delivery`}`:"Empty","",`data-a="go" data-r="cart"`)}
+  ${k("Next delivery",live?["Confirmed","Packing","Checking","On the way"][live.stage]||"Soon":subT.length?esc(subT[0].slot):"—",live?`Order ${esc(live.id)} · ${esc(live.slot)}`:subT.length?`Tomorrow · ${subT.length} subscription${subT.length>1?"s":""}`:"Nothing booked",live?"good":"",live?`data-a="go" data-r="track" data-id="${live.id}"`:`data-a="go" data-r="subs"`)}
+  ${k("Orders this month",month.length,month.length?`${inr(month.reduce((a,o)=>a+o.total,0))} spent`:"No orders yet","",`data-a="go" data-r="orders"`)}
+  ${k("Freshness rating",stars.length?avg.toFixed(1)+"★":"—",stars.length?`${stars.length} item${stars.length>1?"s":""} rated`:"Rate your last delivery",stars.length&&avg>=4?"good":"",`data-a="go" data-r="orders"`)}
+  ${k("Wallet",inr(S.wallet),`${S.points} Vayal points`,"",`data-a="go" data-r="subs"`)}
+  ${k("Fits your goals",fitN,clash?`⚠ ${clash} basket item${clash>1?"s":""} clash with your profile`:"✓ basket matches your profile",clash?"warn":"good",`data-a="go" data-r="account"`)}
+ </section>`}
 
 function vShop(){
  const f=S.shop, q=f.q.trim().toLowerCase();
@@ -657,7 +816,7 @@ function vProduct(id){
    <div class="variant" role="group" aria-label="Pack size">${p.units.map((x,i)=>`<button data-a="unit" data-id="${id}" data-v="${i}" aria-pressed="${i===ui}">${esc(x[0])}<br><span class="mono">${inr(x[1])}</span></button>`).join("")}</div>
    <div class="between"><div class="price"><b style="font-size:1.4rem">${inr(u[1])}</b>${u[2]>u[1]?`<s>${inr(u[2])}</s><span class="chip gold">${Math.round((1-u[1]/u[2])*100)}% off</span>`:""}</div>
     ${q?`<div class="stepper"><button data-a="dec" data-id="${id}" data-ui="${ui}">−</button><span>${q}</span><button data-a="inc" data-id="${id}" data-ui="${ui}">+</button></div>`:`<button class="btn" data-a="inc" data-id="${id}" data-ui="${ui}">${svg("cart")} ${t("add")}</button>`}</div>
-   <div class="row">${p.sub?`<button class="btn ghost" data-a="subscribe" data-id="${id}">${svg("repeat")} Subscribe & save 5%</button>`:""}<button class="btn ghost" data-a="askAbout" data-v="Tell me about ${esc(p.en)}: health benefits, how to use it and a recipe.">${svg("spark")} Ask Mitra</button></div>
+   <div class="row">${p.sub?`<button class="btn ghost" data-a="subscribe" data-id="${id}">${svg("repeat")} Subscribe & save 5%</button>`:""}<button class="btn ghost" data-a="askAbout" data-v="Tell me about ${esc(p.en)}: health benefits, how to use it and a recipe.">${svg("spark")} Ask Mitra</button><button class="btn ghost" data-a="qCheck" data-id="${id}">${svg("eye")} How to choose</button></div>
    <div class="tabbar" role="tablist">${[["benefits","benefits"],["usage","usage"],["recipes","recipesT"],["farm","farmT"]].map(([k,l])=>`<button role="tab" data-a="pdTab" data-v="${k}" aria-selected="${tab===k}">${t(l)}</button>`).join("")}</div>
    <div role="tabpanel">${tabBody[tab]}</div>
   </div>
@@ -806,7 +965,7 @@ function vAccount(){
  <section class="card pad"><h2>Saved addresses</h2>${ADDR.map((a,i)=>`<div class="toggle"><span><b>${esc(a.lbl)}</b><br><span class="small muted">${esc(a.line)}</span></span>${S.addr===i?`<span class="chip good">Default</span>`:`<button class="link" data-a="setAddr" data-v="${i}">Make default</button>`}</div>`).join("")}</section>
  <p class="tiny muted">Vayal is a prototype. Health information is general guidance, not medical advice.</p>`;
 }
-const VIEWS={home:vHome,shop:vShop,product:()=>vProduct(S.route.id),cart:vCart,checkout:vCheckout,track:()=>vTrack(S.route.id),orders:vOrders,subs:vSubs,plan:vPlan,recipe:()=>vRecipe(S.route.id),account:vAccount,farm:()=>vFarm()};
+const VIEWS={home:vHome,shop:vShop,product:()=>vProduct(S.route.id),cart:vCart,checkout:vCheckout,track:()=>vTrack(S.route.id),orders:vOrders,subs:vSubs,plan:vPlan,recipe:()=>vRecipe(S.route.id),account:vAccount,farm:()=>vFarm(),quality:()=>vQuality(),farmer:()=>vFarmer()};
 </script>
 
 <script>
@@ -1136,6 +1295,228 @@ function startSession(u){S.user=u;Object.assign(S,{visits:[]},u.data,{cart:S.car
  const next=afterAuth;afterAuth=null;render();if(next)next()}
 function signOut(){save();S.user=null;store.set("session",null);Object.assign(S,cloneDef());save();go("home");toast("Signed out")}
 
+/* ================= QUALITY COMPANION ================= */
+// What to look, feel and smell for when choosing each item. Keys are product ids or category ids.
+const GUIDE={
+ tomato:{look:["Deep, even colour with glossy skin","Fresh green calyx still attached"],feel:["Firm, gives slightly when pressed","Heavy for its size"],smell:["Earthy, sweet smell at the stem end"],avoid:["Cracks, wrinkles or soft wet patches","Dark sunken spots or white mould near the stem"],store:"Ripen on the counter stem-side down; refrigerate only when fully ripe."},
+ drumstick:{look:["Uniform green, slim pods","Ridges clearly visible, no black streaks"],feel:["Bends a little without going limp","Seeds inside feel small, not bulging"],smell:["Fresh green smell"],avoid:["Yellowing or wrinkled pods","Swollen pods with hard seeds (over-mature, fibrous)"],store:"Wrap in newspaper and refrigerate; use within 5 days."},
+ okra:{look:["Bright green, 7–10 cm long","No brown tips"],feel:["Tip snaps cleanly when bent","Pods feel tender, not woody"],smell:[],avoid:["Tips that bend without snapping (old, fibrous)","Dark patches or slime"],store:"Keep dry in a paper bag in the fridge; 3 days."},
+ brinjal:{look:["Shiny, tight skin with no wrinkles","Green, fresh calyx"],feel:["Light for its size (fewer seeds)","Springs back when pressed"],smell:[],avoid:["Small holes (shoot and fruit borer)","Brown soft spots or dull skin"],store:"Fridge crisper; 4 days."},
+ carrot:{look:["Bright orange and smooth","No green shoulders"],feel:["Firm, snaps cleanly"],smell:["Sweet carrot smell"],avoid:["Limp, rubbery carrots","Cracks or hairy roots"],store:"Remove tops and seal in a bag in the fridge; 2 weeks."},
+ shallot:{look:["Dry, papery, tight skins"],feel:["Hard and heavy"],smell:["Mild onion smell, not sour"],avoid:["Green sprouts","Soft or damp bulbs, black powdery mould"],store:"Cool, dry, airy basket; 3 weeks."},
+ rawbanana:{look:["Even green skin","No yellow patches"],feel:["Very firm"],smell:[],avoid:["Splits or black bruises","Yellowing (starting to ripen)"],store:"Room temperature; cook within 3 days."},
+ guava:{look:["Light green to pale yellow, unblemished"],feel:["Slight give under the thumb to eat now; hard to keep a few days"],smell:["Sweet, musky guava aroma"],avoid:["Dark sunken spots (fruit fly)","Very soft areas"],store:"Ripen at room temperature; fridge 3 days."},
+ nendran:{look:["Yellow with a few brown speckles","Skin intact"],feel:["Firm, not mushy"],smell:["Sweet banana smell"],avoid:["Split or leaking skin","Fully black and soft (fine only for cooking)"],store:"Hang at room temperature."},
+ lemon:{look:["Bright yellow, glossy, thin skin"],feel:["Heavy for its size (more juice)","Gives slightly when squeezed"],smell:["Strong citrus smell when the skin is scratched"],avoid:["Hard, very thick skin","Brown soft spots or mould"],store:"Fridge in a sealed box; 2 weeks."},
+ coconut:{look:["Husk with no cracks","The three 'eyes' are dry"],feel:["Heavy for its size","Water sloshes when shaken"],smell:[],avoid:["No water sound","Wet or mouldy eyes"],store:"Whole: 2 weeks. Grated: freeze."},
+ eggs:{look:["Clean, uncracked shells"],feel:["Sinks and lies flat in a bowl of water"],smell:[],avoid:["Cracked or sticky shells","Floats in water (old)"],store:"Fridge, pointed end down; 3 weeks."},
+ greens:{look:["Bright, even colour","Leaves upright, not drooping"],feel:["Crisp leaves, tender stems that snap"],smell:["Clean, grassy smell"],avoid:["Yellow or slimy leaves","Insect holes in many leaves","Wet, squashed bunches"],store:"Wrap in a damp cloth or stand stems in water; use in 1–2 days."},
+ dairy:{look:["Seal intact, no bulging","Within the use-by date"],feel:["Arrives chilled, cold to the touch"],smell:["Clean, slightly sweet; never sour"],avoid:["Swollen packs or lids","Lumps or a sour smell"],store:"Refrigerate at 4°C or below straight away."},
+ fish:{look:["Clear, bulging eyes","Bright red or pink gills","Shiny, moist skin with scales attached"],feel:["Flesh springs back when pressed"],smell:["Fresh sea smell, like seaweed"],avoid:["Cloudy, sunken eyes","Brown or grey gills","Ammonia or sour smell"],store:"Keep on ice or at 0–4°C; cook within a day."},
+ chicken:{look:["Pinkish flesh, creamy-white fat","No bruises"],feel:["Firm and moist, not slimy"],smell:["Little or no smell"],avoid:["Grey or green tinge","Sticky or slimy surface","Sour or sulphur smell"],store:"Refrigerate at 4°C; cook within 1–2 days or freeze."},
+ mutton:{look:["Bright to deep red meat","White, firm fat"],feel:["Firm, fine grain, springs back"],smell:["Clean, mild meaty smell"],avoid:["Brown or grey meat","Yellow fat","Slime or sour smell"],store:"Refrigerate at 4°C; use within 2 days or freeze."},
+ fresh:{look:["Bright natural colour, no dull patches","Stem or calyx looks fresh"],feel:["Firm and heavy for its size"],smell:["Pleasant, typical smell of the item"],avoid:["Bruises, cuts or wet soft spots","Mould, slime or insect holes","Wrinkled, shrivelled skin"],store:"Cool, dry place or the fridge crisper, depending on the item."},
+ dry:{look:["Even grains, few broken bits or dust","No webbing or insects","Pack sealed with batch and date"],feel:["Dry, free-flowing, no lumps"],smell:["Fresh, not musty or rancid"],avoid:["Weevils or holes in grains","Musty, stale or rancid smell (oils and nuts)"],store:"Airtight container in a cool, dry place."}
+};
+const guideFor=p=>GUIDE[p.id]||GUIDE[p.cat]||(["veg","fruit"].includes(p.cat)?GUIDE.fresh:GUIDE.dry);
+const GRADE_TXT={A:"Excellent",B:"Good",C:"Use today",R:"Reject"};
+const scoreGrade=s=>s>=80?"A":s>=60?"B":s>=40?"C":"R";
+function manualScore(p){const g=guideFor(p),good=[...g.look,...g.feel,...g.smell],T=S.q.ticks;
+ const gi=good.filter((_,i)=>T["g"+i]).length,bi=g.avoid.filter((_,i)=>T["b"+i]).length;
+ if(!gi&&!bi)return null;return Math.max(0,Math.min(100,Math.round(gi/good.length*100-bi*30)))}
+function productOptions(sel){return CATS.map(c=>`<optgroup label="${esc(nm(c))}">${P.filter(p=>p.cat===c.id).map(p=>`<option value="${p.id}" ${p.id===sel?"selected":""}>${esc(nm(p))}</option>`).join("")}</optgroup>`).join("")}
+function cueList(p,interactive){const g=guideFor(p);let i=0;
+ const sec=(h,arr,bad)=>arr.length?`<div><h3>${h}</h3>${arr.map((c,j)=>{const k=(bad?"b"+j:"g"+(i++));return interactive?`<label class="cue${bad?" bad":""}"><input type="checkbox" id="cue-${k}" data-in="qtick" data-v="${k}" ${S.q.ticks[k]?"checked":""}><span>${esc(c)}</span></label>`:`<div class="cue">${bad?svg("x",'width="16" height="16" style="color:var(--chili);flex:none;margin-top:4px"'):svg("check",'width="16" height="16" style="color:var(--leaf);flex:none;margin-top:4px"')}<span>${esc(c)}</span></div>`}).join("")}</div>`:"";
+ return `<div class="cues">${sec("Look",g.look)}${sec("Feel",g.feel)}${sec("Smell",g.smell)}${sec("Avoid",g.avoid,true)}<p class="small"><b>Storage.</b> ${esc(g.store)}</p></div>`}
+function qResultCard(){const r=S.q.result;if(!r)return "";
+ if(r.error)return `<div class="fit warn">${svg("warn")}<div><b>Couldn't check that photo.</b> ${esc(r.error)} Use the checklist instead.</div></div>`;
+ const g=["A","B","C","R"].includes(r.grade)?r.grade:scoreGrade(+r.score||0),sc=Math.max(0,Math.min(100,+r.score||0)),p=PM[S.q.pid],m=matchItem(r.item)||p;
+ const col=g==="A"?"var(--leaf)":g==="B"?"var(--turmeric)":"var(--chili)",verdict={buy:["good","Good to buy"],ok:["gold","Okay, use soon"],avoid:["warn","Avoid"]}[r.verdict]||["","—"];
+ return `<div class="card pad" style="display:grid;gap:12px">
+  <div class="row" style="gap:14px;align-items:center"><div class="grade ${g}" aria-label="Grade ${g}">${g}</div><div style="flex:1;min-width:160px"><b>${esc(r.item||"Item")}</b> · ${GRADE_TXT[g]}<div class="meter" style="margin:6px 0" role="img" aria-label="Freshness ${sc} out of 100"><i style="width:${sc}%;background:${col}"></i></div><span class="small muted">Freshness ${sc}/100${r.ripeness?` · ${esc(r.ripeness)}`:""}${r.confidence?` · ${esc(r.confidence)} confidence`:""}</span></div><span class="chip ${verdict[0]}">${verdict[1]}</span></div>
+  ${Array.isArray(r.findings)&&r.findings.length?`<ul class="list">${r.findings.slice(0,6).map(f=>`<li>${esc(f)}</li>`).join("")}</ul>`:""}
+  <p class="small">${r.shelf_life_days!=null?`<b>Keeps about ${esc(r.shelf_life_days)} day${+r.shelf_life_days===1?"":"s"}.</b> `:""}${r.best_use?`Best for ${esc(r.best_use)}. `:""}${esc(r.storage||"")}</p>
+  <div class="row">${m&&r.verdict!=="avoid"?`<button class="btn" data-a="inc" data-id="${m.id}" data-ui="0">${svg("cart")} Add ${esc(nm(m))}</button>`:""}${m&&S.orders.some(o=>o.items.some(i=>i[0]===m.id))?`<button class="btn ghost" data-a="qIssue" data-id="${m.id}">Report a quality issue</button>`:""}<button class="btn ghost" data-a="askAbout" data-v="My ${esc(r.item||"produce")} was graded ${g} (${esc((r.findings||[]).slice(0,2).join("; "))}). How should I use or store it?">${svg("spark")} Ask Mitra</button></div>
+  <p class="tiny muted">AI estimate from one photo. Smell and touch still matter: use the checklist to confirm.</p></div>`}
+function vQuality(){
+ const tab=["scan","guide","history"].includes(S.route.id)?S.route.id:"scan",p=PM[S.q.pid]||P[0],ms=manualScore(p);
+ const head=pageHead("scan",t("quality"),S.lang==="ta"?"கேமராவால் புத்துணர்ச்சியைச் சோதிக்கவும், எதைப் பார்க்க வேண்டும் என்று அறியவும்":"Check freshness with your camera, learn what to look for, and keep a record of every check");
+ const tabs=`<div class="ptabs" role="tablist">${[["scan","scan","qScan"],["guide","eye","qGuide"],["history","check","qHist"]].map(([k,i,l])=>`<button role="tab" data-a="side" data-r="quality" data-id="${k}" aria-selected="${tab===k}">${svg(i)}${t(l)}</button>`).join("")}</div>`;
+ if(tab==="guide"){const inSeason=CROPS.filter(c=>c.pid&&c.harv.includes(monthNow())).map(c=>PM[c.pid]).filter(Boolean);
+  return `${head}${tabs}<label class="fld" style="max-width:360px">Item<select id="qpid-g" data-in="qpid">${productOptions(p.id)}</select></label>
+  <div class="two"><section class="card pad" style="display:grid;gap:10px"><div class="row"><span style="font-size:2rem">${p.e}</span><div><h2>${esc(nm(p))}</h2><p class="small muted">${esc(nm2(p))} · ${esc(nm(catOf(p)))}</p></div></div>${cueList(p,false)}</section>
+  <aside class="card pad" style="display:grid;gap:10px;align-content:start"><h3>At their best this month</h3><p class="small muted">In harvest now in Tamil Nadu, so freshest and best value.</p><div class="chips">${inSeason.length?inSeason.map(x=>`<button class="pill-btn" data-a="qPick" data-v="${x.id}">${x.e} ${esc(nm(x))}</button>`).join(""):`<span class="small muted">—</span>`}</div>
+  <button class="btn ghost" data-a="side" data-r="quality" data-id="scan">${svg("scan")} Check one with your camera</button></aside></div>`}
+ if(tab==="history")return `${head}${tabs}${S.qchecks.length?`<section class="card pad scroll-x"><table class="tbl"><thead><tr><th>When</th><th>Item</th><th>Grade</th><th>Freshness</th><th>Verdict</th><th>How</th></tr></thead><tbody>${S.qchecks.map(c=>`<tr><td>${fmtDate(c.date,{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"})}</td><td>${esc(c.item)}</td><td><span class="lvl ${c.grade==="A"?"lo":c.grade==="B"?"md":"hi"}">${esc(c.grade)} · ${GRADE_TXT[c.grade]||""}</span></td><td class="mono">${c.score}</td><td>${esc(c.verdict||"")}</td><td class="small muted">${c.src==="ai"?"Photo (AI)":"Checklist"}</td></tr>`).join("")}</tbody></table></section><button class="link" data-a="qClear">Clear history</button>`:`<div class="empty"><div class="big">🔍</div><b>No checks yet</b><p class="muted">Scan produce or use the checklist and your results appear here.</p><button class="btn" data-a="side" data-r="quality" data-id="scan">Start a check</button></div>`}`;
+ return `${head}${tabs}
+ <div class="two"><section style="display:grid;gap:12px;min-width:0">
+  <div class="card pad" style="display:grid;gap:12px"><label class="fld">What are you checking?<select id="qpid" data-in="qpid">${productOptions(p.id)}</select></label>
+   <div class="row"><button class="btn" data-a="qShoot" ${S.q.busy?"disabled":""}>${svg("cam")} ${S.q.busy?"Checking…":"Take or upload a photo"}</button><span class="small muted">Good light, item filling the frame. Photos are sent only to the AI check and not stored.</span></div>
+   ${S.q.img?`<img class="qprev" src="${S.q.img}" alt="Photo being checked">`:""}
+   ${S.q.busy?`<p class="muted"><span class="typing"><i></i><i></i><i></i></span> Looking for colour, bruises, mould and ripeness…</p>`:""}</div>
+  ${qResultCard()}</section>
+ <aside class="card pad" style="display:grid;gap:10px;align-content:start"><div class="between"><h3>Checklist · ${esc(nm(p))}</h3>${ms!=null?`<div class="grade ${scoreGrade(ms)}" style="width:44px;height:44px;font-size:1.2rem;border-radius:12px">${scoreGrade(ms)}</div>`:""}</div>
+  <p class="small muted">Tick what you see, feel and smell. Works without AI, in the shop or at your door.</p>
+  ${cueList(p,true)}
+  ${ms!=null?`<div class="meter" role="img" aria-label="Checklist score ${ms} out of 100"><i style="width:${ms}%;background:${ms>=80?"var(--leaf)":ms>=60?"var(--turmeric)":"var(--chili)"}"></i></div><div class="between"><span class="small"><b>${GRADE_TXT[scoreGrade(ms)]}</b> · ${ms}/100</span><button class="btn ghost" data-a="qSaveManual">Save check</button></div>`:""}</aside></div>`}
+function addCheck(c){S.qchecks.unshift({date:Date.now(),...c});S.qchecks=S.qchecks.slice(0,30);store.set("qchecks",S.qchecks)}
+async function qShoot(){const sample=await getSample(),lim=sample?await sample.limits().catch(()=>null):null;
+ if(!lim||!lim.images){toast("The photo check needs the AI assistant, which isn't available here. Use the checklist.");return}
+ const inp=$("#qPhoto");inp.dataset.mode="quality";inp.value="";inp.click()}
+async function qAnalyze(file){const p=PM[S.q.pid];if(S.q.img)URL.revokeObjectURL(S.q.img);
+ Object.assign(S.q,{busy:true,result:null,img:URL.createObjectURL(file)});render();
+ try{const sample=await getSample();
+  const r=await sample.json(`You are a produce and meat quality inspector for an organic grocer in Chennai. The customer says this photo shows ${p?p.en:"a food item"}. Judge freshness and quality only from what is visible: colour, skin, bruises, cuts, mould, wilting, ripeness, and for fish or meat the eyes, gills, colour and surface. Reply with only JSON: {"item":"what you actually see","grade":"A|B|C|R","score":0-100,"ripeness":"short phrase","findings":["3-5 visible signs, good and bad"],"shelf_life_days":number,"verdict":"buy|ok|avoid","best_use":"short phrase","storage":"one sentence","confidence":"high|medium|low"}. A = excellent, B = good, C = use today, R = reject. If the photo is not food or is too unclear to judge, set item to "unclear", grade "R", verdict "avoid", confidence "low", and explain in findings.`,{images:file,modelTier:"quick"});
+  if(!r||typeof r!=="object")throw new Error("bad");
+  S.q.result=r;const g=["A","B","C","R"].includes(r.grade)?r.grade:scoreGrade(+r.score||0);
+  addCheck({item:String(r.item||p?.en||"Item").slice(0,40),grade:g,score:Math.round(+r.score||0),verdict:r.verdict,src:"ai"})}
+ catch(e){S.q.result={error:e.code==="rate_limited"?"Too many checks right now, try again in a minute.":"Try a clearer, well-lit photo."}}
+ S.q.busy=false;render()}
+
+/* ================= FARMER GUIDE ================= */
+const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const monthNow=()=>+new Date().toLocaleString("en-IN",{month:"numeric",timeZone:"Asia/Kolkata"});
+const DISTRICTS={
+ chennai:{n:"Chennai",lat:13.08,lon:80.27,zone:"North-east coastal"},chengalpattu:{n:"Chengalpattu",lat:12.69,lon:79.98,zone:"North-east coastal"},
+ tiruvannamalai:{n:"Tiruvannamalai",lat:12.23,lon:79.07,zone:"North-western"},namakkal:{n:"Namakkal",lat:11.22,lon:78.17,zone:"North-western"},
+ thanjavur:{n:"Thanjavur (Cauvery delta)",lat:10.79,lon:79.14,zone:"Cauvery delta"},coimbatore:{n:"Coimbatore",lat:11.02,lon:76.96,zone:"Western"},
+ tiruppur:{n:"Tiruppur (Kangeyam)",lat:11.0,lon:77.56,zone:"Western"},dindigul:{n:"Dindigul (Oddanchatram)",lat:10.49,lon:77.75,zone:"Western"},
+ nilgiris:{n:"Nilgiris (Kotagiri)",lat:11.42,lon:76.86,zone:"Hilly"},madurai:{n:"Madurai",lat:9.93,lon:78.12,zone:"Southern"},tirunelveli:{n:"Tirunelveli",lat:8.71,lon:77.76,zone:"Southern"}};
+// Typical Tamil Nadu sowing (sow) and harvest (harv) months. pid links a crop to the shop catalogue; wk = Vayal's typical weekly need in kg.
+const CROPS=[
+ {id:"samba",en:"Paddy · Samba",ta:"சம்பா நெல்",e:"🌾",sow:[8,9],harv:[1,2],days:"135–160",water:"High",pid:"mappillai",wk:120,note:"Main delta season; nursery with the north-east monsoon."},
+ {id:"kuruvai",en:"Paddy · Kuruvai",ta:"குறுவை நெல்",e:"🌾",sow:[6,7],harv:[9,10],days:"105–120",water:"High",note:"Short-duration delta crop on Mettur water release."},
+ {id:"navarai",en:"Paddy · Navarai",ta:"நவரை நெல்",e:"🌾",sow:[12,1],harv:[3,4],days:"110–120",water:"High",note:"Summer paddy on wells and tanks."},
+ {id:"tomato",en:"Tomato",ta:"தக்காளி",e:"🍅",sow:[6,7,11,12],harv:[9,10,2,3],days:"120–135",water:"Medium",pid:"tomato",wk:400,note:"Stake plants; avoid planting during heavy rain."},
+ {id:"brinjal",en:"Brinjal",ta:"கத்தரி",e:"🍆",sow:[6,7,12,1],harv:[9,10,11,3,4,5],days:"150–160",water:"Medium",pid:"brinjal",wk:180,note:"Picks every 4–5 days once fruiting starts."},
+ {id:"okra",en:"Ladies finger",ta:"வெண்டை",e:"🫛",sow:[2,3,6,7],harv:[4,5,8,9],days:"90–100",water:"Medium",pid:"okra",wk:150,note:"Harvest every other day, pods 7–10 cm."},
+ {id:"drumstick",en:"Drumstick (PKM-1)",ta:"முருங்கை",e:"🥢",sow:[6,7,8],harv:[2,3,4,5,6],days:"160–180 to first pods",water:"Low",pid:"drumstick",wk:150,note:"Pinch the tip at 75 cm for more branches and pods."},
+ {id:"amaranth",en:"Amaranth greens",ta:"அரைக்கீரை",e:"🥬",sow:[1,2,3,4,5,6,7,8,9,10,11,12],harv:[1,2,3,4,5,6,7,8,9,10,11,12],days:"25–30",water:"Medium",pid:"amaranth",wk:200,note:"Stagger sowing every 2 weeks for steady supply."},
+ {id:"shallot",en:"Small onion",ta:"சின்ன வெங்காயம்",e:"🧅",sow:[4,5,10,11],harv:[7,8,1,2],days:"65–75",water:"Medium",pid:"shallot",wk:250,note:"Cure bulbs in shade 10 days before storing."},
+ {id:"carrot",en:"Carrot (hills)",ta:"கேரட்",e:"🥕",sow:[7,8,1,2],harv:[10,11,4,5],days:"90–100",water:"Medium",pid:"carrot",wk:160,note:"Loose, stone-free soil for straight roots."},
+ {id:"ragi",en:"Ragi",ta:"கேழ்வரகு",e:"🌾",sow:[6,7,12,1],harv:[9,10,3,4],days:"100–110",water:"Low",pid:"ragi",wk:120,note:"Rainfed friendly; transplant 21-day seedlings."},
+ {id:"kambu",en:"Kambu (pearl millet)",ta:"கம்பு",e:"🌾",sow:[6,7,2,3],harv:[9,10,5,6],days:"85–95",water:"Low",pid:"kambu",wk:60,note:"Summer koozh demand peaks April to June."},
+ {id:"thinai",en:"Thinai (foxtail millet)",ta:"தினை",e:"🌾",sow:[9,10],harv:[12,1],days:"80–90",water:"Low",pid:"thinai",wk:90,note:"Rainfed rabi crop with the north-east monsoon."},
+ {id:"groundnut",en:"Groundnut",ta:"நிலக்கடலை",e:"🥜",sow:[6,7,12,1],harv:[10,4],days:"105–110",water:"Low",pid:"groundnut",wk:70,note:"Gypsum at flowering improves pod filling."},
+ {id:"moong",en:"Green gram",ta:"பாசிப்பயறு",e:"🫘",sow:[2,9],harv:[4,11],days:"65–70",water:"Low",pid:"moong",wk:80,note:"Good rice-fallow crop; fixes nitrogen."},
+ {id:"banana",en:"Banana (Nendran)",ta:"நேந்திரன் வாழை",e:"🍌",sow:[2,3,4],harv:[1,2,3,4],days:"300–330",water:"High",pid:"nendran",wk:220,note:"Prop plants before the north-east monsoon winds."},
+ {id:"turmeric",en:"Turmeric (Erode)",ta:"மஞ்சள்",e:"🫚",sow:[5,6],harv:[1,2,3],days:"240–270",water:"Medium",pid:"turmeric",wk:40,note:"Pongal demand peaks in January."}
+];
+// Festival and season effects on Vayal's demand: month -> {pid: multiplier, why}
+const DEMAND_EVENTS={1:[["turmeric mappillai groundnut nendran",1.6,"Pongal"]],4:[["ragi kambu",1.5,"Summer koozh"]],5:[["ragi kambu",1.5,"Summer koozh"]],6:[["ragi kambu",1.4,"Summer koozh"]],9:[["moong groundnut",1.3,"Navaratri sundal"]],10:[["moong groundnut",1.4,"Deepavali"],["drumstick amaranth",1.3,"Monsoon greens"]],11:[["moong groundnut",1.3,"Deepavali"],["drumstick amaranth",1.3,"Monsoon greens"]],12:[["amaranth",1.2,"Monsoon greens"]]};
+const perKg=u=>{const m=String(u[0]).match(/([\d.]+)\s*(kg|g|L|ml)/i);if(!m)return null;const q=+m[1]*(/^(g|ml)$/i.test(m[2])?.001:1);return u[1]/q};
+function demandRow(c,m){const p=PM[c.pid];if(!p)return null;let f=1,why=[];
+ (DEMAND_EVENTS[m]||[]).forEach(([ids,x,w])=>{if(ids.split(" ").includes(c.pid)){f*=x;why.push(w)}});
+ const gap=!c.harv.includes(m);if(gap){f*=1.15;why.push("Off-season: supply gap")}
+ const rk=perKg(p.units[0]),unit=rk?"kg":String(p.units[0][0]).replace(/^1 /,""),price=Math.round((rk||p.units[0][1])*.6*(gap?1.15:.95)*(f>1.3?1.08:1));
+ return{c,p,f,need:Math.round(c.wk*f),price,unit,lvl:f>=1.4?"hi":f>=1.1?"md":"lo",why}}
+function farmerTeaser(){const short=c=>c.en.replace(/ \(.*\)| · .*/g,"").toLowerCase(),m=monthNow(),sow=CROPS.filter(c=>c.sow.includes(m)&&c.id!=="amaranth").map(short),hv=CROPS.filter(c=>c.harv.includes(m)&&c.id!=="amaranth").map(short);
+ return `${MON[m-1]}: sow ${[...new Set(sow)].slice(0,4).join(", ")||"—"}; harvest ${[...new Set(hv)].slice(0,4).join(", ")||"—"}. Plus weather, pest alerts and what Vayal is buying.`}
+const WMO=c=>c===0?["☀️","Clear"]:c<=2?["🌤️","Partly cloudy"]:c===3?["☁️","Cloudy"]:c<=48?["🌫️","Fog"]:c<=57?["🌦️","Drizzle"]:c<=65?["🌧️","Rain"]:c<=67?["🌧️","Freezing rain"]:c<=77?["🌨️","Snow"]:c<=82?["🌧️","Showers"]:["⛈️","Thunderstorm"];
+async function loadWx(key){const d=DISTRICTS[key],c=S.wx[key];if(c&&(c.data||c.busy)&&Date.now()-c.at<30*6e4)return;
+ S.wx[key]={busy:true,at:Date.now()};
+ try{const u=`https://api.open-meteo.com/v1/forecast?latitude=${d.lat}&longitude=${d.lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,wind_speed_10m_max,relative_humidity_2m_max&timezone=Asia%2FKolkata&forecast_days=7`;
+  const r=await fetch(u);if(!r.ok)throw new Error(r.status);S.wx[key]={data:await r.json(),at:Date.now()}}
+ catch(e){S.wx[key]={error:true,at:Date.now()}}
+ if(S.route.name==="farmer"&&(S.route.id||"season")==="weather"&&S.fd===key)render()}
+function wxAdvice(dl){const out=[],days=dl.time.map((t,i)=>({t,rain:dl.precipitation_sum[i]||0,pp:dl.precipitation_probability_max?.[i]??0,tmax:dl.temperature_2m_max[i],wind:dl.wind_speed_10m_max[i],rh:dl.relative_humidity_2m_max?.[i]??0}));
+ const nm=x=>fmtDate(new Date(x.t+"T00:00:00").getTime(),{weekday:"short"});
+ const spray=days.filter(x=>x.rain<1&&x.pp<40&&x.wind<15).map(nm);
+ out.push(spray.length?["good","Spraying window",`Calm, dry days for neem or bio-pesticide sprays: ${spray.slice(0,4).join(", ")}. Spray early morning or evening.`]:["warn","No good spraying day","Rain or wind most days this week. Sprays would wash off: wait, or use traps instead."]);
+ const wet=days.filter(x=>x.rain>=20);if(wet.length)out.push(["warn","Heavy rain",`${wet.map(nm).join(", ")}: over 20 mm. Clear field drains, delay fertiliser and harvest ripe produce before.`]);
+ const r3=days.slice(0,3).reduce((a,x)=>a+x.rain,0),hot=days.slice(0,3).some(x=>x.tmax>=34);
+ if(r3<5&&hot)out.push(["md","Irrigate",`Little rain in the next 3 days and highs above 34°C. Water in the evening and mulch to keep moisture.`]);
+ if(days.filter(x=>x.rh>=85).length>=3)out.push(["warn","Fungal disease risk","Several very humid days: watch for blast in paddy, early blight in tomato and leaf spot in groundnut. Improve spacing and airflow."]);
+ if(days.some(x=>x.wind>=35))out.push(["warn","Strong wind","Gusty days ahead: prop banana, stake tomato and drumstick."]);
+ return out}
+// Pest and disease watch list: months = high-risk months
+const PESTS=[
+ {crop:"samba",pest:"Stem borer",months:[8,9,10,11],signs:"Dead hearts in young plants; white, empty earheads later.",organic:"Pheromone traps (5 per acre); release Trichogramma egg cards; remove stubble after harvest.",th:"5% dead hearts"},
+ {crop:"samba",pest:"Brown planthopper",months:[10,11,12],signs:"Hoppers at the plant base; circular patches drying up (hopper burn).",organic:"Avoid excess urea; drain the field for 3–4 days; leave 30 cm alleys every 2 m.",th:"10 hoppers per hill"},
+ {crop:"samba",pest:"Blast (fungus)",months:[11,12,1],signs:"Spindle-shaped grey spots with brown edges on leaves; broken neck at the earhead.",organic:"Pseudomonas fluorescens spray (10 g/litre); balanced nitrogen.",th:"First spots in cool, humid weather"},
+ {crop:"tomato",pest:"Fruit borer",months:[9,10,11,2,3],signs:"Round holes in fruits with droppings; caterpillar inside.",organic:"Pheromone traps; marigold as a trap crop (1 row every 16); NPV or Bt spray.",th:"1 larva per plant"},
+ {crop:"tomato",pest:"Leaf curl virus (whitefly)",months:[3,4,5,6],signs:"Upward-curling, small, yellow leaves; stunted plants.",organic:"Yellow sticky traps; neem oil 3%; remove infected plants early; raise nursery under net.",th:"Any infected plant"},
+ {crop:"tomato",pest:"Early blight",months:[10,11,12,1],signs:"Brown spots with target-like rings on older leaves.",organic:"Remove lower leaves; Trichoderma in soil; Pseudomonas spray.",th:"First spots"},
+ {crop:"brinjal",pest:"Shoot and fruit borer",months:[3,4,5,6,7,8,9],signs:"Wilting shoot tips; holes in fruits.",organic:"Clip and destroy affected shoots weekly; Leucinodes pheromone traps (40 per acre); neem seed kernel extract 5%.",th:"5% damaged shoots"},
+ {crop:"okra",pest:"Yellow vein mosaic",months:[3,4,5,6,8,9],signs:"Leaves with a yellow net of veins; small, pale pods.",organic:"Resistant varieties; yellow sticky traps for whitefly; rogue out infected plants.",th:"Any infected plant"},
+ {crop:"drumstick",pest:"Hairy caterpillar",months:[11,12,1,2],signs:"Groups of hairy caterpillars on the trunk eating leaves at night.",organic:"Scrape egg masses and caterpillars from the trunk; burn trash; neem oil spray.",th:"Colonies on the trunk"},
+ {crop:"drumstick",pest:"Pod fly",months:[2,3,4,5],signs:"Pods with gummy oozing, yellowing and drying from the tip.",organic:"Collect and destroy fallen pods; fruit fly traps; neem seed kernel extract 5%.",th:"Oozing pods"},
+ {crop:"banana",pest:"Sigatoka leaf spot",months:[9,10,11,12],signs:"Yellow streaks turning to brown spots with grey centres on leaves.",organic:"Remove and burn affected leaves; good drainage; mineral oil spray.",th:"Spots on 3rd–4th leaf"},
+ {crop:"banana",pest:"Stem weevil",months:[3,4,5,6],signs:"Jelly-like ooze from the stem; tunnels inside.",organic:"Clean planting material; stem traps with Beauveria; remove old stems after harvest.",th:"Ooze on the stem"},
+ {crop:"groundnut",pest:"Leaf miner",months:[6,7,8,9],signs:"Brown blotches; leaves fold and dry.",organic:"Light traps; intercrop with cowpea or pearl millet; neem seed kernel extract 5%.",th:"5 larvae per plant"},
+ {crop:"groundnut",pest:"Tikka leaf spot",months:[8,9,10],signs:"Round dark spots with yellow halos on leaves.",organic:"Pseudomonas seed treatment; crop rotation; neem leaf extract.",th:"First spots"},
+ {crop:"ragi",pest:"Blast",months:[9,10,11],signs:"Spots on leaves and neck; earheads dry up.",organic:"Pseudomonas seed treatment and spray; resistant varieties.",th:"First spots"},
+ {crop:"kambu",pest:"Shoot fly",months:[7,8,3],signs:"Dead hearts in seedlings within 30 days of sowing.",organic:"Sow early with the first rains; higher seed rate; fish meal traps.",th:"10% dead hearts"}
+];
+const INPUTS=[
+ {en:"Jeevamrutham",ta:"ஜீவாமிர்தம்",use:"Boosts soil microbes",ing:"10 kg desi cow dung, 10 litres cow urine, 2 kg jaggery, 2 kg pulse flour, a handful of farm soil, 200 litres water",how:"Mix in a drum in the shade; stir twice a day for 48 hours.",dose:"200 litres per acre with irrigation water, every 15 days. Use within 7 days."},
+ {en:"Panchagavya",ta:"பஞ்சகவ்யம்",use:"Growth promoter and flowering",ing:"Cow dung 5 kg, cow urine 3 litres, milk 2 litres, curd 2 litres, ghee 500 g, plus banana, coconut water and jaggery",how:"Mix dung and ghee first and stir for 3 days, then add the rest; stir twice daily for 15 days.",dose:"3% spray (300 ml in 10 litres water) every 15 days."},
+ {en:"Neem seed kernel extract (5%)",ta:"வேப்பங்கொட்டை சாறு",use:"Sucking pests and caterpillars",ing:"5 kg powdered neem kernels, 100 litres water, 100 g soap (khadi bar)",how:"Soak the powder overnight in a cloth bag, squeeze out, add soap and filter.",dose:"Spray in the evening; repeat after 7–10 days."},
+ {en:"Fish amino acid",ta:"மீன் அமிலம்",use:"Nitrogen for leafy growth",ing:"1 kg fresh fish waste, 1 kg jaggery",how:"Mix in an airtight jar; keep 20–25 days until it smells sweet.",dose:"2 ml per litre of water as a foliar spray."},
+ {en:"Egg-lemon extract",ta:"முட்டை எலுமிச்சை கரைசல்",use:"Flowering and fruit set",ing:"10 eggs, 20 lemons (juice), 250 g jaggery",how:"Cover eggs with lemon juice for 10 days; mash, add jaggery and keep 10 more days.",dose:"2 ml per litre spray at flowering."}
+];
+function vFarmer(){
+ const tab=["season","demand","weather","pests","inputs"].includes(S.route.id)?S.route.id:"season",m=monthNow(),d=DISTRICTS[S.fd]||DISTRICTS.dindigul;
+ const head=pageHead("sprout",t("farmer"),S.lang==="ta"?"பருவம், தேவை, வானிலை, பூச்சி மேலாண்மை: வயலுக்கு விளைவிக்கும் விவசாயிகளுக்கு":"Season, demand, weather and pest guidance for farmers who grow for Vayal");
+ const tabs=`<div class="ptabs" role="tablist">${[["season","cal","fSeason"],["demand","bars","fDemand"],["weather","cloud","fWx"],["pests","bug","fPest"],["inputs","drop","fInputs"]].map(([k,i,l])=>`<button role="tab" data-a="side" data-r="farmer" data-id="${k}" aria-selected="${tab===k}">${svg(i)}${t(l)}</button>`).join("")}</div>`;
+ const dsel=`<label class="fld" style="max-width:320px">Your district<select id="fd" data-in="fd">${Object.entries(DISTRICTS).map(([k,x])=>`<option value="${k}" ${k===S.fd?"selected":""}>${esc(x.n)}</option>`).join("")}</select></label>`;
+ let body="";
+ if(tab==="season"){const sow=CROPS.filter(c=>c.sow.includes(m)),hv=CROPS.filter(c=>c.harv.includes(m)),nx=CROPS.filter(c=>c.sow.includes(m%12+1)&&!c.sow.includes(m));
+  body=`<div class="kpis">${[["Sow this month",sow.length,sow.slice(0,3).map(c=>c.en).join(", ")],["Harvest this month",hv.length,hv.slice(0,3).map(c=>c.en).join(", ")],["Prepare to sow next month",nx.length,nx.slice(0,3).map(c=>c.en).join(", ")||"—"]].map(([l,v,s])=>`<div class="kpi"><span class="k-l">${l}</span><span class="k-v mono">${v}</span><span class="k-s">${esc(s)}</span></div>`).join("")}</div>
+  <section class="card pad" style="display:grid;gap:10px"><div class="between" style="flex-wrap:wrap"><h2>Crop calendar · Tamil Nadu</h2><div class="legend"><span><i style="background:var(--leaf-soft)"></i>S sow</span><span><i style="background:var(--turmeric-soft)"></i>H harvest</span></div></div>
+  <div class="scroll-x"><table class="gantt"><thead><tr><th style="text-align:left">Crop</th>${MON.map((x,i)=>`<th class="${i+1===m?"now":""}" scope="col">${x}</th>`).join("")}</tr></thead><tbody>${CROPS.map(c=>`<tr><td class="c">${c.e} ${esc(S.lang==="ta"?c.ta:c.en)}</td>${MON.map((_,i)=>{const s=c.sow.includes(i+1),h=c.harv.includes(i+1);return `<td class="${s&&h?"sh":s?"s":h?"h":""}" title="${esc(c.en)} · ${MON[i]}: ${s&&h?"sow and harvest":s?"sow":h?"harvest":"—"}">${s&&h?"S·H":s?"S":h?"H":""}</td>`}).join("")}</tr>`).join("")}</tbody></table></div>
+  <p class="tiny muted">Typical windows across Tamil Nadu. Exact dates vary by district, variety, water and monsoon onset: check with your local agriculture officer or KVK.</p></section>
+  <section class="card pad scroll-x"><h2 style="margin-bottom:8px">Crop notes</h2><table class="tbl"><thead><tr><th>Crop</th><th>Duration (days)</th><th>Water</th><th>Tip</th></tr></thead><tbody>${CROPS.map(c=>`<tr><td>${c.e} ${esc(c.en)}<br><span class="small muted">${esc(c.ta)}</span></td><td class="mono">${esc(c.days)}</td><td>${esc(c.water)}</td><td class="small">${esc(c.note)}</td></tr>`).join("")}</tbody></table></section>`}
+ if(tab==="demand"){const rows=CROPS.map(c=>{const a=demandRow(c,m),b=demandRow(c,(m+10)%12+1);if(!a)return null;a.trend=a.price&&b?.price?Math.round((a.price-b.price)/b.price*100):0;return a}).filter(Boolean).sort((a,b)=>b.f-a.f);
+  body=`<section class="card pad scroll-x" style="display:grid;gap:10px"><div class="between" style="flex-wrap:wrap"><h2>What Vayal is buying · ${MON[m-1]}</h2><button class="btn" data-a="offerNew">${svg("sprout")} Offer your produce</button></div>
+  <table class="tbl"><thead><tr><th>Crop</th><th>Demand</th><th>Need per week</th><th>Indicative farm-gate price</th><th>vs last month</th><th>Why</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r.c.e} ${esc(r.c.en)}</td><td><span class="lvl ${r.lvl}">${r.lvl==="hi"?"High":r.lvl==="md"?"Medium":"Normal"}</span></td><td class="mono">${r.need} ${r.unit==="kg"?"kg":r.unit==="bunch"?"bunches":esc(r.unit)}</td><td class="mono">${inr(r.price)}/${esc(r.unit)}</td><td class="mono" style="color:${r.trend>0?"var(--leaf)":r.trend<0?"var(--chili)":"var(--muted)"}">${r.trend>0?"▲ "+r.trend+"%":r.trend<0?"▼ "+Math.abs(r.trend)+"%":"—"}</td><td class="small">${esc(r.why.join(" · ")||"Steady")}</td></tr>`).join("")}</tbody></table>
+  <p class="tiny muted">Indicative planning figures for this prototype, not a purchase offer. Real buying prices and volumes come from your Vayal procurement contact. Farm-gate prices are about 60% of the shop price, higher in the off-season.</p></section>
+  ${S.offers?.length?`<section class="card pad"><h3>Your offers</h3>${S.offers.map(o=>`<p class="small">${esc(o.crop)} · ${o.kg} kg/week from ${esc(o.from)} · ${esc(o.ref)}</p>`).join("")}</section>`:""}`}
+ if(tab==="weather"){const w=S.wx[S.fd];if(!w||(!w.data&&!w.busy&&!w.error)||(Date.now()-w.at>30*6e4&&!w.busy))loadWx(S.fd);
+  const dl=w?.data?.daily,cur=w?.data?.current;
+  body=`${dsel}${!w||w.busy?`<p class="muted"><span class="typing"><i></i><i></i><i></i></span> Loading the 7-day forecast for ${esc(d.n)}…</p>`:w.error?`<div class="fit warn">${svg("warn")}<div><b>Couldn't load the live forecast.</b> Check your connection and try again. Meanwhile: the south-west monsoon brings rain to the west and hills in June–September; the north-east monsoon brings most of Tamil Nadu's rain in October–December.<br><button class="link" data-a="wxRetry">Try again</button></div></div>`:`
+  ${cur?`<div class="kpis">${[["Now",Math.round(cur.temperature_2m)+"°C",d.zone+" zone"],["Humidity",cur.relative_humidity_2m+"%",cur.relative_humidity_2m>=85?"Very humid":"—"],["Wind",Math.round(cur.wind_speed_10m)+" km/h",cur.wind_speed_10m>=25?"Windy":"Calm to moderate"]].map(([l,v,s])=>`<div class="kpi"><span class="k-l">${l}</span><span class="k-v mono">${v}</span><span class="k-s">${esc(s)}</span></div>`).join("")}</div>`:""}
+  <div class="wx">${dl.time.map((x,i)=>{const[e,l]=WMO(dl.weather_code[i]);return `<div class="wxd"><b>${fmtDate(new Date(x+"T00:00:00").getTime(),{weekday:"short",day:"numeric"})}</b><span class="e" role="img" aria-label="${l}">${e}</span><span class="mono">${Math.round(dl.temperature_2m_max[i])}° / ${Math.round(dl.temperature_2m_min[i])}°</span><span class="small" style="color:var(--sky)">${svg("drop",'width="12" height="12" style="vertical-align:-1px"')} ${(dl.precipitation_sum[i]||0).toFixed(0)} mm · ${dl.precipitation_probability_max?.[i]??"—"}%</span><span class="tiny muted">wind ${Math.round(dl.wind_speed_10m_max[i])} km/h</span></div>`}).join("")}</div>
+  <section class="card pad" style="display:grid;gap:10px"><h2>Farm advice for the week</h2>${wxAdvice(dl).map(([c,h,tx])=>`<div class="fit ${c==="good"?"good":c==="warn"?"warn":""}" style="${c==="md"?"background:var(--turmeric-soft)":""}">${svg(c==="good"?"check":c==="warn"?"warn":"drop")}<div><b>${h}.</b> ${esc(tx)}</div></div>`).join("")}</section>
+  <p class="tiny muted">Forecast from Open-Meteo for ${esc(d.n)} (${d.lat}, ${d.lon}). For warnings, follow the India Meteorological Department.</p>`}`}
+ if(tab==="pests"){const list=PESTS.filter(x=>S.fcrop==="all"||x.crop===S.fcrop).sort((a,b)=>(b.months.includes(m)-a.months.includes(m)));
+  body=`<div class="row" style="align-items:end"><label class="fld">Crop<select id="fcrop" data-in="fcrop"><option value="all">All crops</option>${[...new Set(PESTS.map(x=>x.crop))].map(k=>`<option value="${k}" ${k===S.fcrop?"selected":""}>${esc(CROPS.find(c=>c.id===k).en)}</option>`).join("")}</select></label>
+   <button class="btn" data-a="dxShoot" ${S.dx?.busy?"disabled":""}>${svg("cam")} ${S.dx?.busy?"Checking…":"Diagnose from a leaf photo"}</button></div>
+  ${dxCard()}
+  <section class="card pad scroll-x"><h2 style="margin-bottom:8px">Pest and disease watch · ${MON[m-1]}</h2><table class="tbl"><thead><tr><th>Crop</th><th>Pest or disease</th><th>Risk now</th><th>Signs</th><th>Organic control</th><th>Act when</th></tr></thead><tbody>${list.map(x=>{const hi=x.months.includes(m),soon=x.months.includes(m%12+1);return `<tr><td>${CROPS.find(c=>c.id===x.crop).e} ${esc(CROPS.find(c=>c.id===x.crop).en)}</td><td><b>${esc(x.pest)}</b></td><td><span class="lvl ${hi?"hi":soon?"md":"lo"}">${hi?"High":soon?"Next month":"Low"}</span></td><td class="small">${esc(x.signs)}</td><td class="small">${esc(x.organic)}</td><td class="small">${esc(x.th)}</td></tr>`}).join("")}</tbody></table></section>
+  <p class="tiny muted">General organic guidance. For chemical options and doses, ask your agriculture officer or KVK. Kisan Call Centre: 1800-180-1551 (free).</p>`}
+ if(tab==="inputs")body=`<div class="tiles">${INPUTS.map(x=>`<section class="card pad" style="display:grid;gap:6px"><div class="between"><h3>${esc(x.en)}</h3><span class="chip good">${esc(x.use)}</span></div><p class="small muted">${esc(x.ta)}</p><p class="small"><b>You need:</b> ${esc(x.ing)}</p><p class="small"><b>Make:</b> ${esc(x.how)}</p><p class="small"><b>Use:</b> ${esc(x.dose)}</p></section>`).join("")}</div>
+  <section class="card pad" style="display:grid;gap:6px"><h3>Help and references</h3><p class="small">Kisan Call Centre: <b class="mono">1800-180-1551</b> (free, in Tamil). TNAU Agritech Portal for crop production guides. Your district Krishi Vigyan Kendra (KVK) for soil tests and field visits.</p></section>`;
+ const ask=`<section class="card pad between" style="flex-wrap:wrap"><span><b>Have a question about your crop?</b><br><span class="small muted">Mitra answers in Tamil or English. For serious outbreaks, confirm with your KVK.</span></span><button class="btn ghost" data-a="askAbout" data-v="I farm in ${esc(d.n)}. In ${MON[m-1]}, which crops should I sow for good demand, and what pests should I watch for?">${svg("spark")} Ask Mitra</button></section>`;
+ return `${head}${tabs}${tab!=="weather"&&tab!=="inputs"?`<p class="small muted">District: <b>${esc(d.n)}</b> · ${esc(d.zone)} zone · <button class="link" data-a="side" data-r="farmer" data-id="weather">change</button></p>`:""}${body}${ask}`}
+function dxCard(){const r=S.dx;if(!r||r.busy)return r?.busy?`<p class="muted"><span class="typing"><i></i><i></i><i></i></span> Looking at the leaf…</p>`:"";
+ if(r.error)return `<div class="fit warn">${svg("warn")}<div><b>Couldn't diagnose that photo.</b> ${esc(r.error)}</div></div>`;
+ return `<section class="card pad" style="display:grid;gap:8px"><div class="between" style="flex-wrap:wrap"><h3>${esc(r.problem||"Diagnosis")}${r.crop?` · ${esc(r.crop)}`:""}</h3><span class="lvl ${r.urgency==="high"?"hi":r.urgency==="medium"?"md":"lo"}">${esc(r.urgency||"")} urgency</span></div>
+  ${Array.isArray(r.signs)?`<p class="small"><b>Seen:</b> ${esc(r.signs.join("; "))}</p>`:""}
+  ${Array.isArray(r.organic_treatment)?`<p class="small"><b>Organic treatment:</b></p><ul class="list small">${r.organic_treatment.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:""}
+  ${Array.isArray(r.prevention)?`<p class="small"><b>Prevent next time:</b> ${esc(r.prevention.join("; "))}</p>`:""}
+  <p class="tiny muted">AI suggestion from one photo${r.confidence?` (${esc(r.confidence)} confidence)`:""}. Confirm with your agriculture officer or KVK before treating a whole field.</p></section>`}
+async function dxShoot(){const sample=await getSample(),lim=sample?await sample.limits().catch(()=>null):null;
+ if(!lim||!lim.images){toast("Photo diagnosis needs the AI assistant, which isn't available here.");return}
+ const inp=$("#qPhoto");inp.dataset.mode="dx";inp.value="";inp.click()}
+async function dxAnalyze(file){S.dx={busy:true};render();
+ try{const sample=await getSample(),crop=S.fcrop!=="all"?CROPS.find(c=>c.id===S.fcrop)?.en:"";
+  const r=await sample.json(`You are an agronomist helping small organic farmers in Tamil Nadu. The photo shows a plant${crop?` (the farmer says ${crop})`:""}. Identify the most likely pest, disease or nutrient problem from what is visible. Reply with only JSON: {"crop":"crop you see","problem":"most likely pest, disease or deficiency","confidence":"high|medium|low","signs":["visible signs"],"organic_treatment":["2-4 practical organic steps with doses"],"prevention":["1-3 steps"],"urgency":"low|medium|high"}. If the plant looks healthy or the photo is unclear, say so in problem and keep the lists short.`,{images:file,modelTier:"quick"});
+  if(!r||typeof r!=="object")throw new Error("bad");S.dx=r}
+ catch(e){S.dx={error:e.code==="rate_limited"?"Too many requests right now, try again in a minute.":"Try a closer, well-lit photo of the affected leaves."}}
+ render()}
+function sheetOffer(){sheet(`<h2>Offer your produce to Vayal</h2><p class="small muted">Our procurement team calls you within 2 working days.</p>
+ <label class="fld">Crop<select id="of-crop">${CROPS.filter(c=>c.pid).map(c=>`<option>${esc(c.en)}</option>`).join("")}</select></label>
+ <label class="fld">Quantity per week (kg)<input id="of-kg" type="number" min="10" max="10000" value="100"></label>
+ <label class="fld">Available from<input id="of-from" type="date" value="${new Date(Date.now()+7*DAY).toISOString().slice(0,10)}"></label>
+ <label class="fld">Mobile number<input id="of-ph" type="tel" inputmode="numeric" maxlength="14" value="${esc(S.user?.phone||"")}"></label>
+ <label class="toggle"><span><b>Certified organic (PGS or NPOP)</b></span><input class="sw" type="checkbox" id="of-org" checked></label>
+ <p id="of-err" class="small" role="alert" style="color:var(--chili);min-height:1.2em"></p>
+ <button class="btn block" data-a="offerOk">Send offer</button><p class="tiny muted">Prototype: the offer is saved in this browser only.</p>`)}
+function offerOk(){const v=id=>$("#"+id).value,kg=+v("of-kg"),ph=digits(v("of-ph"));
+ if(!(kg>=10))return $("#of-err").textContent="Enter at least 10 kg.";if(!/^[6-9]\d{9}$/.test(ph))return $("#of-err").textContent="Enter a 10-digit mobile number.";
+ S.offers=[...(S.offers||[]),{crop:v("of-crop"),kg,from:v("of-from"),ph,org:$("#of-org").checked,ref:"OF-"+Math.random().toString(36).slice(2,6).toUpperCase()}];store.set("offers",S.offers);closeSheet();render();toast("Offer sent. We'll call you within 2 working days.")}
+
 /* ================= EVENTS ================= */
 const A={
  farmGo:d=>{S.cam=0;go("farm",d.v);tickCam()}, cam:d=>{S.cam=+d.v;render();tickCam()}, visitNew:d=>sheetVisit(d.v), visitOk:d=>visitOk(d.v), farmShare:d=>farmShare(d.v,d.id), farmDist:d=>farmDist(d.v), visitView:d=>sheetVisitDone(d.id), visitIcs:d=>visitIcs(d.id),
@@ -1184,11 +1565,20 @@ const A={
  photo:photoSearch, demoList:()=>showParsed(SAMPLE_LIST.split("\n").map(l=>{const m=l.match(/^(.*?)(\s+\d.*)?$/);return{item:m[1],qty:(m[2]||"").trim()}}),"Sample list (Tanglish)"),
  psOk:()=>{let n=0;document.querySelectorAll("[data-ps]").forEach(c=>{if(c.checked){addCart(c.dataset.ps,0,1,true);n++}});closeSheet();render();toast(`${n} items added`)},
  askAbout:d=>openChat(d.v), chatSugg:d=>{if(!S.chatOpen)openChat(d.v);else sendChat(d.v)}, chatClose:()=>closeChat(),
- closeSheet:()=>closeSheet()
+ closeSheet:()=>closeSheet(),
+ side:d=>{S.sideOpen=false;go(d.r,d.id||undefined)}, sideOpen:()=>{S.sideOpen=true;renderSide();$("#side button")?.focus()},
+ sideGroup:d=>{const c=S.sideClosed;S.sideClosed=c.includes(d.v)?c.filter(x=>x!==d.v):[...c,d.v];store.set("sideClosed",S.sideClosed);renderSide()},
+ theme:d=>{S.theme=d.v;store.set("theme",S.theme);applyTheme();renderTop()},
+ qShoot, qPick:d=>{S.q={...S.q,pid:d.v,result:null,ticks:{}};render()}, qClear:()=>{S.qchecks=[];store.set("qchecks",[]);render()},
+ qSaveManual:()=>{const p=PM[S.q.pid],sc=manualScore(p);if(sc==null)return;addCheck({item:p.en,grade:scoreGrade(sc),score:sc,verdict:sc>=60?"buy":sc>=40?"ok":"avoid",src:"manual"});S.q.ticks={};render();toast("Check saved")},
+ qIssue:d=>{const o=[...S.orders].sort((a,b)=>b.date-a.date).find(o=>o.items.some(i=>i[0]===d.id));if(o)sheetIssue(o.id)},
+ qCheck:d=>{S.q={...S.q,pid:d.id,result:null,ticks:{}};go("quality","scan")},
+ dxShoot, wxRetry:()=>{delete S.wx[S.fd];render()}, offerNew:sheetOffer, offerOk
 };
 const isWide=()=>$("#app").clientWidth>=820;
 function closeChat(){ctl?.abort();S.chatOpen=false;renderChat();renderTop()}
-document.addEventListener("click",e=>{const el=e.target.closest("[data-a]");if(!el)return;const a=el.dataset.a;
+document.addEventListener("click",e=>{if(S.sideOpen&&!e.target.closest("#side,.menu-btn")){S.sideOpen=false;renderSide()}
+ const el=e.target.closest("[data-a]");if(!el)return;const a=el.dataset.a;
  if(a==="closeSheet"&&e.target!==el)return;
  if(sheetSubscribe.h&&a.startsWith("ss-")){sheetSubscribe.h[a](el.dataset.v);return}
  const fn=A[a];if(fn){e.preventDefault();fn(el.dataset,el)}});
@@ -1197,11 +1587,14 @@ document.addEventListener("change",e=>{const el=e.target,k=el.dataset.in;if(!k)r
  if(k==="sort")S.shop.sort=el.value;if(k==="pts")S.usePoints=el.checked;if(k==="crate")S.crate=el.checked;if(k==="fund")S.farmerFund=el.checked;
  if(k==="addr")S.addr=+el.value;if(k==="pay")S.pay=el.value;if(k==="fitonly")S.profile.fitOnly=el.checked;if(k==="notif")S.profile.notif[el.dataset.v]=el.checked;
  if(k==="freq"){const s=S.subs.find(x=>x.id===el.dataset.id);s.freq=el.value}
+ if(k==="qpid"){S.q={...S.q,pid:el.value,result:null,ticks:{}}}if(k==="qtick")S.q.ticks[el.dataset.v]=el.checked;
+ if(k==="fd"){S.fd=el.value;store.set("farmDistrict",S.fd)}if(k==="fcrop")S.fcrop=el.value;
  save();if(k!=="q")render()});
 document.addEventListener("submit",e=>{if(e.target.id==="composer"){e.preventDefault();if(S.busy){ctl?.abort();return}const i=$("#chatIn");const v=i.value;i.value="";sendChat(v)}});
-document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id&&e.target.id.startsWith("au-")){e.preventDefault();$("[data-a=authSubmit]")?.click()}if(e.key==="Escape"){if($("#layer").innerHTML)closeSheet();else if(S.chatOpen)closeChat()}});
+document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id&&e.target.id.startsWith("au-")){e.preventDefault();$("[data-a=authSubmit]")?.click()}if(e.key==="Escape"){if($("#layer").innerHTML)closeSheet();else if(S.chatOpen)closeChat();else if(S.sideOpen){S.sideOpen=false;renderSide();$(".menu-btn")?.focus()}}});
 $("#fab").addEventListener("click",()=>openChat());
 $("#photoInput").addEventListener("change",e=>{const f=e.target.files[0];if(f)readPhoto(f)});
+$("#qPhoto").addEventListener("change",e=>{const f=e.target.files[0];if(!f)return;if(e.target.dataset.mode==="dx")dxAnalyze(f);else qAnalyze(f)});
 function exitBtn(){let b=$("#exitPhone");if(S.phone&&!b){b=document.createElement("button");b.id="exitPhone";b.className="pill-btn";b.dataset.a="phone";b.textContent="← Back to web view";b.style.cssText="justify-self:center;margin-bottom:12px";$("#stage").prepend(b)}else if(!S.phone&&b)b.remove()}
 render();
 </script>

@@ -19,8 +19,9 @@ const client = AI_ON ? new Anthropic() : null;
 // Server-side scope rule, placed ahead of the page's own instructions so the
 // proxy can't be used as a general-purpose chatbot.
 const SCOPE = `You are the AI assistant inside Vayal, an organic farm-to-kitchen grocery app in Chennai.
-Only help with groceries, food, cooking, nutrition, storage and the user's shopping on Vayal.
-Politely decline anything unrelated and steer back to food and shopping.`;
+Only help with groceries, food, cooking, nutrition, storage, checking produce and meat quality, the user's shopping on Vayal,
+and practical farming advice for Tamil Nadu farmers (crops, seasons, weather, pests and diseases, organic inputs, market demand).
+Politely decline anything unrelated and steer back to food, farming and shopping.`;
 
 // Only the tools the storefront defines may be forwarded.
 const ALLOWED_TOOLS = new Set(["add_to_cart", "add_recipe_to_cart", "show_product"]);

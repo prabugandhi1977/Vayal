@@ -580,8 +580,10 @@ const RECIPES=[
 </script>
 <script>
 /* ================= CATALOGUE CHANGES FROM ADMIN (demo: kept in this browser only) ================= */
-const ADM=(()=>{const d={owner:null,staff:[],cat:{added:[],removed:[],oos:[],oosU:{},price:{},packs:{}},log:[]};
- try{const v=JSON.parse(localStorage.getItem("vayal:admin")||"null");return v?{...d,...v,cat:{...d.cat,...(v.cat||{})}}:d}catch(e){return d}})();
+// The shop's WhatsApp number for customers' "Order on WhatsApp" button (10 digits, or with 91). Set it here so it works on every phone.
+const SHOP_WHATSAPP="";
+const ADM=(()=>{const d={owner:null,staff:[],cat:{added:[],removed:[],oos:[],oosU:{},price:{},packs:{}},log:[],wo:[],wa:{number:"",upi:""}};
+ try{const v=JSON.parse(localStorage.getItem("vayal:admin")||"null");return v?{...d,...v,cat:{...d.cat,...(v.cat||{})},wa:{...d.wa,...(v.wa||{})}}:d}catch(e){return d}})();
 const BASE_P=JSON.parse(JSON.stringify(P)),ALL_P={};
 // Rebuild P (what the shop lists) and ALL_P (every product ever sold, so old orders still resolve) from the base catalogue plus admin changes.
 function applyCatalog(){const c=ADM.cat;P.length=0;for(const k in ALL_P)delete ALL_P[k];
@@ -757,7 +759,7 @@ function sideGroups(){const open=S.orders.filter(o=>o.stage<4).length,act=S.subs
  return [["gShop",[["home","dash","overview"],["shop","grid","shop"],["cart","cart","cart",null,cartCount()],["orders","truck","orders",null,open],["subs","repeat","subs",null,act],["plan","cal","plan"],["crackers","spark","crackersT",null,fireCount()]]],
   ["gQual",[["quality","scan","qScan","scan"],["quality","eye","qGuide","guide"],["quality","check","qHist","history",S.qchecks.length]]],
   ["gFarm",[["farmer","sprout","fSeason","season"],["farmer","bars","fDemand","demand"],["farmer","cloud","fWx","weather"],["farmer","bug","fPest","pests"],["farmer","drop","fInputs","inputs"],["farm","pin","farm"]]],
-  ["gAcc",[["account","user","account"],["admin","shield","adminT"]]]]}
+  ["gAcc",[["account","user","account"],["admin","shield","adminT",null,ADM.wo.filter(w=>w.status==="new").length]]]]}
 function sideCurrent(r,id){const n=S.route.name,sid=S.route.id||(n==="quality"?"scan":n==="farmer"?"season":null);
  if(r==="shop")return n==="shop"||n==="product";if(r==="plan")return n==="plan"||n==="recipe";if(r==="orders")return n==="orders"||n==="track";if(r==="cart")return n==="cart"||n==="checkout";
  return n===r&&(!id||sid===id)}
@@ -900,6 +902,8 @@ function vCart(){
     ${b.sub<499?`<p class="tiny muted">Add ${inr(499-b.sub)} more for free delivery.</p>`:""}
     <p class="tiny muted">Prices include GST where applicable. Fresh produce is GST-exempt.</p>
     <button class="btn block" data-a="go" data-r="checkout" style="margin-top:6px">${t("checkout")}</button>
+    <button class="btn block ghost" data-a="waOrder" style="border-color:#25D366">${svg("send",'style="color:#1DA851"')} Order on WhatsApp</button>
+    <p class="tiny muted" style="text-align:center">Opens WhatsApp with your order ready to send. Pay by UPI or cash on delivery.</p>
    </section>
   </aside>
  </div>`;
@@ -937,9 +941,9 @@ function vTrack(id){
 function vOrders(){
  const os=[...S.orders].sort((a,b)=>b.date-a.date);
  return `<section class="between"><h1>${t("orders")}</h1><button class="link" data-a="go" data-r="account">Account</button></section>
- ${os.map(o=>`<section class="card pad" style="display:grid;gap:10px"><div class="between"><div><b>${esc(o.id)}</b><p class="small muted">${fmtDate(o.date)} · ${o.items.length} items · <span class="mono">${inr(o.total)}</span></p></div><span class="chip ${o.stage>=4?"good":"gold"}">${STAGES[o.stage][0]}</span></div>
+ ${os.map(o=>`<section class="card pad" style="display:grid;gap:10px"><div class="between"><div><b>${esc(o.id)}</b><p class="small muted">${fmtDate(o.date)} · ${o.items.length} items · <span class="mono">${inr(o.total)}</span></p></div><span class="chip ${o.stage>=4?"good":"gold"}">${o.channel==="wa"?"Sent on WhatsApp":STAGES[o.stage][0]}</span></div>
   <div class="row" style="font-size:1.5rem;gap:6px">${o.items.map(([pid])=>PM[pid].e).join("")}</div>
-  <div class="row"><button class="btn ghost" data-a="go" data-r="track" data-id="${o.id}">${o.stage>=4?"Details & rating":"Track order"}</button><button class="btn" data-a="reorder" data-id="${o.id}">Reorder</button><button class="link" data-a="invoice" data-id="${o.id}">GST invoice</button></div></section>`).join("")}`;
+  <div class="row">${o.channel==="wa"?(waShop()?`<a class="btn ghost" href="${waLink(waShop(),`Hi, about my order ${o.id}`)}" target="_blank" rel="noopener">Updates on WhatsApp</a>`:`<span class="small muted">The shop will update you on WhatsApp</span>`):`<button class="btn ghost" data-a="go" data-r="track" data-id="${o.id}">${o.stage>=4?"Details & rating":"Track order"}</button>`}<button class="btn" data-a="reorder" data-id="${o.id}">Reorder</button><button class="link" data-a="invoice" data-id="${o.id}">GST invoice</button></div></section>`).join("")}`;
 }
 
 /* subscriptions */
@@ -1022,7 +1026,7 @@ function render(){
  const act=document.activeElement,fid=act&&act.id,sel=act&&act.selectionStart;
  renderTop();$("#view").innerHTML=VIEWS[S.route.name]();document.documentElement.lang=S.lang==="ta"?"ta":"en";
  if(fid){const el=document.getElementById(fid);if(el&&el!==document.activeElement){el.focus();try{if(sel!=null)el.setSelectionRange(sel,sel)}catch(e){}}}
- if(S.route.name==="track"){const o=S.orders.find(x=>x.id===S.route.id);if(o&&o.stage<4)trackTimer=setInterval(()=>{o.stage=Math.min(4,o.stage+1);save();if(S.route.name==="track")render()},9000)}
+ if(S.route.name==="track"){const o=S.orders.find(x=>x.id===S.route.id);if(o&&o.stage<4&&o.channel!=="wa")trackTimer=setInterval(()=>{o.stage=Math.min(4,o.stage+1);save();if(S.route.name==="track")render()},9000)}
 }
 const refresh=render;
 
@@ -1645,8 +1649,8 @@ async function fireShare(){const text=fireText();
  try{await navigator.clipboard.writeText(text);toast("List copied. Paste it in WhatsApp to the dealer")}catch(e){sheet(`<h2>Your list</h2><pre class="small card pad" style="white-space:pre-wrap;margin:0">${esc(text)}</pre>`)}}
 
 /* ================= ADMIN (demo: data and PINs stay in this browser, not secure) ================= */
-const ROLES={owner:{en:"Owner",can:["stock","price","add","remove","staff"]},manager:{en:"Store manager",can:["stock","price"]},staff:{en:"Stock staff",can:["stock"]}};
-const ROLE_TXT={owner:"Everything, including staff",manager:"Stock and prices",staff:"Stock only"};
+const ROLES={owner:{en:"Owner",can:["stock","price","add","remove","staff","orders"]},manager:{en:"Store manager",can:["stock","price","orders"]},staff:{en:"Stock staff",can:["stock","orders"]}};
+const ROLE_TXT={owner:"Everything, including staff",manager:"Orders, stock and prices",staff:"Orders and stock"};
 const can=x=>!!S.admin&&ROLES[S.admin.role].can.includes(x);
 function saveAdm(what){if(what)ADM.log.unshift({t:Date.now(),who:S.admin?`${S.admin.name} (${ROLES[S.admin.role].en})`:"—",what});ADM.log=ADM.log.slice(0,150);store.set("admin",ADM)}
 function catChanged(what){saveAdm(what);applyCatalog();render()}
@@ -1662,11 +1666,12 @@ function vAdmin(){
   <label class="fld">Who are you?<select id="ad-who">${people.map(x=>`<option value="${x.id}">${esc(x.name)} · ${ROLES[x.role].en}</option>`).join("")}</select></label>
   <label class="fld">PIN<input id="ad-pin" type="password" inputmode="numeric" maxlength="6" autocomplete="current-password"></label>
   <p id="ad-err" class="small" role="alert" style="color:var(--chili);min-height:1.2em"></p><button class="btn" data-a="admLogin">Sign in</button></section>${demo}`}
- const tabs=[["stock","grid","Products & stock"],...(can("add")?[["add","sprout","Add a variety"]]:[]),...(can("staff")?[["staff","user","Staff & roles"]]:[]),["log","clock","Activity"]];
- const tab=tabs.some(x=>x[0]===S.route.id)?S.route.id:"stock";
+ const tabs=[["orders","send","WhatsApp orders"],["stock","grid","Products & stock"],...(can("add")?[["add","sprout","Add a variety"]]:[]),...(can("staff")?[["staff","user","Staff & roles"]]:[]),["log","clock","Activity"]];
+ const tab=tabs.some(x=>x[0]===S.route.id)?S.route.id:"orders";
  const bar=`<div class="between" style="flex-wrap:wrap"><span class="small">Signed in as <b>${esc(S.admin.name)}</b> · <span class="chip good">${ROLES[S.admin.role].en}</span> <span class="muted">(${ROLE_TXT[S.admin.role]})</span></span><button class="link" data-a="admOut">Sign out of admin</button></div>
   <div class="ptabs" role="tablist">${tabs.map(([k,i,l])=>`<button role="tab" data-a="side" data-r="admin" data-id="${k}" aria-selected="${tab===k}">${svg(i)}${l}</button>`).join("")}</div>`;
  let body="";
+ if(tab==="orders")body=waOrdersTab();
  if(tab==="stock"){const q=(S.adm.q||"").toLowerCase(),c=S.adm.cat||"all";
   const list=Object.values(ALL_P).filter(p=>!p.removed&&(c==="all"||p.cat===c)&&(!q||(p.en+" "+p.ta+" "+p.al).toLowerCase().includes(q)));
   const removed=Object.values(ALL_P).filter(p=>p.removed),oosN=P.filter(p=>p.oos||p.oosU.length).length;
@@ -1719,6 +1724,89 @@ async function admAdd(){if(!can("add"))return;const v=id=>($("#"+id)?.value||"")
   n:[0,0,0,0],sub:false,benefits:v("av-ben")?[v("av-ben")]:[],usage:[],storage:v("av-sto")||"Store as you would similar items.",recipes:[],added:true,...(["fish","chicken","mutton"].includes(cat)?{nv:true}:{})};
  ADM.cat.added.push(p);if($("#av-oos").checked)ADM.cat.oos.push(id);S.route={name:"admin",id:"stock"};S.adm.q=en;catChanged(`Added ${en} (${units.map(u=>u[0]+" "+inr(u[1])).join(", ")})`);toast(`${en} added to the shop`)}
 function sheetPack(id){const p=ALL_P[id];sheet(`<h2>Add a pack size · ${esc(p.en)}</h2><label class="fld">Pack size<input id="pk-u" maxlength="20" placeholder="e.g. 2 kg"></label><label class="fld">Price ₹<input id="pk-p" type="number" min="1"></label><label class="fld">MRP ₹ (optional)<input id="pk-m" type="number" min="1"></label><p id="pk-err" class="small" role="alert" style="color:var(--chili);min-height:1.2em"></p><button class="btn block" data-a="admPackOk" data-id="${id}">Add pack size</button>`)}
+
+/* ================= WHATSAPP ORDERS (click-to-chat; inbox kept in the admin's browser) ================= */
+const WA_ST=[["new","New","Confirm order"],["confirmed","Confirmed","Mark packed"],["packed","Packed","Out for delivery"],["out","Out for delivery","Mark delivered"],["delivered","Delivered",""],["cancelled","Cancelled",""]];
+const WA_NEXT={new:"confirmed",confirmed:"packed",packed:"out",out:"delivered"};
+const waShop=()=>digits(ADM.wa.number||SHOP_WHATSAPP);
+const waNum=ph=>{const d=digits(ph);return d.length===10?"91"+d:d};
+const waLink=(ph,text)=>`https://wa.me/${waNum(ph)}?text=${encodeURIComponent(text)}`;
+const waTotal=o=>o.items.reduce((a,i)=>a+i.price*i.q,0);
+const waItemName=i=>{const p=PM[i.pid];return p?`${p.en} · ${p.units[i.ui]?.[0]||""}`:i.raw};
+// Customer: send the cart to the shop as a WhatsApp message.
+function waCustomerText(ref){const b=bill(),sl=slots().find(s=>s.id===S.slot)||slots()[0];
+ return [`🛒 New order · Vayal வயல்`,`Ref: ${ref}`,...b.L.map(l=>`• ${l.p.en} · ${l.unit} × ${l.q} = ₹${l.price*l.q}`),`Total: ₹${Math.round(b.sub)}${b.delivery?` + ₹${b.delivery} delivery`:""}`,
+  `Delivery: ${sl.lbl} ${sl.time}`,`Address: ${ADDR[S.addr].line}`,`Name: ${S.user?.name||S.profile.name}`,...(S.user?.phone?[`Phone: ${S.user.phone}`]:[]),`Pay: UPI or cash on delivery`].join("\n")}
+function waOrder(){const L=cartLines();if(!L.length)return;if(L.some(l=>l.oos)){toast("Some items are out of stock. Remove them from your cart first.");return}
+ const ref="WA-"+Math.random().toString(36).slice(2,6).toUpperCase(),text=waCustomerText(ref),shop=waShop();
+ if(!shop){sheet(`<h2>Order on WhatsApp</h2><p class="small muted">The shop's WhatsApp number isn't set up yet. Copy this message and send it to the shop yourself.</p><pre class="small card pad" style="white-space:pre-wrap;margin:0">${esc(text)}</pre><button class="btn block" data-a="waCopy" data-v="${esc(text)}">Copy message</button>`);return}
+ window.open(waLink(shop,text),"_blank","noopener");
+ const b=bill(),sl=slots().find(s=>s.id===S.slot)||slots()[0];
+ S.orders.push({id:ref,date:Date.now(),items:b.L.map(l=>[l.p.id,l.ui,l.q,l.price]),total:Math.round(b.sub+b.delivery),stage:0,pay:"UPI / cash on delivery",slot:sl.lbl+" "+sl.time,rating:{},channel:"wa"});
+ S.cart={};S.coupon=null;save();go("orders");toast("WhatsApp opened. Press send to place your order.")}
+// Admin: read a pasted WhatsApp message into an order.
+function waParse(text){const o={name:"",phone:"",address:"",slot:"",ref:"",items:[],unknown:[]};
+ for(const raw of String(text).split(/\r?\n/)){const line=raw.trim();if(!line)continue;
+  const kv=line.match(/^(Ref|Name|Phone|Address|Delivery)\s*:\s*(.+)$/i);if(kv){const k=kv[1].toLowerCase();o[k==="delivery"?"slot":k]=kv[2].trim();continue}
+  if(/^(🛒|Total|Pay)\b/i.test(line)||/^🛒/.test(line))continue;
+  const t=line.match(/^[•*\-]\s*(.+?)\s*·\s*(.+?)\s*×\s*(\d+)/);
+  if(t){const p=Object.values(ALL_P).find(x=>x.en===t[1].trim());const ui=p?Math.max(0,p.units.findIndex(u=>u[0]===t[2].trim())):0;
+   if(p){o.items.push({pid:p.id,ui,q:+t[3],price:p.units[ui][1]});continue}}
+  if(/^(hi+|hello|hai|vanakkam|anna|akka|sir|madam|thanks?|thank you|pls|please|ok+|good (morning|evening))\b[\s,!.]*\w*[\s,!.]*$/i.test(line))continue;
+  const q=line.match(/(?:×|x|\*)\s*(\d+)\b/i)||line.match(/(\d+)\s*(?:packets?|pkts?|kattu|bunch(?:es)?|nos?|pcs|pieces?|dozen)\b/i)||line.match(/^(\d+)\s*(?:x|×)\b/i);
+  const w=line.match(/(\d+(?:\.\d+)?)\s*(kg|kilo|g|gm|grams?|l|ltr|litres?|liters?|ml)\b/i);
+  const p=matchItem(line.replace(/^[•*\-\d.)\s]+/,""));
+  if(p){let ui=0;if(w){const u=w[2].toLowerCase(),unit=/^k/.test(u)?"kg":/^(g|gm|gram)/.test(u)?"g":u==="ml"?"ml":"L",want=(w[1]+unit).toLowerCase();
+    const k=p.units.findIndex(x=>String(x[0]).toLowerCase().replace(/\s+/g,"")===want);if(k>=0)ui=k}
+   o.items.push({pid:p.id,ui,q:q?Math.max(1,+q[1]):1,price:p.units[ui][1],raw:line})}else if(line.length>2)o.unknown.push(line)}
+ if(!o.phone){const m=String(text).match(/(?:\+?91[\s-]?)?[6-9]\d{4}[\s-]?\d{5}/);if(m)o.phone=digits(m[0])}
+ return o}
+async function waAiParse(text){const sample=await getSample();if(!sample)return null;
+ try{const arr=await sample.json(`This is a grocery order a customer sent on WhatsApp (Tamil, English or Tanglish). Extract each item. Reply with only JSON: {"items":[{"item":"English item name","qty":number}],"name":"customer name or empty","address":"delivery address or empty"}.\n\nMessage:\n${text.slice(0,3000)}`,{modelTier:"quick"});
+  return arr&&Array.isArray(arr.items)?arr:null}catch(e){return null}}
+function sheetWaNew(){sheet(`<h2>Add a WhatsApp order</h2><p class="small muted">Paste the customer's WhatsApp message. Orders sent from the Vayal app are read exactly; other messages are matched to the catalogue${" "}(with AI where available).</p>
+ <label class="fld">Message<textarea id="wa-text" rows="8" placeholder="e.g. thakkali 1 kg, keerai 2 kattu, paal 2 packet"></textarea></label>
+ <label class="fld">Customer's WhatsApp number<input id="wa-ph" type="tel" inputmode="numeric" maxlength="16" placeholder="98765 43210"></label>
+ <p id="wa-err" class="small" role="alert" style="color:var(--chili);min-height:1.2em"></p><button class="btn block" data-a="waRead">Read order</button>`)}
+async function waRead(){const text=$("#wa-text").value.trim(),ph=digits($("#wa-ph").value),btn=$("[data-a=waRead]");if(text.length<3){$("#wa-err").textContent="Paste the message first.";return}
+ let o=waParse(text),src=o.ref?"app":"text";if(ph)o.phone=ph;
+ if(!o.ref&&(o.unknown.length||!o.items.length)){btn.disabled=true;btn.textContent="Reading with AI…";const ai=await waAiParse(text);
+  if(ai){const items=ai.items.map(x=>({p:matchItem(x.item),q:Math.max(1,Math.round(+x.qty||1)),raw:x.item}));o.items=items.filter(x=>x.p).map(x=>({pid:x.p.id,ui:0,q:x.q,price:x.p.units[0][1],raw:x.raw}));o.unknown=items.filter(x=>!x.p).map(x=>x.raw);o.name=o.name||ai.name||"";o.address=o.address||ai.address||"";src="ai"}}
+ const w={id:o.ref||"WA-"+Math.random().toString(36).slice(2,6).toUpperCase(),name:o.name||"WhatsApp customer",phone:o.phone,address:o.address,slot:o.slot||"Next available",items:o.items,unknown:o.unknown,src,raw:text,status:"new",created:Date.now(),hist:[{t:Date.now(),s:"new",by:S.admin.name}]};
+ if(ADM.wo.some(x=>x.id===w.id))w.id+="-"+Math.random().toString(36).slice(2,4).toUpperCase();
+ ADM.wo.unshift(w);saveAdm(`WhatsApp order ${w.id} added (${w.items.length} items)`);closeSheet();S.route={name:"admin",id:"orders"};S.waTab="new";render();
+ toast(w.unknown.length?`${w.unknown.length} line(s) need a manual match`:"Order added")}
+function waMsg(w,kind){const upi=ADM.wa.upi,hi=`வணக்கம் ${w.name.split(" ")[0]}!`,list=w.items.map(i=>`• ${waItemName(i)} × ${i.q}`).join("\n");
+ return({confirmed:`${hi} Your Vayal order ${w.id} is confirmed ✅\n${list}\nTotal: ₹${waTotal(w)}\nDelivery: ${w.slot}\n${upi?`Pay by UPI to ${upi} or cash on delivery.`:"Pay by UPI or cash on delivery."}`,
+  packed:`${hi} Your order ${w.id} is packed and ready 📦. It leaves our hub soon.`,
+  out:`${hi} Your order ${w.id} is out for delivery 🛵. Handover code: ${w.otp||"----"}. Please share it with the delivery person.`,
+  delivered:`${hi} Order ${w.id} delivered ✅ Thank you for buying from our farmers! How fresh was everything? Reply 1 to 5.`,
+  cancelled:`${hi} Sorry, we've had to cancel order ${w.id}${w.reason?`: ${w.reason}`:""}. Any amount paid will be refunded.`,
+  unavailable:`${hi} For order ${w.id}: ${w.items.filter(i=>isOOS(PM[i.pid],i.ui)).map(waItemName).join(", ")} ${w.items.filter(i=>isOOS(PM[i.pid],i.ui)).length>1?"are":"is"} out of stock today. Shall we remove ${w.items.filter(i=>isOOS(PM[i.pid],i.ui)).length>1?"them":"it"} or replace with something similar?`,
+  packing:`Packing list · ${w.id} · ${w.name}\n${list}\nDeliver to: ${w.address||"—"}\nSlot: ${w.slot}`})[kind]}
+function waOrdersTab(){const st=S.waTab||"active",today=new Date().toDateString();
+ const counts=Object.fromEntries(WA_ST.map(([k])=>[k,ADM.wo.filter(w=>w.status===k).length]));
+ const active=ADM.wo.filter(w=>!["delivered","cancelled"].includes(w.status)),list=st==="active"?active:ADM.wo.filter(w=>w.status===st);
+ const dToday=ADM.wo.filter(w=>w.status==="delivered"&&new Date(w.hist.at(-1).t).toDateString()===today);
+ const card=w=>{const i=WA_ST.findIndex(x=>x[0]===w.status),[,lbl,next]=WA_ST[i],oos=w.items.some(x=>isOOS(PM[x.pid],x.ui)),edit=["new","confirmed"].includes(w.status);
+  return `<section class="card pad" style="display:grid;gap:10px"><div class="between" style="flex-wrap:wrap"><div><b class="mono">${esc(w.id)}</b> · <b>${esc(w.name)}</b><br><span class="small muted">${w.phone?`<a href="tel:+${waNum(w.phone)}">+${esc(waNum(w.phone))}</a> · `:""}${fmtDate(w.created,{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"})} · ${w.src==="app"?"from the Vayal app":w.src==="ai"?"read by AI":"typed message"}</span></div><span class="lvl ${w.status==="new"?"hi":w.status==="delivered"?"lo":w.status==="cancelled"?"":"md"}">${lbl}</span></div>
+  ${w.items.map((x,j)=>`<div class="between small"><span>${PM[x.pid]?.e||"•"} ${esc(waItemName(x))}${isOOS(PM[x.pid],x.ui)?' <span class="chip warn">out of stock</span>':""}${x.raw&&w.src!=="app"?` <span class="muted">from “${esc(x.raw)}”</span>`:""}</span><span class="row" style="gap:8px">${edit?`<span class="stepper"><button data-a="waQty" data-id="${w.id}" data-v="${j}" data-d="-1" aria-label="Less">−</button><span>${x.q}</span><button data-a="waQty" data-id="${w.id}" data-v="${j}" data-d="1" aria-label="More">+</button></span>`:`× ${x.q}`}<span class="mono">${inr(x.price*x.q)}</span></span></div>`).join("")||`<p class="small muted">No items matched yet.</p>`}
+  ${w.unknown?.length?`<div class="fit warn">${svg("warn")}<div class="small"><b>Not matched:</b> ${w.unknown.map(esc).join("; ")}. Add the right item below.</div></div>`:""}
+  ${edit?`<div class="row" style="gap:8px"><select id="wa-add-${w.id}" aria-label="Add item" style="max-width:240px;border:1px solid var(--line);border-radius:8px;padding:6px;background:var(--surface)">${productOptions("")}</select><button class="link" data-a="waAddItem" data-id="${w.id}">+ Add item</button></div>`:""}
+  <div class="between"><span class="small muted">${esc(w.address||"No address yet")} · ${esc(w.slot)}</span><b class="mono">${inr(waTotal(w))}</b></div>
+  <div class="row">${next?`<button class="btn" data-a="waNext" data-id="${w.id}" ${!w.items.length?"disabled":""}>${next}</button>`:""}
+   ${w.phone&&w.status!=="new"?`<a class="btn ghost" href="${waLink(w.phone,waMsg(w,w.status))}" target="_blank" rel="noopener">${svg("send")} Send “${lbl}” on WhatsApp</a>`:""}
+   ${w.phone&&oos&&edit?`<a class="btn ghost" href="${waLink(w.phone,waMsg(w,"unavailable"))}" target="_blank" rel="noopener">Ask about out-of-stock</a>`:""}
+   <button class="link" data-a="waPack" data-id="${w.id}">Copy packing list</button>
+   ${!["delivered","cancelled"].includes(w.status)?`<button class="link" style="color:var(--chili)" data-a="waCancel" data-id="${w.id}">Cancel</button>`:""}</div>
+  ${!w.phone?`<p class="tiny" style="color:var(--chili)">Add the customer's number to send WhatsApp updates: <button class="link" data-a="waPhone" data-id="${w.id}">add number</button></p>`:""}</section>`};
+ return `<div class="kpis">${[["New",counts.new,"waiting to be confirmed",counts.new?"warn":""],["In progress",counts.confirmed+counts.packed+counts.out,"confirmed, packed or on the way",""],["Delivered today",dToday.length,inr(dToday.reduce((a,w)=>a+waTotal(w),0))+" sales","good"]].map(([l,v,x,c])=>`<div class="kpi"><span class="k-l">${l}</span><span class="k-v mono">${v}</span><span class="k-s ${c}">${x}</span></div>`).join("")}</div>
+ <div class="row" style="justify-content:space-between"><div class="seg" role="group" aria-label="Status">${[["active","Active",active.length],...WA_ST.map(([k,l])=>[k,l,counts[k]])].map(([k,l,n])=>`<button data-a="waTab" data-v="${k}" aria-pressed="${st===k}">${l} · ${n}</button>`).join("")}</div><button class="btn" data-a="waNew">${svg("send")} Add WhatsApp order</button></div>
+ ${list.length?list.map(card).join(""):`<div class="empty"><div class="big">💬</div><b>No orders here</b><p class="muted">When a customer messages your shop on WhatsApp, tap “Add WhatsApp order” and paste their message.</p></div>`}
+ ${can("staff")?`<section class="card pad" style="display:grid;gap:10px;max-width:520px"><h3>WhatsApp settings</h3>
+  <label class="fld">Shop WhatsApp number<input id="wa-shop" data-in="waShop" type="tel" inputmode="numeric" maxlength="16" value="${esc(ADM.wa.number)}" placeholder="${SHOP_WHATSAPP?esc(SHOP_WHATSAPP):"98765 43210"}"></label>
+  <label class="fld">UPI ID for payments (shown in confirmations)<input id="wa-upi" data-in="waUpi" maxlength="60" value="${esc(ADM.wa.upi)}" placeholder="vayal@okaxis"></label>
+  <p class="tiny muted">${SHOP_WHATSAPP?`Customers' “Order on WhatsApp” button sends to +${esc(waNum(SHOP_WHATSAPP))}.`:"For customers' “Order on WhatsApp” button to work on every phone, the shop number must also be set in the app's code (SHOP_WHATSAPP). Until then it works only in this browser."}</p></section>`:""}`}
 
 /* ================= EVENTS ================= */
 const A={
@@ -1780,7 +1868,15 @@ const A={
  camUpload:()=>{const m=camMode;closeSheet();pickFile("#qUpload",m)}, camNative:()=>{const m=camMode;closeSheet();pickFile("#qPhoto",m)},
  fireQ:d=>{const q=Math.max(0,(S.fire[d.id]||0)+ +d.v);if(q)S.fire[d.id]=q;else delete S.fire[d.id];store.set("fire",S.fire);render()},
  fireKind:d=>{S.fireKind=d.v;render()},
- admSetup, admLogin, admStaffAdd, admAdd, admOut:()=>{S.admin=null;try{sessionStorage.removeItem("vayal:adminSession")}catch(e){}render()},
+ admSetup, admLogin, admStaffAdd, admAdd,
+ waOrder, waNew:sheetWaNew, waRead, waTab:d=>{S.waTab=d.v;render()},
+ waCopy:d=>{navigator.clipboard?.writeText(d.v).then(()=>toast("Copied"),()=>toast("Select the text and copy it"))},
+ waNext:d=>{const w=ADM.wo.find(x=>x.id===d.id),n=WA_NEXT[w.status];if(!n)return;if(n==="out")w.otp=String(1000+Math.floor(Math.random()*9000));w.status=n;w.hist.push({t:Date.now(),s:n,by:S.admin.name});saveAdm(`${w.id}: ${WA_ST.find(x=>x[0]===n)[1]}`);render();toast(w.phone?"Status updated. Tap “Send” to tell the customer on WhatsApp":"Status updated")},
+ waCancel:d=>{const w=ADM.wo.find(x=>x.id===d.id),r=prompt("Reason for cancelling (sent to the customer):","Items not available today");if(r===null)return;w.reason=r.trim();w.status="cancelled";w.hist.push({t:Date.now(),s:"cancelled",by:S.admin.name});saveAdm(`${w.id}: cancelled (${w.reason||"no reason"})`);render()},
+ waQty:d=>{const w=ADM.wo.find(x=>x.id===d.id),it=w.items[+d.v];it.q+= +d.d;if(it.q<1)w.items.splice(+d.v,1);saveAdm();render()},
+ waAddItem:d=>{const w=ADM.wo.find(x=>x.id===d.id),pid=$("#wa-add-"+d.id).value,p=PM[pid];if(!p)return;const ex=w.items.find(x=>x.pid===pid&&x.ui===0);if(ex)ex.q++;else w.items.push({pid,ui:0,q:1,price:p.units[0][1]});saveAdm(`${w.id}: added ${p.en}`);render()},
+ waPack:d=>{const w=ADM.wo.find(x=>x.id===d.id);navigator.clipboard?.writeText(waMsg(w,"packing")).then(()=>toast("Packing list copied"),()=>sheet(`<pre class="small card pad" style="white-space:pre-wrap">${esc(waMsg(w,"packing"))}</pre>`))},
+ waPhone:d=>{const w=ADM.wo.find(x=>x.id===d.id),v=prompt("Customer's WhatsApp number:","");if(!v)return;const ph=digits(v);if(!/^[6-9]\d{9}$/.test(ph)){toast("Enter a 10-digit mobile number");return}w.phone=ph;saveAdm();render()}, admOut:()=>{S.admin=null;try{sessionStorage.removeItem("vayal:adminSession")}catch(e){}render()},
  admRemove:d=>{if(!can("remove"))return;const p=ALL_P[d.id];if(!confirm(`Remove ${p.en} from the shop? You can restore it later.`))return;ADM.cat.removed.push(d.id);catChanged(`Removed ${p.en} from the shop`)},
  admRestore:d=>{if(!can("remove"))return;ADM.cat.removed=ADM.cat.removed.filter(x=>x!==d.id);catChanged(`Restored ${ALL_P[d.id].en}`)},
  admPack:d=>can("add")&&sheetPack(d.id),
@@ -1807,6 +1903,8 @@ document.addEventListener("change",e=>{const el=e.target,k=el.dataset.in;if(!k)r
  if(k==="qpid"){S.q={...S.q,pid:el.value,result:null,ticks:{}}}if(k==="qtick")S.q.ticks[el.dataset.v]=el.checked;
  if(k==="fd"){S.fd=el.value;store.set("farmDistrict",S.fd)}if(k==="fcrop")S.fcrop=el.value;
  if(k==="admcat")S.adm.cat=el.value;
+ if(k==="waShop"&&can("staff")){const v=digits(el.value);if(v&&!/^(91)?[6-9]\d{9}$/.test(v)){toast("Enter a 10-digit mobile number");return}ADM.wa.number=v;saveAdm("Updated the shop WhatsApp number")}
+ if(k==="waUpi"&&can("staff")){ADM.wa.upi=el.value.trim();saveAdm("Updated the UPI ID")}
  if(k==="admOos"&&can("stock")){const id=el.dataset.id,p=ALL_P[id];ADM.cat.oos=ADM.cat.oos.filter(x=>x!==id);if(!el.checked)ADM.cat.oos.push(id);saveAdm(`${p.en}: ${el.checked?"back in stock":"out of stock"}`);applyCatalog()}
  if(k==="admOosU"&&can("stock")){const id=el.dataset.id,ui=+el.dataset.ui,p=ALL_P[id],a=(ADM.cat.oosU[id]||[]).filter(x=>x!==ui);if(!el.checked)a.push(ui);ADM.cat.oosU[id]=a;saveAdm(`${p.en} ${p.units[ui][0]}: ${el.checked?"back in stock":"out of stock"}`);applyCatalog()}
  if(k==="admPrice"&&can("price")){const id=el.dataset.id,ui=+el.dataset.ui,v=Math.round(+el.value),p=ALL_P[id];if(v>0&&v!==p.units[ui][1]){(ADM.cat.price[id]=ADM.cat.price[id]||{})[ui]=v;saveAdm(`${p.en} ${p.units[ui][0]}: price ${inr(p.units[ui][1])} → ${inr(v)}`);applyCatalog()}}

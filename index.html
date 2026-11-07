@@ -323,7 +323,10 @@ button.kpi:hover{border-color:var(--leaf)}
 .tile .page-ico svg{width:22px;height:22px}
 
 /* tabs inside a page */
-.ptabs{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto}
+.ptabs{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}.ptabs::-webkit-scrollbar{display:none}
+.camwrap{position:relative;border-radius:14px;overflow:hidden;background:#000;aspect-ratio:4/3;max-height:60vh}
+.camwrap video{width:100%;height:100%;object-fit:cover;display:block}
+.camframe{position:absolute;inset:12%;border:2px dashed rgba(255,255,255,.75);border-radius:14px;pointer-events:none}
 .ptabs button{border:0;background:none;padding:10px 12px;font-weight:700;color:var(--muted);border-bottom:2.5px solid transparent;white-space:nowrap;display:inline-flex;gap:6px;align-items:center}
 .ptabs button svg{width:16px;height:16px}
 .ptabs button[aria-selected="true"]{color:var(--ink);border-color:var(--leaf)}
@@ -415,6 +418,7 @@ button.kpi:hover{border-color:var(--leaf)}
   <div id="toastLayer" aria-live="polite"></div>
   <input type="file" id="photoInput" accept="image/*" hidden>
   <input type="file" id="qPhoto" accept="image/*" capture="environment" hidden>
+  <input type="file" id="qUpload" accept="image/*" hidden>
 </div></div></div>
 
 <script>
@@ -680,7 +684,7 @@ function rcard(r){const serv=S.profile.household;return `<button class="rcard" d
 function searchBar(val=""){return `<div class="search" role="search">${svg("search")}<input id="q" type="search" placeholder="${esc(t("search"))}" value="${esc(val)}" data-in="q" aria-label="Search products"><button class="icon-btn" data-a="voice" aria-label="Voice search">${svg("mic")}</button><button class="icon-btn" data-a="photo" aria-label="Search with a photo of your list">${svg("cam")}</button></div>`}
 function toast(msg){const el=document.createElement("div");el.className="toast";el.textContent=msg;const L=$("#toastLayer");L.innerHTML="";L.append(el);clearTimeout(toast.t);toast.t=setTimeout(()=>el.remove(),2200)}
 function sheet(html){$("#layer").innerHTML=`<div class="scrim" data-a="closeSheet"><div class="sheet" role="dialog" aria-modal="true" data-stop><div class="grab"></div>${html}</div></div>`}
-function closeSheet(){$("#layer").innerHTML=""}
+function closeSheet(){if(typeof stopCam==="function")stopCam();$("#layer").innerHTML=""}
 const back=(r,label)=>`<button class="back" data-a="go" data-r="${r}">${svg("back")} ${esc(label)}</button>`;
 </script>
 
@@ -1033,7 +1037,8 @@ async function readPhoto(file){sheet(`<h2>Reading your list…</h2><p class="mut
   showParsed(Array.isArray(arr)?arr:[],"Read from your photo")}catch(e){sheet(`<h2>Couldn't read that photo</h2><p class="muted">${e.code==="not_granted"?"The assistant wasn't allowed in this view.":"Try a clearer, well-lit photo of the list."}</p><button class="btn block" data-a="demoList">Try the sample list instead</button>`)}}
 
 /* ================= AI ASSISTANT ================= */
-let _sample; function getSample(){if(_sample===undefined)_sample=(window.claude&&claude.use)?claude.use("sample").catch(()=>null):serverSample();return _sample}
+let _sample; function getSample(){if(_sample===undefined){_sample=(window.claude&&claude.use)?claude.use("sample").catch(()=>null):serverSample();
+ _sample.then(x=>{if(!x)_sample=undefined})}return _sample}  // a failed check (e.g. server waking up) is retried next time
 
 /* Outside claude.ai (e.g. on Render), the same AI features run through this
    site's own server (server.js). This shim mirrors the small part of the
@@ -1295,6 +1300,34 @@ function startSession(u){S.user=u;Object.assign(S,{visits:[]},u.data,{cart:S.car
  const next=afterAuth;afterAuth=null;render();if(next)next()}
 function signOut(){save();S.user=null;store.set("session",null);Object.assign(S,cloneDef());save();go("home");toast("Signed out")}
 
+/* ================= CAMERA ================= */
+// Live camera for photo checks: the laptop webcam on desktop, the back camera on phones. Upload is always offered too.
+let camStream=null,camFacing="user",camMode="quality";
+const isTouch=()=>matchMedia("(pointer:coarse)").matches;
+function stopCam(){camStream?.getTracks().forEach(t=>t.stop());camStream=null}
+function pickFile(sel,mode){const inp=$(sel);inp.dataset.mode=mode;inp.value="";inp.click()}
+function handlePhoto(f,mode){if(mode==="dx")dxAnalyze(f);else qAnalyze(f)}
+function openCamera(mode){camMode=mode;camFacing=isTouch()?"environment":"user";
+ sheet(`<h2>${mode==="dx"?"Photograph the affected leaves":"Point the camera at the item"}</h2>
+ <div class="camwrap"><video id="camv" autoplay playsinline muted></video><div class="camframe" aria-hidden="true"></div></div>
+ <p id="camMsg" class="small muted" role="status">Starting the camera… Allow camera access if your browser asks.</p>
+ <div class="row"><button class="btn" data-a="camSnap" disabled>${svg("cam")} Capture</button><button class="btn ghost" data-a="camFlip" hidden>${svg("repeat")} Switch camera</button><button class="btn ghost" data-a="camUpload">Upload a photo</button></div>
+ ${isTouch()?`<button class="link" data-a="camNative">Use the phone's camera app instead</button>`:""}`);
+ startCam()}
+async function startCam(){stopCam();const msg=$("#camMsg"),v=$("#camv"),snap=$("[data-a=camSnap]");if(!v)return;snap.disabled=true;
+ if(!window.isSecureContext||!navigator.mediaDevices?.getUserMedia){msg.textContent="This page can't open the camera (it needs a secure https address). Upload a photo instead.";return}
+ try{const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:camFacing},width:{ideal:1280},height:{ideal:960}},audio:false});
+  if(!v.isConnected){st.getTracks().forEach(t=>t.stop());return}
+  camStream=st;v.srcObject=st;v.style.transform=camFacing==="user"?"scaleX(-1)":"";await v.play().catch(()=>{});
+  msg.textContent=camMode==="dx"?"Fill the dashed frame with the leaves, in daylight if you can.":"Fill the dashed frame with the item, in good light.";snap.disabled=false;
+  const cams=(await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind==="videoinput");const flip=$("[data-a=camFlip]");if(flip)flip.hidden=cams.length<2}
+ catch(e){msg.textContent=e.name==="NotAllowedError"?"Camera access is blocked. Click the camera or lock icon in the address bar, set Camera to Allow, then open the camera again. Or upload a photo.":
+  e.name==="NotFoundError"||e.name==="OverconstrainedError"?"No camera found on this device. Upload a photo instead.":
+  e.name==="NotReadableError"?"The camera is busy in another app (Zoom, Teams, the Camera app). Close it and try again, or upload a photo.":"Couldn't start the camera. Upload a photo instead."}}
+function camSnap(){const v=$("#camv");if(!v||!v.videoWidth)return;const k=Math.min(1,1568/Math.max(v.videoWidth,v.videoHeight)),c=document.createElement("canvas");
+ c.width=Math.round(v.videoWidth*k);c.height=Math.round(v.videoHeight*k);c.getContext("2d").drawImage(v,0,0,c.width,c.height);const mode=camMode;
+ c.toBlob(b=>{if(!b)return;closeSheet();handlePhoto(new File([b],"camera.jpg",{type:"image/jpeg"}),mode)},"image/jpeg",.9)}
+
 /* ================= QUALITY COMPANION ================= */
 // What to look, feel and smell for when choosing each item. Keys are product ids or category ids.
 const GUIDE={
@@ -1360,12 +1393,12 @@ function vQuality(){
   ${cueList(p,true)}
   ${ms!=null?`<div class="meter" role="img" aria-label="Checklist score ${ms} out of 100"><i style="width:${ms}%;background:${ms>=80?"var(--leaf)":ms>=60?"var(--turmeric)":"var(--chili)"}"></i></div><div class="between"><span class="small"><b>${GRADE_TXT[scoreGrade(ms)]}</b> · ${ms}/100</span><button class="btn ghost" data-a="qSaveManual">Save check</button></div>`:""}</aside></div>`}
 function addCheck(c){S.qchecks.unshift({date:Date.now(),...c});S.qchecks=S.qchecks.slice(0,30);store.set("qchecks",S.qchecks)}
-async function qShoot(){const sample=await getSample(),lim=sample?await sample.limits().catch(()=>null):null;
- if(!lim||!lim.images){toast("The photo check needs the AI assistant, which isn't available here. Use the checklist.");return}
- const inp=$("#qPhoto");inp.dataset.mode="quality";inp.value="";inp.click()}
+function qShoot(){openCamera("quality")}
+const NO_AI_PHOTO="The AI photo check isn't available on this copy of the site (it needs the Vayal AI server).";
+async function aiForPhotos(){const sample=await getSample(),lim=sample?await sample.limits().catch(()=>null):null;return lim&&lim.images?sample:null}
 async function qAnalyze(file){const p=PM[S.q.pid];if(S.q.img)URL.revokeObjectURL(S.q.img);
  Object.assign(S.q,{busy:true,result:null,img:URL.createObjectURL(file)});render();
- try{const sample=await getSample();
+ try{const sample=await aiForPhotos();if(!sample){S.q.result={error:NO_AI_PHOTO+" Your photo is shown above."};S.q.busy=false;render();return}
   const r=await sample.json(`You are a produce and meat quality inspector for an organic grocer in Chennai. The customer says this photo shows ${p?p.en:"a food item"}. Judge freshness and quality only from what is visible: colour, skin, bruises, cuts, mould, wilting, ripeness, and for fish or meat the eyes, gills, colour and surface. Reply with only JSON: {"item":"what you actually see","grade":"A|B|C|R","score":0-100,"ripeness":"short phrase","findings":["3-5 visible signs, good and bad"],"shelf_life_days":number,"verdict":"buy|ok|avoid","best_use":"short phrase","storage":"one sentence","confidence":"high|medium|low"}. A = excellent, B = good, C = use today, R = reject. If the photo is not food or is too unclear to judge, set item to "unclear", grade "R", verdict "avoid", confidence "low", and explain in findings.`,{images:file,modelTier:"quick"});
   if(!r||typeof r!=="object")throw new Error("bad");
   S.q.result=r;const g=["A","B","C","R"].includes(r.grade)?r.grade:scoreGrade(+r.score||0);
@@ -1496,11 +1529,9 @@ function dxCard(){const r=S.dx;if(!r||r.busy)return r?.busy?`<p class="muted"><s
   ${Array.isArray(r.organic_treatment)?`<p class="small"><b>Organic treatment:</b></p><ul class="list small">${r.organic_treatment.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:""}
   ${Array.isArray(r.prevention)?`<p class="small"><b>Prevent next time:</b> ${esc(r.prevention.join("; "))}</p>`:""}
   <p class="tiny muted">AI suggestion from one photo${r.confidence?` (${esc(r.confidence)} confidence)`:""}. Confirm with your agriculture officer or KVK before treating a whole field.</p></section>`}
-async function dxShoot(){const sample=await getSample(),lim=sample?await sample.limits().catch(()=>null):null;
- if(!lim||!lim.images){toast("Photo diagnosis needs the AI assistant, which isn't available here.");return}
- const inp=$("#qPhoto");inp.dataset.mode="dx";inp.value="";inp.click()}
+function dxShoot(){openCamera("dx")}
 async function dxAnalyze(file){S.dx={busy:true};render();
- try{const sample=await getSample(),crop=S.fcrop!=="all"?CROPS.find(c=>c.id===S.fcrop)?.en:"";
+ try{const sample=await aiForPhotos();if(!sample){S.dx={error:NO_AI_PHOTO+" Use the watch list below to match the signs."};render();return}const crop=S.fcrop!=="all"?CROPS.find(c=>c.id===S.fcrop)?.en:"";
   const r=await sample.json(`You are an agronomist helping small organic farmers in Tamil Nadu. The photo shows a plant${crop?` (the farmer says ${crop})`:""}. Identify the most likely pest, disease or nutrient problem from what is visible. Reply with only JSON: {"crop":"crop you see","problem":"most likely pest, disease or deficiency","confidence":"high|medium|low","signs":["visible signs"],"organic_treatment":["2-4 practical organic steps with doses"],"prevention":["1-3 steps"],"urgency":"low|medium|high"}. If the plant looks healthy or the photo is unclear, say so in problem and keep the lists short.`,{images:file,modelTier:"quick"});
   if(!r||typeof r!=="object")throw new Error("bad");S.dx=r}
  catch(e){S.dx={error:e.code==="rate_limited"?"Too many requests right now, try again in a minute.":"Try a closer, well-lit photo of the affected leaves."}}
@@ -1573,6 +1604,8 @@ const A={
  qSaveManual:()=>{const p=PM[S.q.pid],sc=manualScore(p);if(sc==null)return;addCheck({item:p.en,grade:scoreGrade(sc),score:sc,verdict:sc>=60?"buy":sc>=40?"ok":"avoid",src:"manual"});S.q.ticks={};render();toast("Check saved")},
  qIssue:d=>{const o=[...S.orders].sort((a,b)=>b.date-a.date).find(o=>o.items.some(i=>i[0]===d.id));if(o)sheetIssue(o.id)},
  qCheck:d=>{S.q={...S.q,pid:d.id,result:null,ticks:{}};go("quality","scan")},
+ camSnap, camFlip:()=>{camFacing=camFacing==="user"?"environment":"user";startCam()},
+ camUpload:()=>{const m=camMode;closeSheet();pickFile("#qUpload",m)}, camNative:()=>{const m=camMode;closeSheet();pickFile("#qPhoto",m)},
  dxShoot, wxRetry:()=>{delete S.wx[S.fd];render()}, offerNew:sheetOffer, offerOk
 };
 const isWide=()=>$("#app").clientWidth>=820;
@@ -1594,7 +1627,7 @@ document.addEventListener("submit",e=>{if(e.target.id==="composer"){e.preventDef
 document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id&&e.target.id.startsWith("au-")){e.preventDefault();$("[data-a=authSubmit]")?.click()}if(e.key==="Escape"){if($("#layer").innerHTML)closeSheet();else if(S.chatOpen)closeChat();else if(S.sideOpen){S.sideOpen=false;renderSide();$(".menu-btn")?.focus()}}});
 $("#fab").addEventListener("click",()=>openChat());
 $("#photoInput").addEventListener("change",e=>{const f=e.target.files[0];if(f)readPhoto(f)});
-$("#qPhoto").addEventListener("change",e=>{const f=e.target.files[0];if(!f)return;if(e.target.dataset.mode==="dx")dxAnalyze(f);else qAnalyze(f)});
+for(const id of ["#qPhoto","#qUpload"])$(id).addEventListener("change",e=>{const f=e.target.files[0];if(f)handlePhoto(f,e.target.dataset.mode)});
 function exitBtn(){let b=$("#exitPhone");if(S.phone&&!b){b=document.createElement("button");b.id="exitPhone";b.className="pill-btn";b.dataset.a="phone";b.textContent="← Back to web view";b.style.cssText="justify-self:center;margin-bottom:12px";$("#stage").prepend(b)}else if(!S.phone&&b)b.remove()}
 render();
 </script>

@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Vayal Fresh</title>
+<title>Vayal · வயல்</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Mukta+Malar:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
@@ -279,6 +279,7 @@ label.fld{display:grid;gap:4px;font-size:.85rem;font-weight:600}
 .side.open{display:flex;position:fixed;inset:0 auto 0 0;width:min(300px,86%);z-index:80;box-shadow:0 0 0 100vmax rgba(10,20,14,.45)}
 .side-brand{padding:20px 18px 16px;border-bottom:1px solid var(--line);display:grid;gap:6px}
 .side-brand .logo{font-size:1.5rem}
+.ta-brand{font-family:"Mukta Malar",sans-serif;font-weight:700;color:var(--leaf)}
 .side-brand p{font-size:.7rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600}
 .side-group{padding:10px 8px 4px}
 .side-group>button{width:100%;display:flex;justify-content:space-between;align-items:center;border:0;background:none;padding:8px 10px;font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;font-weight:700;color:var(--muted);text-align:left}
@@ -434,7 +435,8 @@ const CATS=[
  {id:"chicken",en:"Chicken",ta:"கோழி",e:"🍗",hue:"#D98A3D"},
  {id:"mutton",en:"Mutton & Lamb",ta:"ஆட்டிறைச்சி",e:"🍖",hue:"#B23A3A"},
  {id:"oil",en:"Oils & Ghee",ta:"எண்ணெய் & நெய்",e:"🫗",hue:"#C9A227"},
- {id:"pantry",en:"Spices & Sweeteners",ta:"மசாலா & இனிப்பு",e:"🍯",hue:"#B5572B"}
+ {id:"pantry",en:"Spices & Sweeteners",ta:"மசாலா & இனிப்பு",e:"🍯",hue:"#B5572B"},
+ {id:"snacks",en:"Crackers & Snacks",ta:"முறுக்கு & பலகாரம்",e:"🍘",hue:"#C47A2C"}
 ];
 const TAGS={diabetic:{en:"Diabetic-friendly",ta:"சர்க்கரை நோய்க்கு ஏற்றது"},protein:{en:"High protein",ta:"அதிக புரதம்"},heart:{en:"Heart-healthy",ta:"இதய நலம்"},weight:{en:"Weight-loss friendly",ta:"எடை குறைப்பு"},vegan:{en:"Vegan",ta:"வீகன்"},gf:{en:"Gluten-free",ta:"க்ளூட்டன் இல்லை"},kids:{en:"Great for kids",ta:"குழந்தைகளுக்கு"},iron:{en:"Iron-rich",ta:"இரும்புச்சத்து"}};
 const ALLERGENS={dairy:"Dairy",nuts:"Nuts / peanuts",gluten:"Gluten",egg:"Egg",fish:"Fish & shellfish"};
@@ -447,6 +449,7 @@ const FARMS={
  kasimedu:{name:"Kasimedu Fishers' Co-op",who:"Kasimedu Fishermen Society",loc:"Kasimedu, Chennai",km:12,cert:"Day-boat catch, iced at landing",lat:13.126,lng:80.295,kind:"fish"},
  namakkal:{name:"Namakkal Free-range Poultry",who:"Kumar P.",loc:"Namakkal",km:340,cert:"Free-range, FSSAI licensed",lat:11.2189,lng:78.1677,kind:"poultry"},
  vellaadu:{name:"Salem Vellaadu Goat & Sheep Farm",who:"Murugesan T.",loc:"Attur, Salem",km:340,cert:"Grazed Salem Black goats & Mecheri sheep, FSSAI licensed",lat:11.5964,lng:78.5998,kind:"goat"},
+ manapparai:{name:"Manapparai Snack Makers Collective",who:"Women's self-help group",loc:"Manapparai, Tiruchirappalli",km:360,cert:"FSSAI licensed, small-batch kitchen",lat:10.6077,lng:78.4247,kind:"kitchen"},
  tvm:{name:"Chekku Oil Mill",who:"Anbu Chekku",loc:"Tiruvannamalai",km:190,cert:"Wooden cold-pressed",lat:12.2253,lng:79.0747,kind:"mill"}
 };
 // n = [kcal, protein g, fibre g, carbs g] per 100 g approx.
@@ -534,7 +537,25 @@ const P=[
  {id:"karupatti",en:"Palm jaggery (karupatti)",ta:"கருப்பட்டி",al:"karupatti palm sugar",cat:"pantry",e:"🍯",units:[["500 g",150,175]],farm:"kaveri",tags:["vegan","gf","iron"],allergens:[],n:[383,1,0,95],sub:false,
   benefits:["Minerals retained, unlike white sugar","Still a sugar: diabetics should limit it"],usage:["Grate or dissolve in warm water and strain"],storage:"Airtight; 12 months.",recipes:["karupattipaal"]},
  {id:"honey",en:"Wild forest honey",ta:"காட்டுத் தேன்",al:"then honey",cat:"pantry",e:"🍯",units:[["250 g",240,280]],farm:"nilgiri",tags:["gf","kids"],allergens:[],n:[304,0.3,0,82],sub:false,
-  benefits:["Raw and unheated; soothes throat","Not for infants under 1 year"],usage:["Add to warm (not hot) water or milk"],storage:"Room temperature; crystallising is natural."}
+  benefits:["Raw and unheated; soothes throat","Not for infants under 1 year"],usage:["Add to warm (not hot) water or milk"],storage:"Room temperature; crystallising is natural."},
+ {id:"kaimurukku",en:"Kai murukku (hand-twisted rice)",ta:"கை முறுக்கு",al:"murukku kai murukku rice crackers",cat:"snacks",e:"🍘",units:[["200 g",90,110]],farm:"manapparai",tags:["vegan","gf","kids"],allergens:["nuts"],n:[520,7,3,60],sub:false,
+  benefits:["Mappillai samba rice flour and urad dal, twisted by hand","Fried in cold-pressed groundnut oil in small batches"],usage:["Tea-time snack; crush over curd rice for crunch"],storage:"Airtight tin; stays crisp 3 weeks.",recipes:[]},
+ {id:"kambumurukku",en:"Kambu (pearl millet) murukku",ta:"கம்பு முறுக்கு",al:"kambu murukku millet murukku bajra crackers",cat:"snacks",e:"🍘",units:[["200 g",95,115]],farm:"manapparai",tags:["vegan","gf","iron"],allergens:["nuts"],n:[500,9,6,58],sub:false,
+  benefits:["Made with pearl millet: more iron and fibre than rice murukku","Seasoned with cumin, sesame and asafoetida"],usage:["Snack on its own or with filter coffee"],storage:"Airtight tin; stays crisp 3 weeks.",recipes:[]},
+ {id:"thattai",en:"Thattai (rice crackers)",ta:"தட்டை",al:"thattai ellu adai rice crackers",cat:"snacks",e:"🍘",units:[["200 g",85,100]],farm:"manapparai",tags:["vegan","gf","kids"],allergens:["nuts"],n:[510,8,4,58],sub:false,
+  benefits:["Thin, crisp discs with soaked chana dal, curry leaves and chilli","No maida, no palm oil"],usage:["Evening snack; pairs with masala tea"],storage:"Airtight tin; stays crisp 3 weeks.",recipes:[]},
+ {id:"ragicrackers",en:"Baked ragi crackers",ta:"கேழ்வரகு கிராக்கர்ஸ்",al:"ragi crackers baked kezhvaragu biscuits",cat:"snacks",e:"🍪",units:[["150 g",110,130]],farm:"manapparai",tags:["vegan","gf","iron","kids"],allergens:[],n:[410,9,10,68],sub:false,
+  benefits:["Baked, not fried","Sprouted ragi for calcium and iron"],usage:["Lunch-box snack; top with chutney"],storage:"Airtight; 4 weeks.",recipes:[]},
+ {id:"ribbonpakoda",en:"Ribbon pakoda (ola pakoda)",ta:"ரிப்பன் பக்கோடா",al:"ribbon pakoda ola pakoda nada murukku",cat:"snacks",e:"🍘",units:[["200 g",80,95]],farm:"manapparai",tags:["vegan","gf"],allergens:["nuts"],n:[530,10,4,55],sub:false,
+  benefits:["Gram flour and rice flour ribbons with red chilli and garlic"],usage:["Tea-time snack; add to mixture"],storage:"Airtight tin; 3 weeks.",recipes:[]},
+ {id:"uppuseedai",en:"Uppu seedai (salt seedai)",ta:"உப்பு சீடை",al:"seedai cheedai uppu seedai krishna jayanthi",cat:"snacks",e:"🟤",units:[["200 g",90,105]],farm:"manapparai",tags:["vegan","gf","kids"],allergens:["nuts"],n:[500,7,4,56],sub:false,
+  benefits:["Crunchy rice and urad dal balls with coconut and sesame","Traditional Krishna Jayanthi snack, made fresh year-round"],usage:["Snack; hard and round, so not for toddlers"],storage:"Airtight tin; 3 weeks.",recipes:[]},
+ {id:"madrasmixture",en:"Madras mixture",ta:"மிக்சர்",al:"mixture madras mixture kara mixture namkeen",cat:"snacks",e:"🥜",units:[["250 g",95,115]],farm:"manapparai",tags:["vegan","gf"],allergens:["nuts"],n:[540,12,5,50],sub:false,
+  benefits:["Sev, boondi, peanuts, roasted gram and curry leaves","No artificial colour"],usage:["Snack; sprinkle on chaat or poha"],storage:"Airtight tin; 3 weeks.",recipes:[]},
+ {id:"thinaisev",en:"Thinai kara sev",ta:"தினை கார சேவ்",al:"thinai sev kara sev foxtail millet sev",cat:"snacks",e:"🍜",units:[["200 g",90,110]],farm:"manapparai",tags:["vegan","gf","protein"],allergens:["nuts"],n:[520,13,6,52],sub:false,
+  benefits:["Foxtail millet and gram flour with crushed black pepper"],usage:["Snack; top on curd rice or salads"],storage:"Airtight tin; 3 weeks.",recipes:[]},
+ {id:"snackbox",en:"Deepavali snack hamper (assorted)",ta:"தீபாவளி பலகாரப் பெட்டி",al:"deepavali diwali snack box hamper palagaram gift",cat:"snacks",e:"🎁",units:[["1 kg box",420,520]],farm:"manapparai",tags:["vegan","gf","kids"],allergens:["nuts"],n:[520,9,4,56],sub:false,
+  benefits:["Kai murukku, thattai, ribbon pakoda, mixture and seedai in one gift box","Packed fresh in the week you order"],usage:["Gift box for family and neighbours"],storage:"Airtight; best within 3 weeks.",recipes:[]}
 ];
 const RECIPES=[
  {id:"sambar",en:"Drumstick sambar",ta:"முருங்கைக்காய் சாம்பார்",e:"🍲",meal:"main",mins:40,tags:["protein","vegan","gf","heart"],ing:[["toor",.25,"1 cup dal"],["drumstick",1,"2 pods"],["tomato",.5,"2 tomatoes"],["shallot",.5,"15 shallots"],["curryleaf",.2,"1 sprig"],["turmeric",.05,"¼ tsp"],["gingelly",.05,"2 tbsp"]],
@@ -556,6 +577,22 @@ const RECIPES=[
  {id:"karupattipaal",en:"Karupatti milagu paal",ta:"கருப்பட்டி மிளகு பால்",e:"☕",meal:"breakfast",mins:10,tags:["kids","gf"],ing:[["a2milk",1,"2 cups"],["karupatti",.1,"3 tbsp"],["turmeric",.02,"a pinch"],["pepper",.02,"a pinch"]],
   steps:["Heat milk with turmeric and crushed pepper.","Dissolve karupatti in a little hot water, strain into milk.","Serve warm at bedtime."]}
 ];
+</script>
+<script>
+/* ================= CATALOGUE CHANGES FROM ADMIN (demo: kept in this browser only) ================= */
+const ADM=(()=>{const d={owner:null,staff:[],cat:{added:[],removed:[],oos:[],oosU:{},price:{},packs:{}},log:[]};
+ try{const v=JSON.parse(localStorage.getItem("vayal:admin")||"null");return v?{...d,...v,cat:{...d.cat,...(v.cat||{})}}:d}catch(e){return d}})();
+const BASE_P=JSON.parse(JSON.stringify(P)),ALL_P={};
+// Rebuild P (what the shop lists) and ALL_P (every product ever sold, so old orders still resolve) from the base catalogue plus admin changes.
+function applyCatalog(){const c=ADM.cat;P.length=0;for(const k in ALL_P)delete ALL_P[k];
+ [...BASE_P,...c.added].forEach(b=>{const p=JSON.parse(JSON.stringify(b));
+  (c.packs[p.id]||[]).forEach(u=>{if(!p.units.some(x=>x[0]===u[0]))p.units.push(u)});
+  Object.entries(c.price[p.id]||{}).forEach(([ui,v])=>{if(p.units[ui])p.units[ui][1]=v});
+  p.removed=c.removed.includes(p.id);p.oos=c.oos.includes(p.id);p.oosU=c.oosU[p.id]||[];
+  ALL_P[p.id]=p;if(!p.removed)P.push(p)});
+ if(typeof PM!=="undefined"){for(const k in PM)delete PM[k];Object.assign(PM,ALL_P)}}
+applyCatalog();
+const isOOS=(p,ui=0)=>!p||p.removed||p.oos||p.oosU.includes(+ui);
 </script>
 
 <script>
@@ -588,10 +625,11 @@ const S={
  phone:false, chatOpen:false, chat:[], busy:false,
  theme:store.get("theme","auto"), sideClosed:store.get("sideClosed",[]), sideOpen:false,
  q:{pid:"tomato",result:null,img:null,busy:false,ticks:{}}, qchecks:store.get("qchecks",[]),
- fd:store.get("farmDistrict","dindigul"), fcrop:"all", wx:{}, dx:null, offers:store.get("offers",[])
+ admin:null, adm:{q:"",cat:"all"}, fire:store.get("fire",{}), fireKind:"all", fd:store.get("farmDistrict","dindigul"), fcrop:"all", wx:{}, dx:null, offers:store.get("offers",[])
 };
 function applyTheme(){const r=document.documentElement;if(S.theme==="auto")r.removeAttribute("data-theme");else r.setAttribute("data-theme",S.theme)}
 applyTheme();
+try{const sid=sessionStorage.getItem("vayal:adminSession");if(sid){const x=sid==="owner"?ADM.owner&&{id:"owner",name:ADM.owner.name,role:"owner"}:ADM.staff.find(s=>s.id===sid);if(x)S.admin={id:x.id,name:x.name,role:x.role}}}catch(e){}
 {const sid=store.get("session",null);if(sid&&S.users[sid])S.user=S.users[sid]}
 function save(){store.set("lang",S.lang);store.set("cart",S.cart);store.set("profile",S.profile);store.set("orders",S.orders);store.set("subs",S.subs);store.set("plan",S.plan);store.set("points",S.points);store.set("wallet",S.wallet);store.set("visits",S.visits);if(S.user){S.user.data={profile:S.profile,orders:S.orders,subs:S.subs,plan:S.plan,points:S.points,wallet:S.wallet,visits:S.visits};S.users[S.user.id]=S.user;store.set("users",S.users)}}
 
@@ -607,7 +645,7 @@ const T={
  gShop:["Shop & orders","கடை & ஆர்டர்கள்"],gQual:["Vision & quality","பார்வை & தரம்"],gFarm:["Farmer guide","விவசாயி வழிகாட்டி"],gAcc:["Account","கணக்கு"],
  qScan:["Scan produce","காய்கறியை ஸ்கேன் செய்"],qGuide:["How to choose","தேர்ந்தெடுக்கும் முறை"],qHist:["My checks","என் சோதனைகள்"],
  fSeason:["Season calendar","பருவ நாட்காட்டி"],fDemand:["Demand & prices","தேவை & விலை"],fWx:["Weather","வானிலை"],fPest:["Pests & disease","பூச்சி & நோய்"],fInputs:["Organic inputs","இயற்கை இடுபொருட்கள்"],
- light:["Light","வெளிச்சம்"],dark:["Dark","இருள்"],autoT:["Auto","தானியங்கி"],placeOrder:["Place order","ஆர்டர் செய்"],hello:["Vanakkam","வணக்கம்"]
+ light:["Light","வெளிச்சம்"],crackersT:["Deepavali crackers","தீபாவளி பட்டாசு"],adminT:["Admin","நிர்வாகம்"],dark:["Dark","இருள்"],autoT:["Auto","தானியங்கி"],placeOrder:["Place order","ஆர்டர் செய்"],hello:["Vanakkam","வணக்கம்"]
 };
 const t=k=>(T[k]||[k,k])[S.lang==="ta"?1:0];
 const nm=o=>S.lang==="ta"?o.ta:o.en; const nm2=o=>S.lang==="ta"?o.en:o.ta;
@@ -616,7 +654,7 @@ const nm=o=>S.lang==="ta"?o.ta:o.en; const nm2=o=>S.lang==="ta"?o.en:o.ta;
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const inr=n=>"₹"+Math.round(n).toLocaleString("en-IN");
-const PM=Object.fromEntries(P.map(p=>[p.id,p])); const RM=Object.fromEntries(RECIPES.map(r=>[r.id,r]));
+const PM={...ALL_P}; const RM=Object.fromEntries(RECIPES.map(r=>[r.id,r]));
 const catOf=p=>CATS.find(c=>c.id===p.cat);
 const tint=(hue,pct=22)=>`background:color-mix(in srgb, ${hue} ${pct}%, var(--surface))`;
 const fmtDate=(ms,opt={weekday:"short",day:"numeric",month:"short"})=>new Date(ms).toLocaleDateString(S.lang==="ta"?"ta-IN":"en-IN",opt);
@@ -653,8 +691,8 @@ function fitChip(p){const f=fit(p);if(f.warn.length)return `<span class="chip wa
 /* cart */
 const key=(id,ui)=>id+"|"+ui;
 function cartQty(id,ui){return S.cart[key(id,ui??(S.pdUnit[id]||0))]||0}
-function addCart(id,ui=0,n=1,quiet){const k=key(id,ui);S.cart[k]=Math.max(0,(S.cart[k]||0)+n);if(!S.cart[k])delete S.cart[k];save();if(!quiet&&n>0)toast(`${nm(PM[id])} ${S.lang==="ta"?"சேர்க்கப்பட்டது":"added"}`);refresh()}
-function cartLines(){return Object.entries(S.cart).map(([k,q])=>{const[id,ui]=k.split("|");const p=PM[id];if(!p)return null;const u=p.units[+ui]||p.units[0];return{k,p,ui:+ui,q,unit:u[0],price:u[1],mrp:u[2]}}).filter(Boolean)}
+function addCart(id,ui=0,n=1,quiet){if(n>0&&isOOS(PM[id],ui)){if(!quiet)toast(`${PM[id]?nm(PM[id]):"This item"} is out of stock`);return}const k=key(id,ui);S.cart[k]=Math.max(0,(S.cart[k]||0)+n);if(!S.cart[k])delete S.cart[k];save();if(!quiet&&n>0)toast(`${nm(PM[id])} ${S.lang==="ta"?"சேர்க்கப்பட்டது":"added"}`);refresh()}
+function cartLines(){return Object.entries(S.cart).map(([k,q])=>{const[id,ui]=k.split("|");const p=PM[id];if(!p)return null;const u=p.units[+ui]||p.units[0];return{k,p,ui:+ui,q,unit:u[0],price:u[1],mrp:u[2],oos:isOOS(p,ui)}}).filter(Boolean)}
 const cartCount=()=>Object.values(S.cart).reduce((a,b)=>a+b,0);
 const COUPONS={FIRSTHARVEST:{d:"10% off up to ₹100 on orders above ₹299",calc:(sub)=>sub>=299?Math.min(100,sub*.1):0},MILLET20:{d:"20% off millets & rice",calc:(sub,lines)=>lines.filter(l=>l.p.cat==="millet").reduce((a,l)=>a+l.price*l.q,0)*.2}};
 function bill(){const L=cartLines();const sub=L.reduce((a,l)=>a+l.price*l.q,0),mrp=L.reduce((a,l)=>a+l.mrp*l.q,0);
@@ -677,7 +715,7 @@ function pcard(p,extra=""){
   <button class="pname" data-a="go" data-r="product" data-id="${p.id}">${vmark(p)}${esc(nm(p))}<span class="ta">${esc(nm2(p))}</span></button>
   <div class="small muted">${esc(u[0])} · ${esc(FARMS[p.farm].loc.split(",")[0])}${extra}</div>
   <div class="pfoot"><div class="price"><b>${inr(u[1])}</b>${u[2]>u[1]?`<s>${inr(u[2])}</s>`:""}</div>
-  ${q?`<div class="stepper"><button data-a="dec" data-id="${p.id}" data-ui="${ui}" aria-label="Remove one">−</button><span>${q}</span><button data-a="inc" data-id="${p.id}" data-ui="${ui}" aria-label="Add one">+</button></div>`
+  ${isOOS(p,ui)?`<span class="chip warn">Out of stock</span>`:q?`<div class="stepper"><button data-a="dec" data-id="${p.id}" data-ui="${ui}" aria-label="Remove one">−</button><span>${q}</span><button data-a="inc" data-id="${p.id}" data-ui="${ui}" aria-label="Add one">+</button></div>`
      :`<button class="add" data-a="inc" data-id="${p.id}" data-ui="${ui}">${t("add")}</button>`}</div>
  </article>`}
 function rcard(r){const serv=S.profile.household;return `<button class="rcard" data-a="go" data-r="recipe" data-id="${r.id}"><div class="rart">${r.e}</div><div class="rbody"><b>${esc(nm(r))}</b><span class="small muted">${r.mins} min · ${r.ing.length} ingredients · serves ${serv}</span><div class="chips">${r.tags.slice(0,2).map(g=>`<span class="chip ${S.profile.goals.includes(g)?"good":""}">${esc(TAGS[g].en)}</span>`).join("")}</div></div></button>`}
@@ -696,7 +734,7 @@ function renderTop(){
  const r=S.route.name, n=cartCount();
  $("#topbar").innerHTML=`
  <button class="icon-btn menu-btn" data-a="sideOpen" aria-label="Open menu" aria-expanded="${S.sideOpen}" aria-controls="side">${svg("menu")}</button>
- <button class="logo" data-a="go" data-r="home" aria-label="Vayal home"><span class="logo-mark">${svg("leaf",'width="18" height="18"')}</span><span>Vayal<small>வயல் · farm to kitchen</small></span></button>
+ <button class="logo" data-a="go" data-r="home" aria-label="Vayal home"><span class="logo-mark">${svg("leaf",'width="18" height="18"')}</span><span>Vayal <span class="ta-brand">வயல்</span><small>farm to kitchen</small></span></button>
  <div class="status"><span class="live"><i></i>${S.lang==="ta"?"அறுவடை நேரலை":"Harvest live"}</span><span class="small muted">${new Date().toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric",timeZone:"Asia/Kolkata"})} · IST</span></div>
  <button class="deliver" data-a="addr"><span class="tiny muted">${t("deliverTo")} ${esc(ADDR[S.addr].lbl)}</span><b>${esc(ADDR[S.addr].line.split(",").slice(1,3).join(","))}</b></button>
  <div class="top-actions">
@@ -716,15 +754,15 @@ function renderTop(){
 }
 /* Side menu, grouped like an operations console. Each entry: [route, icon, label key, sub-page id, count]. */
 function sideGroups(){const open=S.orders.filter(o=>o.stage<4).length,act=S.subs.filter(s=>s.status==="active").length;
- return [["gShop",[["home","dash","overview"],["shop","grid","shop"],["cart","cart","cart",null,cartCount()],["orders","truck","orders",null,open],["subs","repeat","subs",null,act],["plan","cal","plan"]]],
+ return [["gShop",[["home","dash","overview"],["shop","grid","shop"],["cart","cart","cart",null,cartCount()],["orders","truck","orders",null,open],["subs","repeat","subs",null,act],["plan","cal","plan"],["crackers","spark","crackersT",null,fireCount()]]],
   ["gQual",[["quality","scan","qScan","scan"],["quality","eye","qGuide","guide"],["quality","check","qHist","history",S.qchecks.length]]],
   ["gFarm",[["farmer","sprout","fSeason","season"],["farmer","bars","fDemand","demand"],["farmer","cloud","fWx","weather"],["farmer","bug","fPest","pests"],["farmer","drop","fInputs","inputs"],["farm","pin","farm"]]],
-  ["gAcc",[["account","user","account"]]]]}
+  ["gAcc",[["account","user","account"],["admin","shield","adminT"]]]]}
 function sideCurrent(r,id){const n=S.route.name,sid=S.route.id||(n==="quality"?"scan":n==="farmer"?"season":null);
  if(r==="shop")return n==="shop"||n==="product";if(r==="plan")return n==="plan"||n==="recipe";if(r==="orders")return n==="orders"||n==="track";if(r==="cart")return n==="cart"||n==="checkout";
  return n===r&&(!id||sid===id)}
 function renderSide(){
- $("#side").innerHTML=`<div class="side-brand"><button class="logo" data-a="go" data-r="home" aria-label="Vayal home"><span class="logo-mark">${svg("leaf",'width="18" height="18"')}</span><span>Vayal</span></button><p>Farm · Kitchen · Quality</p></div>
+ $("#side").innerHTML=`<div class="side-brand"><button class="logo" data-a="go" data-r="home" aria-label="Vayal home"><span class="logo-mark">${svg("leaf",'width="18" height="18"')}</span><span>Vayal <span class="ta-brand">வயல்</span></span></button><p>Farm · Kitchen · Quality</p></div>
  ${sideGroups().map(([g,items])=>{const closed=S.sideClosed.includes(g);return `<div class="side-group"${closed?" data-closed":""}><button data-a="sideGroup" data-v="${g}" aria-expanded="${!closed}">${t(g)}${svg("chev")}</button>
   <ul>${items.map(([r,i,l,id,c])=>`<li><button data-a="side" data-r="${r}" data-id="${id||""}" ${sideCurrent(r,id)?'aria-current="page"':""}>${svg(i)}<span>${t(l)}</span>${c?`<span class="cnt">${c}</span>`:""}</button></li>`).join("")}</ul></div>`}).join("")}
  <div class="side-foot">${S.user?`Signed in as <b>${esc(S.user.name)}</b> · <button class="link" data-a="signout">Sign out</button>`:`<button class="link" data-a="auth">Sign in</button> to sync orders and checks`}
@@ -743,6 +781,8 @@ function vHome(){
  <div class="tiles">
   <button class="tile" data-a="side" data-r="quality" data-id="scan"><span class="page-ico">${svg("scan")}</span><span><b>${t("quality")}</b><br><span class="small muted">${S.qchecks[0]?`Last check: ${esc(S.qchecks[0].item)}, grade ${esc(S.qchecks[0].grade)} · `:""}Point your camera at produce to check freshness before you buy or accept it.</span></span></button>
   <button class="tile" data-a="side" data-r="farmer" data-id="season"><span class="page-ico" style="background:var(--turmeric-soft);color:color-mix(in srgb,var(--turmeric) 60%,var(--ink))">${svg("sprout")}</span><span><b>${t("farmer")}</b><br><span class="small muted">${farmerTeaser()}</span></span></button>
+  <button class="tile" data-a="side" data-r="crackers"><span class="page-ico" style="background:var(--chili-soft);color:var(--chili)">${svg("spark")}</span><span><b>${t("crackersT")}</b><br><span class="small muted">Green crackers from Sivakasi: make an estimate list and collect at the licensed dealer. Snacks like murukku and thattai are in the shop.</span></span></button>
+  <button class="tile" data-a="shopCat" data-v="snacks"><span class="page-ico" style="background:var(--turmeric-soft);color:color-mix(in srgb,var(--turmeric) 60%,var(--ink))">${svg("grid")}</span><span><b>Crackers &amp; snacks</b><br><span class="small muted">Kai murukku, thattai, ribbon pakoda, millet sev and the Deepavali snack hamper.</span></span></button>
  </div>
  ${subTmr.length?`<section class="card pad between"><div class="row" style="gap:12px">${svg("repeat",'width="22" height="22" style="color:var(--leaf)"')}<div><b>Tomorrow ${esc(subTmr[0].slot)}</b><p class="small muted">${subTmr.map(s=>esc(PM[s.pid].en)+" × "+s.q).join(", ")}</p></div></div><div class="row"><button class="pill-btn" data-a="skipTmr">Skip tomorrow</button><button class="link" data-a="go" data-r="subs">Manage</button></div></section>`:""}
  <section class="hero">
@@ -812,14 +852,14 @@ function vProduct(id){
  return `${back("shop",nm(c))}
  <section class="pd">
   <div style="display:grid;gap:12px"><div class="pd-art" style="${tint(c.hue,26)}">${p.e}</div>
-   <div class="facts">${[["kcal",p.n[0]],["protein",p.n[1]+"g"],["fibre",p.n[2]+"g"],["carbs",p.n[3]+"g"]].map(([l,v])=>`<div class="fact"><b>${v}</b><span>${l} / 100 g</span></div>`).join("")}</div></div>
+   <div class="facts">${(p.n||[0,0,0,0]).every(x=>!x)?`<div class="fact" style="grid-column:1/-1"><span>Nutrition details coming soon</span></div>`:[["kcal",p.n[0]],["protein",p.n[1]+"g"],["fibre",p.n[2]+"g"],["carbs",p.n[3]+"g"]].map(([l,v])=>`<div class="fact"><b>${v}</b><span>${l} / 100 g</span></div>`).join("")}</div></div>
   <div class="pd-buy">
    <div><p class="eyebrow">${esc(nm(c))} · ${esc(fm.loc)}</p><h1>${vmark(p)}${esc(nm(p))}</h1><p class="muted ta" style="font-size:1.05rem">${esc(nm2(p))}</p></div>
    <div class="chips">${p.tags.map(g=>`<span class="chip ${S.profile.goals.includes(g)?"good":""}">${esc(TAGS[g][S.lang==="ta"?"ta":"en"])}</span>`).join("")}</div>
    ${fi.warn.length?`<div class="fit warn">${svg("warn")}<div><b>Check before you buy.</b> ${esc(fi.warn.join(". "))}. Based on your health profile.</div></div>`:fi.good.length?`<div class="fit good">${svg("check")}<div><b>Fits your goals:</b> ${fi.good.map(g=>esc(TAGS[g].en)).join(", ")}.</div></div>`:""}
-   <div class="variant" role="group" aria-label="Pack size">${p.units.map((x,i)=>`<button data-a="unit" data-id="${id}" data-v="${i}" aria-pressed="${i===ui}">${esc(x[0])}<br><span class="mono">${inr(x[1])}</span></button>`).join("")}</div>
+   <div class="variant" role="group" aria-label="Pack size">${p.units.map((x,i)=>`<button data-a="unit" data-id="${id}" data-v="${i}" aria-pressed="${i===ui}">${esc(x[0])}<br><span class="mono">${isOOS(p,i)?"Out of stock":inr(x[1])}</span></button>`).join("")}</div>
    <div class="between"><div class="price"><b style="font-size:1.4rem">${inr(u[1])}</b>${u[2]>u[1]?`<s>${inr(u[2])}</s><span class="chip gold">${Math.round((1-u[1]/u[2])*100)}% off</span>`:""}</div>
-    ${q?`<div class="stepper"><button data-a="dec" data-id="${id}" data-ui="${ui}">−</button><span>${q}</span><button data-a="inc" data-id="${id}" data-ui="${ui}">+</button></div>`:`<button class="btn" data-a="inc" data-id="${id}" data-ui="${ui}">${svg("cart")} ${t("add")}</button>`}</div>
+    ${isOOS(p,ui)?`<span class="chip warn">Out of stock${p.oos?"":" in this pack size"}</span>`:q?`<div class="stepper"><button data-a="dec" data-id="${id}" data-ui="${ui}">−</button><span>${q}</span><button data-a="inc" data-id="${id}" data-ui="${ui}">+</button></div>`:`<button class="btn" data-a="inc" data-id="${id}" data-ui="${ui}">${svg("cart")} ${t("add")}</button>`}</div>
    <div class="row">${p.sub?`<button class="btn ghost" data-a="subscribe" data-id="${id}">${svg("repeat")} Subscribe & save 5%</button>`:""}<button class="btn ghost" data-a="askAbout" data-v="Tell me about ${esc(p.en)}: health benefits, how to use it and a recipe.">${svg("spark")} Ask Mitra</button><button class="btn ghost" data-a="qCheck" data-id="${id}">${svg("eye")} How to choose</button></div>
    <div class="tabbar" role="tablist">${[["benefits","benefits"],["usage","usage"],["recipes","recipesT"],["farm","farmT"]].map(([k,l])=>`<button role="tab" data-a="pdTab" data-v="${k}" aria-selected="${tab===k}">${t(l)}</button>`).join("")}</div>
    <div role="tabpanel">${tabBody[tab]}</div>
@@ -837,7 +877,7 @@ function vCart(){
  return `<section><h1>${t("cart")}</h1><p class="muted small">${cartCount()} items from ${new Set(b.L.map(l=>l.p.farm)).size} farms</p></section>
  <div class="two">
   <div style="display:grid;gap:16px;min-width:0">
-   <section class="card pad">${b.L.map(l=>`<div class="line"><button class="thumb" style="${tint(catOf(l.p).hue)};border:0" data-a="go" data-r="product" data-id="${l.p.id}">${l.p.e}</button><div style="min-width:0"><b>${esc(nm(l.p))}</b><p class="small muted">${esc(l.unit)} · <span class="mono">${inr(l.price)}</span></p>${fit(l.p).warn.length?`<span class="chip warn">${esc(fit(l.p).warn[0])}</span>`:""}</div><div style="display:grid;justify-items:end;gap:4px"><div class="stepper"><button data-a="dec" data-id="${l.p.id}" data-ui="${l.ui}">−</button><span>${l.q}</span><button data-a="inc" data-id="${l.p.id}" data-ui="${l.ui}">+</button></div><span class="mono small">${inr(l.price*l.q)}</span></div></div>`).join("")}</section>
+   <section class="card pad">${b.L.map(l=>`<div class="line"><button class="thumb" style="${tint(catOf(l.p).hue)};border:0" data-a="go" data-r="product" data-id="${l.p.id}">${l.p.e}</button><div style="min-width:0"><b>${esc(nm(l.p))}</b><p class="small muted">${esc(l.unit)} · <span class="mono">${inr(l.price)}</span></p>${l.oos?`<span class="chip warn">Out of stock: remove to check out</span>`:fit(l.p).warn.length?`<span class="chip warn">${esc(fit(l.p).warn[0])}</span>`:""}</div><div style="display:grid;justify-items:end;gap:4px"><div class="stepper"><button data-a="dec" data-id="${l.p.id}" data-ui="${l.ui}">−</button><span>${l.q}</span><button data-a="inc" data-id="${l.p.id}" data-ui="${l.ui}">+</button></div><span class="mono small">${inr(l.price*l.q)}</span></div></div>`).join("")}</section>
    ${need.length?`<section><div class="sec-head"><h2>Completes your recipes</h2></div><div class="hscroll">${need.map(x=>pcard(PM[x])).join("")}</div></section>`:""}
    <section><div class="sec-head"><h2>Delivery slot</h2><span class="small muted">Free above ₹499</span></div>
     <div class="slots">${sl.map(s=>`<button class="slot" data-a="slot" data-v="${s.id}" aria-pressed="${S.slot===s.id}"><b>${esc(s.lbl)} · ${esc(s.time)}</b><span>${esc(s.note||"Available")}</span></button>`).join("")}</div></section>
@@ -969,7 +1009,7 @@ function vAccount(){
  <section class="card pad"><h2>Saved addresses</h2>${ADDR.map((a,i)=>`<div class="toggle"><span><b>${esc(a.lbl)}</b><br><span class="small muted">${esc(a.line)}</span></span>${S.addr===i?`<span class="chip good">Default</span>`:`<button class="link" data-a="setAddr" data-v="${i}">Make default</button>`}</div>`).join("")}</section>
  <p class="tiny muted">Vayal is a prototype. Health information is general guidance, not medical advice.</p>`;
 }
-const VIEWS={home:vHome,shop:vShop,product:()=>vProduct(S.route.id),cart:vCart,checkout:vCheckout,track:()=>vTrack(S.route.id),orders:vOrders,subs:vSubs,plan:vPlan,recipe:()=>vRecipe(S.route.id),account:vAccount,farm:()=>vFarm(),quality:()=>vQuality(),farmer:()=>vFarmer()};
+const VIEWS={home:vHome,shop:vShop,product:()=>vProduct(S.route.id),cart:vCart,checkout:vCheckout,track:()=>vTrack(S.route.id),orders:vOrders,subs:vSubs,plan:vPlan,recipe:()=>vRecipe(S.route.id),account:vAccount,farm:()=>vFarm(),quality:()=>vQuality(),farmer:()=>vFarmer(),crackers:()=>vCrackers(),admin:()=>vAdmin()};
 </script>
 
 <script>
@@ -1002,7 +1042,7 @@ function sheetPlanCart(){const L=planIngredients();
  sheet(`<h2>Add this week's ingredients</h2><p class="small muted">${S.profile.household} servings per meal. Items already in your cart are unticked.</p>
   <div class="card pad">${L.map((x,i)=>`<label class="toggle"><span>${x.p.e} ${esc(nm(x.p))} <span class="small muted">× ${x.packs} ${esc(x.p.units[0][0])}</span></span><input type="checkbox" id="pc${i}" data-pc="${x.p.id}" data-n="${Math.max(0,x.packs-x.have)}" ${x.have>=x.packs?"":"checked"} style="accent-color:var(--leaf);width:20px;height:20px"></label>`).join("")}</div>
   <button class="btn block" data-a="planCartOk">Add to cart</button>`)}
-function sheetInvoice(id){const o=S.orders.find(x=>x.id===id);const rate=p=>({veg:0,greens:0,fruit:0,dairy:0,fish:0,chicken:0,mutton:0,millet:5,dal:5,oil:5,pantry:5})[p.cat]+(p.id==="ghee"?7:0)+(p.id==="paneer"?5:0);
+function sheetInvoice(id){const o=S.orders.find(x=>x.id===id);const rate=p=>({veg:0,greens:0,fruit:0,dairy:0,fish:0,chicken:0,mutton:0,millet:5,dal:5,oil:5,pantry:5,snacks:12})[p.cat]+(p.id==="ghee"?7:0)+(p.id==="paneer"?5:0);
  let tx=0,gst=0;const rows=o.items.map(([pid,ui,q,pr])=>{const p=PM[pid],r=rate(p),amt=pr*q,base=amt/(1+r/100);tx+=base;gst+=amt-base;return `<tr><td>${esc(p.en)}</td><td class="mono">${q}</td><td class="mono">${r}%</td><td class="mono" style="text-align:right">${inr(amt)}</td></tr>`}).join("");
  sheet(`<h2>Tax invoice · ${esc(o.id)}</h2><p class="small muted">Vayal Farm Fresh Pvt Ltd (prototype) · ${fmtDate(o.date,{day:"numeric",month:"long",year:"numeric"})}</p>
  <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:.88rem"><thead><tr class="muted" style="text-align:left"><th>Item</th><th>Qty</th><th>GST</th><th style="text-align:right">Amount</th></tr></thead><tbody>${rows}</tbody></table></div>
@@ -1099,6 +1139,7 @@ Style: warm and brief (under 120 words unless a full recipe is asked). Use "- " 
 Language: UI language is ${S.lang==="ta"?"Tamil: reply in Tamil":"English"}. If the user writes in Tamil script reply in Tamil. Tanglish input: reply in English and give Tamil names in brackets.
 Only recommend products from the catalogue below, with ₹ prices. If something isn't stocked, say so and suggest the closest item.
 Health: give general, evidence-based nutrition information. Never diagnose, never promise cures. For medical conditions (diabetes, BP, kidney, pregnancy, infants) add one short line to check portions with their doctor. Respect the user's profile: flag allergen or diet conflicts clearly.
+Firecrackers: Vayal can't sell or deliver them online. For Deepavali crackers, point the user to the Deepavali crackers page in the menu to make an estimate list and pay and collect at the licensed dealer. Never add firecrackers to the cart.
 Actions: when the user asks to add/buy something, call add_to_cart. For "add ingredients for <recipe>", call add_recipe_to_cart. When showing a specific product would help, call show_product. Confirm what you added in one line. Do not invent order status or delivery times beyond: slots 6–8 AM, 8–10 AM, 5–7 PM; free delivery above ₹499.
 
 USER PROFILE: name ${pr.name}; diet ${pr.diet}; goals ${pr.goals.join(", ")||"none"}; avoid ${pr.allergens.join(", ")||"nothing"}; household ${pr.household} people.
@@ -1188,11 +1229,11 @@ Vary the week; don't repeat a dish on consecutive days. Reply with only JSON: {"
 
 /* ================= LIVE FARM ================= */
 const CAMS={
- field:[["Field","🌾"],["Harvest shed","🧺"]],fish:[["Landing jetty","🚤"],["Ice & sorting","🧊"]],poultry:[["Free-range yard","🐓"],["Packing room","📦"]],goat:[["Grazing field","🐐"],["Cutting room","🔪"]],dairy:[["Cow shed","🐄"],["Milking parlour","🥛"]],mill:[["Chekku press","🫗"],["Bottling","🍶"]]};
+ field:[["Field","🌾"],["Harvest shed","🧺"]],fish:[["Landing jetty","🚤"],["Ice & sorting","🧊"]],poultry:[["Free-range yard","🐓"],["Packing room","📦"]],goat:[["Grazing field","🐐"],["Cutting room","🔪"]],dairy:[["Cow shed","🐄"],["Milking parlour","🥛"]],mill:[["Chekku press","🫗"],["Bottling","🍶"]],kitchen:[["Snack kitchen","🍳"],["Packing room","📦"]]};
 const VISIT_SLOTS=["8–10 AM","10 AM–12 PM","4–6 PM"],VISIT_WHY=["Farm tour","Pick your own vegetables","Buy direct from the farm","Kids' farm workshop"];
 const mapsUrl=f=>`https://www.google.com/maps/search/?api=1&query=${f.lat},${f.lng}`;
 function camScene(f,ci){
- const crops=f.kind==="fish"?["🐟","🦐","🐠","🐟","🦀"]:f.kind==="poultry"?["🐓","🐔","🐥","🐓","🐔"]:f.kind==="goat"?["🐐","🐑","🐐","🐑","🐐"]:f.kind==="field"?["🌾","🌿","🍅","🌾","🌿","🥬","🌾"]:f.kind==="dairy"?["🐄","🐄","🐃","🐄","🐄"]:["🫗","🥜","🫗","🌴","🫗"];
+ const crops=f.kind==="fish"?["🐟","🦐","🐠","🐟","🦀"]:f.kind==="poultry"?["🐓","🐔","🐥","🐓","🐔"]:f.kind==="goat"?["🐐","🐑","🐐","🐑","🐐"]:f.kind==="field"?["🌾","🌿","🍅","🌾","🌿","🥬","🌾"]:f.kind==="dairy"?["🐄","🐄","🐃","🐄","🐄"]:f.kind==="kitchen"?["🍘","🥜","🍳","🍘","🎁"]:["🫗","🥜","🫗","🌴","🫗"];
  if(ci===1)return `<div class="shed"></div><div class="row-e" style="bottom:12%">${["📦","🧺","📦","🧺","📦"].map(x=>`<span>${x}</span>`).join("")}</div><div class="row-e" style="bottom:42%">${["🥬","🍅","🥛","🥕","🍌"].map(x=>`<span>${x}</span>`).join("")}</div><div class="walker" style="bottom:26%">🧑‍🌾</div>`;
  return `<div class="sky"></div><div class="sun"></div><div class="hill"></div><div class="hill b"></div><div class="ground"${f.kind==="fish"?` style="background:linear-gradient(#3c8dbc,#1d5f8a)"`:""}></div><div class="bird">🕊️</div>
   <div class="row-e" style="bottom:30%">${crops.map(x=>`<span>${x}</span>`).join("")}</div><div class="row-e" style="bottom:8%">${crops.slice().reverse().map(x=>`<span>${x}</span>`).join("")}</div><div class="walker" style="bottom:18%">${f.kind==="field"?"🚜":f.kind==="fish"?"🚤":f.kind==="mill"?"🛺":"🧑‍🌾"}</div>`}
@@ -1548,6 +1589,137 @@ function offerOk(){const v=id=>$("#"+id).value,kg=+v("of-kg"),ph=digits(v("of-ph
  if(!(kg>=10))return $("#of-err").textContent="Enter at least 10 kg.";if(!/^[6-9]\d{9}$/.test(ph))return $("#of-err").textContent="Enter a 10-digit mobile number.";
  S.offers=[...(S.offers||[]),{crop:v("of-crop"),kg,from:v("of-from"),ph,org:$("#of-org").checked,ref:"OF-"+Math.random().toString(36).slice(2,6).toUpperCase()}];store.set("offers",S.offers);closeSheet();render();toast("Offer sent. We'll call you within 2 working days.")}
 
+/* ================= DEEPAVALI CRACKERS (estimate list only) ================= */
+// Firecrackers can't be sold or delivered online in India, so this is a catalogue: customers build an
+// estimate, send it to the licensed dealer, and pay and collect at the shop. Prices are indicative.
+const FIRE_DEALER={name:"Sivakasi Green Crackers Depot (partner, licensed)",loc:"Velachery Main Road, Chennai",hours:"9 AM – 9 PM, from 2 weeks before Deepavali",note:"Placeholder dealer for this prototype."};
+const FIRE_KINDS=[["all","All"],["sparkler","Sparklers"],["ground","Ground"],["aerial","Aerial"],["sound","Sound"],["gift","Gift boxes"]];
+const FIRE=[
+ {id:"spk10",en:"Sparklers, 10 cm",ta:"கம்பி மத்தாப்பு 10 செ.மீ",e:"✨",kind:"sparkler",pack:"Box of 10",price:40,mrp:80,noise:"Silent",age:"Kids with an adult"},
+ {id:"spk15",en:"Sparklers, 15 cm",ta:"கம்பி மத்தாப்பு 15 செ.மீ",e:"✨",kind:"sparkler",pack:"Box of 10",price:60,mrp:120,noise:"Silent",age:"Kids with an adult"},
+ {id:"spk30",en:"Long sparklers, 30 cm",ta:"நீள கம்பி மத்தாப்பு 30 செ.மீ",e:"✨",kind:"sparkler",pack:"Box of 5",price:90,mrp:180,noise:"Silent",age:"Kids with an adult"},
+ {id:"spkc",en:"Colour sparklers",ta:"வண்ண மத்தாப்பு",e:"🎇",kind:"sparkler",pack:"Box of 10",price:80,mrp:160,noise:"Silent",age:"Kids with an adult"},
+ {id:"pencil",en:"Pencil sparklers",ta:"பென்சில் மத்தாப்பு",e:"🖍️",kind:"sparkler",pack:"Box of 10",price:50,mrp:100,noise:"Silent",age:"Kids with an adult"},
+ {id:"fpsmall",en:"Flower pot, small",ta:"புஸ்வாணம் சிறியது",e:"🌋",kind:"ground",pack:"Box of 10",price:120,mrp:240,noise:"Low",age:"Adult lights it"},
+ {id:"fpbig",en:"Flower pot, special",ta:"புஸ்வாணம் ஸ்பெஷல்",e:"🌋",kind:"ground",pack:"Box of 5",price:180,mrp:360,noise:"Low",age:"Adult lights it"},
+ {id:"chakkar",en:"Ground chakkar, big",ta:"தரைச் சக்கரம் பெரியது",e:"🌀",kind:"ground",pack:"Box of 10",price:110,mrp:220,noise:"Low",age:"Adult lights it"},
+ {id:"chakkard",en:"Ground chakkar, deluxe",ta:"தரைச் சக்கரம் டீலக்ஸ்",e:"🌀",kind:"ground",pack:"Box of 10",price:170,mrp:340,noise:"Low",age:"Adult lights it"},
+ {id:"twinkle",en:"Twinkling star",ta:"மின்னும் நட்சத்திரம்",e:"⭐",kind:"ground",pack:"Box of 10",price:70,mrp:140,noise:"Silent",age:"Kids with an adult"},
+ {id:"fountain",en:"Multi-colour fountain",ta:"வண்ண நீரூற்று",e:"⛲",kind:"ground",pack:"1 piece",price:250,mrp:500,noise:"Low",age:"Adult lights it"},
+ {id:"skyshot",en:"Sky shot, 12 shots",ta:"வான வேடிக்கை 12 ஷாட்",e:"🎆",kind:"aerial",pack:"1 piece",price:450,mrp:900,noise:"Medium",age:"Adults only, open ground"},
+ {id:"rocket",en:"Rockets",ta:"ராக்கெட்",e:"🚀",kind:"aerial",pack:"Box of 10",price:220,mrp:440,noise:"Medium",age:"Adults only, open ground"},
+ {id:"bijili",en:"Bijili, 100 pcs",ta:"பிஜிலி 100",e:"🧨",kind:"sound",pack:"Pack of 100",price:90,mrp:180,noise:"High",age:"Adults only"},
+ {id:"lakshmi",en:"Lakshmi crackers",ta:"லட்சுமி வெடி",e:"🧨",kind:"sound",pack:"Box of 10",price:110,mrp:220,noise:"High",age:"Adults only"},
+ {id:"giftkids",en:"Kids' green gift box",ta:"குழந்தைகள் பரிசுப் பெட்டி",e:"🎁",kind:"gift",pack:"21 items, sparklers and ground only",price:650,mrp:1300,noise:"Silent to low",age:"Kids with an adult"},
+ {id:"giftfam",en:"Family gift box",ta:"குடும்பப் பரிசுப் பெட்டி",e:"🎁",kind:"gift",pack:"35 items",price:1450,mrp:2900,noise:"Mixed",age:"Adult supervision"}
+];
+const FM=Object.fromEntries(FIRE.map(f=>[f.id,f]));
+const fireTotal=()=>Object.entries(S.fire).reduce((a,[id,q])=>a+(FM[id]?FM[id].price*q:0),0);
+const fireCount=()=>Object.values(S.fire).reduce((a,q)=>a+q,0);
+function fireText(){const L=Object.entries(S.fire).filter(([id])=>FM[id]);
+ return `Vayal · வயல் — Deepavali cracker estimate\n${L.map(([id,q])=>`${FM[id].en} (${FM[id].pack}) × ${q} = ${inr(FM[id].price*q)}`).join("\n")}\nEstimated total: ${inr(fireTotal())}\nPickup at: ${FIRE_DEALER.name}, ${FIRE_DEALER.loc}`}
+function vCrackers(){
+ const k=S.fireKind,list=FIRE.filter(f=>k==="all"||f.kind===k),n=fireCount();
+ const card=f=>{const q=S.fire[f.id]||0;return `<article class="pcard"><div class="pimg" style="${tint("#C9A227",26)}" aria-hidden="true">${f.e}</div>
+  <b class="small">${esc(S.lang==="ta"?f.ta:f.en)}<span class="ta" style="display:block;font-weight:500;font-size:.78rem;color:var(--muted)">${esc(S.lang==="ta"?f.en:f.ta)}</span></b>
+  <div class="small muted">${esc(f.pack)}</div><div class="chips"><span class="chip ${f.noise==="High"?"warn":f.noise==="Medium"?"gold":"good"}">${esc(f.noise)}</span><span class="chip">${esc(f.age)}</span></div>
+  <div class="pfoot"><div class="price"><b>${inr(f.price)}</b><s>${inr(f.mrp)}</s></div>${q?`<div class="stepper"><button data-a="fireQ" data-id="${f.id}" data-v="-1" aria-label="Remove one">−</button><span>${q}</span><button data-a="fireQ" data-id="${f.id}" data-v="1" aria-label="Add one">+</button></div>`:`<button class="add" data-a="fireQ" data-id="${f.id}" data-v="1">${t("add")}</button>`}</div></article>`};
+ return `${pageHead("spark",t("crackersT"),S.lang==="ta"?"உரிமம் பெற்ற சிவகாசி தயாரிப்பாளர்களின் பசுமைப் பட்டாசுகள். இங்கே மதிப்பீட்டுப் பட்டியல் தயாரித்து, கடையில் பணம் செலுத்திப் பெற்றுக்கொள்ளுங்கள்":"Green crackers from licensed Sivakasi makers. Make an estimate list here, then pay and collect at the licensed dealer")}
+ <div class="fit warn">${svg("warn")}<div><b>Pickup only, no online sale or delivery.</b> Indian rules don't allow firecrackers to be sold or delivered online. Build your list, send it to the dealer, and pay and collect at the shop. Prices are indicative.</div></div>
+ <div class="seg" role="group" aria-label="Type">${FIRE_KINDS.map(([v,l])=>`<button data-a="fireKind" data-v="${v}" aria-pressed="${k===v}">${l}</button>`).join("")}</div>
+ <div class="two"><div class="grid">${list.map(card).join("")}</div>
+ <aside style="display:grid;gap:12px;align-content:start">
+  <section class="card pad bill"><h3>Your estimate</h3>${n?Object.entries(S.fire).filter(([id])=>FM[id]).map(([id,q])=>`<div class="between small"><span>${FM[id].e} ${esc(FM[id].en)} × ${q}</span><span>${inr(FM[id].price*q)}</span></div>`).join("")+`<div class="between total"><span>Estimated total</span><span>${inr(fireTotal())}</span></div>
+   <button class="btn block" data-a="fireShare">${svg("send")} Send list to dealer</button><button class="link" data-a="fireClear">Clear list</button>`:`<p class="small muted">Add items to make a list you can send to the dealer.</p>`}</section>
+  <section class="card pad" style="display:grid;gap:6px"><h3>Pickup</h3><p class="small"><b>${esc(FIRE_DEALER.name)}</b><br>${esc(FIRE_DEALER.loc)}<br><span class="muted">${esc(FIRE_DEALER.hours)}</span></p><p class="tiny muted">${esc(FIRE_DEALER.note)} Bring your list or show it on your phone.</p></section>
+  <section class="card pad" style="display:grid;gap:6px"><h3>Celebrate safely</h3><ul class="list small">
+   <li>Buy only green crackers with the CSIR-NEERI green logo and QR code.</li>
+   <li>Burst only during the hours your state announces for Deepavali.</li>
+   <li>Light crackers in open ground, away from homes, vehicles and dry leaves, wearing cotton clothes.</li>
+   <li>Keep a bucket of water and sand nearby. Never relight a dud; soak it in water.</li>
+   <li>Children only with an adult. Sound crackers away from hospitals, elders and animals.</li>
+   <li>For burns, cool with running water for 20 minutes. Emergency: 108.</li></ul></section>
+ </aside></div>`}
+async function fireShare(){const text=fireText();
+ try{if(navigator.share){await navigator.share({title:"Deepavali cracker estimate",text});return}}catch(e){if(e.name==="AbortError")return}
+ try{await navigator.clipboard.writeText(text);toast("List copied. Paste it in WhatsApp to the dealer")}catch(e){sheet(`<h2>Your list</h2><pre class="small card pad" style="white-space:pre-wrap;margin:0">${esc(text)}</pre>`)}}
+
+/* ================= ADMIN (demo: data and PINs stay in this browser, not secure) ================= */
+const ROLES={owner:{en:"Owner",can:["stock","price","add","remove","staff"]},manager:{en:"Store manager",can:["stock","price"]},staff:{en:"Stock staff",can:["stock"]}};
+const ROLE_TXT={owner:"Everything, including staff",manager:"Stock and prices",staff:"Stock only"};
+const can=x=>!!S.admin&&ROLES[S.admin.role].can.includes(x);
+function saveAdm(what){if(what)ADM.log.unshift({t:Date.now(),who:S.admin?`${S.admin.name} (${ROLES[S.admin.role].en})`:"—",what});ADM.log=ADM.log.slice(0,150);store.set("admin",ADM)}
+function catChanged(what){saveAdm(what);applyCatalog();render()}
+const pinOk=v=>/^\d{4,6}$/.test(v);
+function vAdmin(){
+ const head=pageHead("shield",t("adminT"),"Add varieties, manage stock and prices, and give staff the access they need");
+ const demo=`<p class="tiny muted">Demo admin: products, stock, staff and PINs are saved in this browser only, so customers on other devices don't see these changes. A live store needs these saved on the server.</p>`;
+ if(!ADM.owner)return `${head}<section class="card pad" style="display:grid;gap:10px;max-width:440px"><h2>Set up the owner account</h2><p class="small muted">The owner can add and remove varieties, change prices and stock, and add staff.</p>
+  <label class="fld">Your name<input id="ad-name" maxlength="40" autocomplete="name"></label><label class="fld">Choose a 4–6 digit PIN<input id="ad-pin" type="password" inputmode="numeric" maxlength="6" autocomplete="new-password"></label><label class="fld">Repeat PIN<input id="ad-pin2" type="password" inputmode="numeric" maxlength="6" autocomplete="new-password"></label>
+  <p id="ad-err" class="small" role="alert" style="color:var(--chili);min-height:1.2em"></p><button class="btn" data-a="admSetup">Create owner account</button></section>${demo}`;
+ if(!S.admin){const people=[{id:"owner",name:ADM.owner.name,role:"owner"},...ADM.staff];
+  return `${head}<section class="card pad" style="display:grid;gap:10px;max-width:440px"><h2>Admin sign-in</h2>
+  <label class="fld">Who are you?<select id="ad-who">${people.map(x=>`<option value="${x.id}">${esc(x.name)} · ${ROLES[x.role].en}</option>`).join("")}</select></label>
+  <label class="fld">PIN<input id="ad-pin" type="password" inputmode="numeric" maxlength="6" autocomplete="current-password"></label>
+  <p id="ad-err" class="small" role="alert" style="color:var(--chili);min-height:1.2em"></p><button class="btn" data-a="admLogin">Sign in</button></section>${demo}`}
+ const tabs=[["stock","grid","Products & stock"],...(can("add")?[["add","sprout","Add a variety"]]:[]),...(can("staff")?[["staff","user","Staff & roles"]]:[]),["log","clock","Activity"]];
+ const tab=tabs.some(x=>x[0]===S.route.id)?S.route.id:"stock";
+ const bar=`<div class="between" style="flex-wrap:wrap"><span class="small">Signed in as <b>${esc(S.admin.name)}</b> · <span class="chip good">${ROLES[S.admin.role].en}</span> <span class="muted">(${ROLE_TXT[S.admin.role]})</span></span><button class="link" data-a="admOut">Sign out of admin</button></div>
+  <div class="ptabs" role="tablist">${tabs.map(([k,i,l])=>`<button role="tab" data-a="side" data-r="admin" data-id="${k}" aria-selected="${tab===k}">${svg(i)}${l}</button>`).join("")}</div>`;
+ let body="";
+ if(tab==="stock"){const q=(S.adm.q||"").toLowerCase(),c=S.adm.cat||"all";
+  const list=Object.values(ALL_P).filter(p=>!p.removed&&(c==="all"||p.cat===c)&&(!q||(p.en+" "+p.ta+" "+p.al).toLowerCase().includes(q)));
+  const removed=Object.values(ALL_P).filter(p=>p.removed),oosN=P.filter(p=>p.oos||p.oosU.length).length;
+  body=`<div class="kpis">${[["Products in shop",P.length,""],["Out of stock",oosN,oosN?"some packs or whole items":"all in stock"],["Added by you",ADM.cat.added.length,""]].map(([l,v,x])=>`<div class="kpi"><span class="k-l">${l}</span><span class="k-v mono">${v}</span><span class="k-s">${x}</span></div>`).join("")}</div>
+  <div class="row" style="align-items:end"><label class="fld" style="flex:1;min-width:200px">Search<input id="admq" data-in="admq" value="${esc(S.adm.q||"")}" placeholder="Name, Tamil or Tanglish"></label><label class="fld">Category<select id="admcat" data-in="admcat"><option value="all">All</option>${CATS.map(x=>`<option value="${x.id}" ${x.id===c?"selected":""}>${esc(x.en)}</option>`).join("")}</select></label></div>
+  <section class="card pad scroll-x"><table class="tbl"><thead><tr><th>Product</th><th>In stock</th><th>Pack sizes · price · stock</th>${can("remove")?"<th></th>":""}</tr></thead><tbody>${list.map(p=>`<tr>
+   <td><b>${p.e} ${esc(p.en)}</b><br><span class="small muted">${esc(p.ta)} · ${esc(catOf(p)?.en||p.cat)}${p.added?' · <span class="chip gold">added</span>':""}</span></td>
+   <td><input class="sw" type="checkbox" id="oos-${p.id}" data-in="admOos" data-id="${p.id}" ${p.oos?"":"checked"} aria-label="${esc(p.en)} in stock" ${can("stock")?"":"disabled"}></td>
+   <td>${p.units.map((u,i)=>`<div class="row" style="gap:8px;margin-bottom:4px"><span class="small" style="min-width:74px">${esc(u[0])}</span>${can("price")?`<input id="pr-${p.id}-${i}" data-in="admPrice" data-id="${p.id}" data-ui="${i}" type="number" min="1" max="100000" value="${u[1]}" aria-label="${esc(p.en)} ${esc(u[0])} price" style="width:90px;border:1px solid var(--line);border-radius:8px;padding:5px;background:var(--surface)">`:`<span class="mono small">${inr(u[1])}</span>`}
+    <label class="small" style="display:inline-flex;gap:6px;align-items:center"><input type="checkbox" id="oosu-${p.id}-${i}" data-in="admOosU" data-id="${p.id}" data-ui="${i}" ${p.oosU.includes(i)?"":"checked"} ${p.oos||!can("stock")?"disabled":""} style="accent-color:var(--leaf)"> in stock</label></div>`).join("")}
+    ${can("add")?`<button class="link small" data-a="admPack" data-id="${p.id}">+ pack size</button>`:""}</td>
+   ${can("remove")?`<td><button class="link" style="color:var(--chili)" data-a="admRemove" data-id="${p.id}">Remove</button></td>`:""}</tr>`).join("")||`<tr><td colspan="4" class="muted">No products match.</td></tr>`}</tbody></table></section>
+  ${can("remove")&&removed.length?`<section class="card pad"><h3>Removed from the shop</h3>${removed.map(p=>`<div class="between small" style="padding:4px 0"><span>${p.e} ${esc(p.en)}</span><button class="link" data-a="admRestore" data-id="${p.id}">Restore</button></div>`).join("")}</section>`:""}`}
+ if(tab==="add"){const tg=Object.keys(TAGS),al=Object.keys(ALLERGENS);
+  body=`<section class="card pad" style="display:grid;gap:12px;max-width:760px"><h2>Add a variety</h2>
+  <div class="two" style="gap:12px"><label class="fld">Name (English)<input id="av-en" maxlength="60" placeholder="e.g. Karuppu kavuni rice"></label><label class="fld">Name (Tamil)<input id="av-ta" maxlength="60" placeholder="e.g. கருப்பு கவுனி அரிசி"></label></div>
+  <div class="row" style="align-items:end"><label class="fld">Category<select id="av-cat">${CATS.map(x=>`<option value="${x.id}">${x.e} ${esc(x.en)}</option>`).join("")}</select></label><label class="fld">Icon (emoji)<input id="av-e" maxlength="4" style="width:80px" placeholder="🌾"></label><label class="fld">Farm or supplier<select id="av-farm">${Object.entries(FARMS).map(([k,f])=>`<option value="${k}">${esc(f.name)}</option>`).join("")}</select></label></div>
+  <div><p class="eyebrow">Pack sizes (at least one)</p>${[0,1,2].map(i=>`<div class="row" style="gap:8px;margin-top:6px"><input id="av-u${i}" placeholder="${["500 g","1 kg","250 g"][i]}" maxlength="20" aria-label="Pack ${i+1} size" style="width:110px;border:1px solid var(--line);border-radius:8px;padding:7px;background:var(--surface)"><input id="av-p${i}" type="number" min="1" placeholder="Price ₹" aria-label="Pack ${i+1} price" style="width:110px;border:1px solid var(--line);border-radius:8px;padding:7px;background:var(--surface)"><input id="av-m${i}" type="number" min="1" placeholder="MRP ₹ (optional)" aria-label="Pack ${i+1} MRP" style="width:150px;border:1px solid var(--line);border-radius:8px;padding:7px;background:var(--surface)"></div>`).join("")}</div>
+  <div><p class="eyebrow">Health tags</p><div class="chips">${tg.map(k=>`<label class="pill-btn" style="display:inline-flex;gap:6px;align-items:center"><input type="checkbox" id="av-t-${k}" style="accent-color:var(--leaf)">${esc(TAGS[k].en)}</label>`).join("")}</div></div>
+  <div><p class="eyebrow">Contains (allergens)</p><div class="chips">${al.map(k=>`<label class="pill-btn" style="display:inline-flex;gap:6px;align-items:center"><input type="checkbox" id="av-a-${k}" style="accent-color:var(--chili)">${esc(ALLERGENS[k])}</label>`).join("")}</div></div>
+  <label class="fld">Main benefit (shown on the product page)<input id="av-ben" maxlength="140"></label><label class="fld">How to store<input id="av-sto" maxlength="140"></label>
+  <label class="toggle"><span><b>Start as out of stock</b><br><span class="small muted">Add it now and switch it on when stock arrives</span></span><input class="sw" type="checkbox" id="av-oos"></label>
+  <p id="av-err" class="small" role="alert" style="color:var(--chili);min-height:1.2em"></p><button class="btn" data-a="admAdd">${svg("check")} Add to shop</button></section>`}
+ if(tab==="staff")body=`<section class="card pad scroll-x"><h2 style="margin-bottom:8px">Staff and roles</h2><table class="tbl"><thead><tr><th>Name</th><th>Role</th><th>Can do</th><th></th></tr></thead><tbody>
+  <tr><td><b>${esc(ADM.owner.name)}</b></td><td>Owner</td><td class="small">${ROLE_TXT.owner}</td><td></td></tr>
+  ${ADM.staff.map(x=>`<tr><td><b>${esc(x.name)}</b></td><td><select id="role-${x.id}" data-in="admRole" data-id="${x.id}">${["manager","staff"].map(r=>`<option value="${r}" ${x.role===r?"selected":""}>${ROLES[r].en}</option>`).join("")}</select></td><td class="small">${ROLE_TXT[x.role]}</td><td><button class="link" data-a="admPinReset" data-id="${x.id}">New PIN</button> · <button class="link" style="color:var(--chili)" data-a="admStaffDel" data-id="${x.id}">Remove</button></td></tr>`).join("")}</tbody></table></section>
+  <section class="card pad" style="display:grid;gap:10px;max-width:440px"><h3>Add a staff member</h3><label class="fld">Name<input id="st-name" maxlength="40"></label>
+  <label class="fld">Role<select id="st-role"><option value="staff">Stock staff · stock only</option><option value="manager">Store manager · stock and prices</option></select></label>
+  <label class="fld">Their 4–6 digit PIN<input id="st-pin" type="password" inputmode="numeric" maxlength="6" autocomplete="new-password"></label>
+  <p id="st-err" class="small" role="alert" style="color:var(--chili);min-height:1.2em"></p><button class="btn" data-a="admStaffAdd">Add staff member</button></section>`;
+ if(tab==="log")body=`<section class="card pad scroll-x">${ADM.log.length?`<table class="tbl"><thead><tr><th>When</th><th>Who</th><th>Change</th></tr></thead><tbody>${ADM.log.map(l=>`<tr><td class="small">${fmtDate(l.t,{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"})}</td><td class="small">${esc(l.who)}</td><td class="small">${esc(l.what)}</td></tr>`).join("")}</tbody></table>`:`<p class="muted">No changes yet.</p>`}</section>`;
+ return `${head}${bar}${body}${demo}`}
+async function admSetup(){const v=id=>$("#"+id).value.trim(),err=m=>{$("#ad-err").textContent=m};
+ if(v("ad-name").length<2)return err("Enter your name.");if(!pinOk(v("ad-pin")))return err("The PIN must be 4 to 6 digits.");if(v("ad-pin")!==v("ad-pin2"))return err("The two PINs don't match.");
+ const salt=Math.random().toString(36).slice(2);ADM.owner={name:v("ad-name"),salt,hash:await hashPw(salt,v("ad-pin"))};S.admin={id:"owner",name:ADM.owner.name,role:"owner"};saveAdm("Set up the owner account");render()}
+async function admLogin(){const who=$("#ad-who").value,pin=$("#ad-pin").value,err=m=>{$("#ad-err").textContent=m};
+ const x=who==="owner"?{...ADM.owner,id:"owner",role:"owner"}:ADM.staff.find(s=>s.id===who);
+ if(!x||x.hash!==await hashPw(x.salt,pin))return err("Wrong PIN.");S.admin={id:x.id,name:x.name,role:x.role};try{sessionStorage.setItem("vayal:adminSession",x.id)}catch(e){}render()}
+async function admStaffAdd(){const name=$("#st-name").value.trim(),role=$("#st-role").value,pin=$("#st-pin").value,err=m=>{$("#st-err").textContent=m};
+ if(name.length<2)return err("Enter their name.");if(!pinOk(pin))return err("The PIN must be 4 to 6 digits.");
+ if([ADM.owner.name,...ADM.staff.map(s=>s.name)].some(n=>n.toLowerCase()===name.toLowerCase()))return err("Someone with that name already exists.");
+ const salt=Math.random().toString(36).slice(2);ADM.staff.push({id:"s"+Date.now().toString(36),name,role,salt,hash:await hashPw(salt,pin)});saveAdm(`Added ${name} as ${ROLES[role].en}`);render();toast(`${name} can now sign in to admin`)}
+async function admAdd(){if(!can("add"))return;const v=id=>($("#"+id)?.value||"").trim(),err=m=>{$("#av-err").textContent=m};
+ const en=v("av-en"),cat=v("av-cat");if(en.length<2)return err("Enter the product name.");
+ const units=[0,1,2].map(i=>[v("av-u"+i),+v("av-p"+i),+v("av-m"+i)]).filter(u=>u[0]&&u[1]>0).map(u=>[u[0],Math.round(u[1]),Math.round(Math.max(u[2]||u[1],u[1]))]);
+ if(!units.length)return err("Add at least one pack size with a price.");
+ if(Object.values(ALL_P).some(p=>p.en.toLowerCase()===en.toLowerCase()&&!p.removed))return err("A product with this name is already in the shop.");
+ const id="x"+en.toLowerCase().replace(/[^a-z0-9]+/g,"").slice(0,16)+Date.now().toString(36).slice(-3),ta=v("av-ta")||en;
+ const p={id,en,ta,al:(en+" "+ta).toLowerCase(),cat,e:v("av-e")||CATS.find(c=>c.id===cat).e,units,farm:v("av-farm"),tags:Object.keys(TAGS).filter(k=>$("#av-t-"+k).checked),allergens:Object.keys(ALLERGENS).filter(k=>$("#av-a-"+k).checked),
+  n:[0,0,0,0],sub:false,benefits:v("av-ben")?[v("av-ben")]:[],usage:[],storage:v("av-sto")||"Store as you would similar items.",recipes:[],added:true,...(["fish","chicken","mutton"].includes(cat)?{nv:true}:{})};
+ ADM.cat.added.push(p);if($("#av-oos").checked)ADM.cat.oos.push(id);S.route={name:"admin",id:"stock"};S.adm.q=en;catChanged(`Added ${en} (${units.map(u=>u[0]+" "+inr(u[1])).join(", ")})`);toast(`${en} added to the shop`)}
+function sheetPack(id){const p=ALL_P[id];sheet(`<h2>Add a pack size · ${esc(p.en)}</h2><label class="fld">Pack size<input id="pk-u" maxlength="20" placeholder="e.g. 2 kg"></label><label class="fld">Price ₹<input id="pk-p" type="number" min="1"></label><label class="fld">MRP ₹ (optional)<input id="pk-m" type="number" min="1"></label><p id="pk-err" class="small" role="alert" style="color:var(--chili);min-height:1.2em"></p><button class="btn block" data-a="admPackOk" data-id="${id}">Add pack size</button>`)}
+
 /* ================= EVENTS ================= */
 const A={
  farmGo:d=>{S.cam=0;go("farm",d.v);tickCam()}, cam:d=>{S.cam=+d.v;render();tickCam()}, visitNew:d=>sheetVisit(d.v), visitOk:d=>visitOk(d.v), farmShare:d=>farmShare(d.v,d.id), farmDist:d=>farmDist(d.v), visitView:d=>sheetVisitDone(d.id), visitIcs:d=>visitIcs(d.id),
@@ -1562,7 +1734,7 @@ const A={
  phone:()=>{S.phone=!S.phone;$("#stage").classList.toggle("phone",S.phone);exitBtn();render()},
  addr:sheetAddr, setAddr:d=>{S.addr=+d.v;closeSheet();render();toast("Delivering to "+ADDR[S.addr].lbl)},
  slot:d=>{S.slot=d.v;render()}, coupon:d=>{S.coupon=S.coupon===d.v?null:d.v;render()},
- place:()=>{if(!S.user)return needAuth(A.place);const b=bill(),sl=slots().find(s=>s.id===S.slot)||slots()[0];
+ place:()=>{if(cartLines().some(l=>l.oos)){toast("Some items are out of stock. Remove them from your cart first.");return go("cart")}if(!S.user)return needAuth(A.place);const b=bill(),sl=slots().find(s=>s.id===S.slot)||slots()[0];
   if(S.pay==="wallet"&&S.wallet<b.total){toast("Wallet balance is low. Top up or pick another method.");return}
   const o={id:"VY-"+(24900+Math.floor(Math.random()*900)),date:Date.now(),items:b.L.map(l=>[l.p.id,l.ui,l.q,l.price]),total:Math.round(b.total),stage:0,pay:{upi:"UPI",card:"Card",wallet:"Wallet",cod:"Pay on delivery"}[S.pay],slot:sl.lbl+" "+sl.time,rating:{},otp:String(1000+Math.floor(Math.random()*9000))};
   if(S.pay==="wallet")S.wallet-=o.total;S.points=S.points-b.pts+Math.floor(b.total/20);S.orders.push(o);S.cart={};S.coupon=null;S.usePoints=false;save();toast("Order placed. The farms have your list.");go("track",o.id)},
@@ -1606,6 +1778,18 @@ const A={
  qCheck:d=>{S.q={...S.q,pid:d.id,result:null,ticks:{}};go("quality","scan")},
  camSnap, camFlip:()=>{camFacing=camFacing==="user"?"environment":"user";startCam()},
  camUpload:()=>{const m=camMode;closeSheet();pickFile("#qUpload",m)}, camNative:()=>{const m=camMode;closeSheet();pickFile("#qPhoto",m)},
+ fireQ:d=>{const q=Math.max(0,(S.fire[d.id]||0)+ +d.v);if(q)S.fire[d.id]=q;else delete S.fire[d.id];store.set("fire",S.fire);render()},
+ fireKind:d=>{S.fireKind=d.v;render()},
+ admSetup, admLogin, admStaffAdd, admAdd, admOut:()=>{S.admin=null;try{sessionStorage.removeItem("vayal:adminSession")}catch(e){}render()},
+ admRemove:d=>{if(!can("remove"))return;const p=ALL_P[d.id];if(!confirm(`Remove ${p.en} from the shop? You can restore it later.`))return;ADM.cat.removed.push(d.id);catChanged(`Removed ${p.en} from the shop`)},
+ admRestore:d=>{if(!can("remove"))return;ADM.cat.removed=ADM.cat.removed.filter(x=>x!==d.id);catChanged(`Restored ${ALL_P[d.id].en}`)},
+ admPack:d=>can("add")&&sheetPack(d.id),
+ admPackOk:d=>{const u=$("#pk-u").value.trim(),pr=Math.round(+$("#pk-p").value),m=Math.round(+$("#pk-m").value||pr);if(!u||!(pr>0)){$("#pk-err").textContent="Enter a pack size and price.";return}
+  if(ALL_P[d.id].units.some(x=>x[0].toLowerCase()===u.toLowerCase())){$("#pk-err").textContent="That pack size already exists.";return}
+  (ADM.cat.packs[d.id]=ADM.cat.packs[d.id]||[]).push([u,pr,Math.max(m,pr)]);closeSheet();catChanged(`Added pack ${u} at ${inr(pr)} to ${ALL_P[d.id].en}`)},
+ admStaffDel:d=>{const x=ADM.staff.find(s=>s.id===d.id);if(!x||!confirm(`Remove ${x.name}'s admin access?`))return;ADM.staff=ADM.staff.filter(s=>s.id!==d.id);saveAdm(`Removed ${x.name}`);render()},
+ admPinReset:d=>{const x=ADM.staff.find(s=>s.id===d.id);sheet(`<h2>New PIN for ${esc(x.name)}</h2><label class="fld">4–6 digit PIN<input id="np-pin" type="password" inputmode="numeric" maxlength="6" autocomplete="new-password"></label><p id="np-err" class="small" role="alert" style="color:var(--chili);min-height:1.2em"></p><button class="btn block" data-a="admPinOk" data-id="${x.id}">Save PIN</button>`)},
+ admPinOk:async d=>{const pin=$("#np-pin").value,x=ADM.staff.find(s=>s.id===d.id);if(!pinOk(pin)){$("#np-err").textContent="The PIN must be 4 to 6 digits.";return}x.salt=Math.random().toString(36).slice(2);x.hash=await hashPw(x.salt,pin);saveAdm(`Set a new PIN for ${x.name}`);closeSheet();toast("PIN updated")}, fireShare, fireClear:()=>{S.fire={};store.set("fire",{});render()},
  dxShoot, wxRetry:()=>{delete S.wx[S.fd];render()}, offerNew:sheetOffer, offerOk
 };
 const isWide=()=>$("#app").clientWidth>=820;
@@ -1615,13 +1799,18 @@ document.addEventListener("click",e=>{if(S.sideOpen&&!e.target.closest("#side,.m
  if(a==="closeSheet"&&e.target!==el)return;
  if(sheetSubscribe.h&&a.startsWith("ss-")){sheetSubscribe.h[a](el.dataset.v);return}
  const fn=A[a];if(fn){e.preventDefault();fn(el.dataset,el)}});
-document.addEventListener("input",e=>{const el=e.target;const k=el.dataset.in;if(k==="q"){S.shop.q=el.value;if(S.route.name!=="shop"){S.shop.cat="all";S.route={name:"shop"};}render()}});
+document.addEventListener("input",e=>{const el=e.target;const k=el.dataset.in;if(k==="admq"){S.adm.q=el.value;render();return}if(k==="q"){S.shop.q=el.value;if(S.route.name!=="shop"){S.shop.cat="all";S.route={name:"shop"};}render()}});
 document.addEventListener("change",e=>{const el=e.target,k=el.dataset.in;if(!k)return;
  if(k==="sort")S.shop.sort=el.value;if(k==="pts")S.usePoints=el.checked;if(k==="crate")S.crate=el.checked;if(k==="fund")S.farmerFund=el.checked;
  if(k==="addr")S.addr=+el.value;if(k==="pay")S.pay=el.value;if(k==="fitonly")S.profile.fitOnly=el.checked;if(k==="notif")S.profile.notif[el.dataset.v]=el.checked;
  if(k==="freq"){const s=S.subs.find(x=>x.id===el.dataset.id);s.freq=el.value}
  if(k==="qpid"){S.q={...S.q,pid:el.value,result:null,ticks:{}}}if(k==="qtick")S.q.ticks[el.dataset.v]=el.checked;
  if(k==="fd"){S.fd=el.value;store.set("farmDistrict",S.fd)}if(k==="fcrop")S.fcrop=el.value;
+ if(k==="admcat")S.adm.cat=el.value;
+ if(k==="admOos"&&can("stock")){const id=el.dataset.id,p=ALL_P[id];ADM.cat.oos=ADM.cat.oos.filter(x=>x!==id);if(!el.checked)ADM.cat.oos.push(id);saveAdm(`${p.en}: ${el.checked?"back in stock":"out of stock"}`);applyCatalog()}
+ if(k==="admOosU"&&can("stock")){const id=el.dataset.id,ui=+el.dataset.ui,p=ALL_P[id],a=(ADM.cat.oosU[id]||[]).filter(x=>x!==ui);if(!el.checked)a.push(ui);ADM.cat.oosU[id]=a;saveAdm(`${p.en} ${p.units[ui][0]}: ${el.checked?"back in stock":"out of stock"}`);applyCatalog()}
+ if(k==="admPrice"&&can("price")){const id=el.dataset.id,ui=+el.dataset.ui,v=Math.round(+el.value),p=ALL_P[id];if(v>0&&v!==p.units[ui][1]){(ADM.cat.price[id]=ADM.cat.price[id]||{})[ui]=v;saveAdm(`${p.en} ${p.units[ui][0]}: price ${inr(p.units[ui][1])} → ${inr(v)}`);applyCatalog()}}
+ if(k==="admRole"){const x=ADM.staff.find(s=>s.id===el.dataset.id);if(x&&can("staff")){x.role=el.value;saveAdm(`${x.name} is now ${ROLES[x.role].en}`)}}
  save();if(k!=="q")render()});
 document.addEventListener("submit",e=>{if(e.target.id==="composer"){e.preventDefault();if(S.busy){ctl?.abort();return}const i=$("#chatIn");const v=i.value;i.value="";sendChat(v)}});
 document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id&&e.target.id.startsWith("au-")){e.preventDefault();$("[data-a=authSubmit]")?.click()}if(e.key==="Escape"){if($("#layer").innerHTML)closeSheet();else if(S.chatOpen)closeChat();else if(S.sideOpen){S.sideOpen=false;renderSide();$(".menu-btn")?.focus()}}});

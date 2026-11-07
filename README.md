@@ -1,4 +1,4 @@
-# Vayal
+# Vayal · வயல்
 
 **Vayal (வயல்) · farm to kitchen** — a clickable web + mobile prototype of an organic farm-to-kitchen grocery store for Chennai.
 

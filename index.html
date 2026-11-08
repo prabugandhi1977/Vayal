@@ -130,7 +130,7 @@ label.fld{display:grid;gap:4px;font-size:.85rem;font-weight:600}
 
 /* product grid */
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.pcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:10px;display:grid;grid-template-rows:auto auto 1fr auto;gap:6px;min-width:0}
+.pcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:10px;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto 1fr auto;gap:6px;min-width:0}
 .hscroll .pcard{width:168px}
 .pimg{border:0;border-radius:11px;aspect-ratio:4/3;display:grid;place-items:center;font-size:2.8rem;position:relative;width:100%;max-width:100%;padding:0}
 .pimg .tag{position:absolute;top:6px;left:6px}
@@ -183,7 +183,7 @@ label.fld{display:grid;gap:4px;font-size:.85rem;font-weight:600}
 @keyframes walk{from{left:-8%}to{left:104%}}@keyframes fly{from{left:-5%;top:18%}50%{top:10%}to{left:105%;top:20%}}
 @media (prefers-reduced-motion:reduce){.cam *{animation:none!important}}
 .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-.farm{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center}
+.farm{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center}
 .farm-av{width:48px;height:48px;border-radius:50%;background:var(--turmeric-soft);display:grid;place-items:center;font-weight:800;font-family:var(--f-display);color:var(--ink)}
 .trace{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;font-size:.72rem;text-align:center}
 .trace div{border-top:3px solid var(--leaf);padding-top:6px}
@@ -273,6 +273,20 @@ label.fld{display:grid;gap:4px;font-size:.85rem;font-weight:600}
 .sw:checked{background:var(--leaf)} .sw:checked:before{left:21px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 :root[data-theme="light"]{color-scheme:light}
+.two>*{min-width:0}
+/* Single-column grids built inline must not grow wider than their container (a long row of chips or buttons otherwise stretches them). */
+:is(section,div,aside,article)[style*="display:grid"]:not([style*="grid-template-columns"]){grid-template-columns:minmax(0,1fr)}
+.pimg .tag{max-width:calc(100% - 12px);overflow:hidden;text-overflow:ellipsis}
+.pcard .chip{white-space:normal}
+.pfoot{flex-wrap:wrap}
+label.fld{min-width:0}.fld select,.fld input,.fld textarea{min-width:0;max-width:100%}
+.top-in{min-width:0}.deliver{flex-shrink:1}.deliver b{display:block}
+/* Top bar sheds its least important parts as the window narrows (the side menu has language and theme too). */
+@media (max-width:1399px){.top .theme .lbl{display:none!important}}
+@media (max-width:1299px){.top .preview-btn{display:none!important}}
+@media (max-width:1199px){.top .status .small{display:none}}
+@media (max-width:1099px){.top .status{display:none!important}}
+@media (min-width:1000px) and (max-width:1149px){.top .deliver{display:none!important}}
 
 /* side menu: a drawer on narrow screens, a fixed column on wide ones */
 .side{display:none;flex-direction:column;background:var(--surface);border-right:1px solid var(--line);overflow-y:auto;overscroll-behavior:contain}
@@ -876,9 +890,9 @@ function vCart(){
  const sl=slots(); if(!sl.some(s=>s.id===S.slot))S.slot=(sl.find(s=>s.id==="tm-0")||sl[0]).id;
  const inCart=new Set(b.L.map(l=>l.p.id));
  const need=[...new Set(b.L.flatMap(l=>(l.p.recipes||[]).flatMap(r=>RM[r].ing.map(i=>i[0]))))].filter(x=>!inCart.has(x)).slice(0,6);
- return `<section><h1>${t("cart")}</h1><p class="muted small">${cartCount()} items from ${new Set(b.L.map(l=>l.p.farm)).size} farms</p></section>
+ return `<section><h1>${t("cart")}</h1><p class="muted small">${cartCount()} item${cartCount()===1?"":"s"} from ${new Set(b.L.map(l=>l.p.farm)).size} farm${new Set(b.L.map(l=>l.p.farm)).size===1?"":"s"}</p></section>
  <div class="two">
-  <div style="display:grid;gap:16px;min-width:0">
+  <div style="display:grid;gap:16px;min-width:0;grid-template-columns:minmax(0,1fr)">
    <section class="card pad">${b.L.map(l=>`<div class="line"><button class="thumb" style="${tint(catOf(l.p).hue)};border:0" data-a="go" data-r="product" data-id="${l.p.id}">${l.p.e}</button><div style="min-width:0"><b>${esc(nm(l.p))}</b><p class="small muted">${esc(l.unit)} · <span class="mono">${inr(l.price)}</span></p>${l.oos?`<span class="chip warn">Out of stock: remove to check out</span>`:fit(l.p).warn.length?`<span class="chip warn">${esc(fit(l.p).warn[0])}</span>`:""}</div><div style="display:grid;justify-items:end;gap:4px"><div class="stepper"><button data-a="dec" data-id="${l.p.id}" data-ui="${l.ui}">−</button><span>${l.q}</span><button data-a="inc" data-id="${l.p.id}" data-ui="${l.ui}">+</button></div><span class="mono small">${inr(l.price*l.q)}</span></div></div>`).join("")}</section>
    ${need.length?`<section><div class="sec-head"><h2>Completes your recipes</h2></div><div class="hscroll">${need.map(x=>pcard(PM[x])).join("")}</div></section>`:""}
    <section><div class="sec-head"><h2>Delivery slot</h2><span class="small muted">Free above ₹499</span></div>
@@ -913,7 +927,7 @@ function vCheckout(){
  const b=bill(); if(!b.L.length)return vCart(); const sl=slots().find(s=>s.id===S.slot)||slots()[0];
  const pays=[["upi","UPI","GPay, PhonePe, Paytm or any UPI app"],["card","Credit / debit card","Visa, Mastercard, RuPay"],["wallet","Vayal wallet",`Balance ${inr(S.wallet)}`],["cod","Cash or UPI on delivery","Pay the rider at the door"]];
  return `${back("cart","Cart")}<section><h1>Checkout</h1></section>
- <div class="two"><div style="display:grid;gap:16px;min-width:0">
+ <div class="two"><div style="display:grid;gap:16px;min-width:0;grid-template-columns:minmax(0,1fr)">
   <section style="display:grid;gap:8px"><h2>Deliver to</h2>${ADDR.map((a,i)=>`<label class="opt"><input type="radio" name="addr" id="addr${i}" data-in="addr" value="${i}" ${S.addr===i?"checked":""}><span><b>${esc(a.lbl)}</b><br><span class="small muted">${esc(a.line)}</span></span></label>`).join("")}</section>
   <section class="card pad between"><div><p class="eyebrow">Slot</p><b>${esc(sl.lbl)} · ${esc(sl.time)}</b><p class="small muted">Leave at door if not home · rider calls 10 min before</p></div><button class="link" data-a="go" data-r="cart">Change</button></section>
   <section style="display:grid;gap:8px"><h2>Payment</h2>${pays.map(([k,l,d])=>`<label class="opt"><input type="radio" name="pay" id="pay-${k}" data-in="pay" value="${k}" ${S.pay===k?"checked":""}><span style="flex:1"><b>${l}</b><br><span class="small muted">${esc(d)}</span>${k==="upi"&&S.pay==="upi"?`<input id="upiid" placeholder="yourname@okaxis" style="margin-top:8px;width:100%;border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--surface)">`:""}</span></label>`).join("")}
@@ -1001,7 +1015,7 @@ function vAccount(){
  return (u?"":`<section class="card pad between" style="flex-wrap:wrap;gap:12px"><div><h2>Create your Vayal account</h2><p class="small muted">You're browsing as a guest with demo data. Sign up to start your own orders, subscriptions and health profile.</p></div><div class="row"><button class="btn" data-a="auth" data-v="signup">Sign up</button><button class="btn ghost" data-a="auth" data-v="signin">Sign in</button></div></section>`)+`<section class="card pad farm"><div class="farm-av">${esc((pr.name||"V")[0])}</div><div class="between" style="flex-wrap:wrap"><div><h1 style="font-size:1.4rem">${esc(pr.name)}</h1><p class="small muted">${u?`${esc(u.email)} · +91 ${esc(u.phone)} · Member since ${new Date(u.created).getFullYear()}`:"Member since 2025"} · ${S.orders.length} orders</p></div><div class="row"><span class="chip gold">${S.points} Vayal points</span><span class="chip">${inr(S.wallet)} wallet</span></div></div></section>
  <div class="row"><button class="btn ghost" data-a="go" data-r="orders">${t("orders")}</button><button class="btn ghost" data-a="go" data-r="subs">${t("subs")}</button><button class="btn ghost" data-a="refer">Refer a friend · ₹100</button>${u?`<button class="btn ghost" data-a="signout">Sign out</button>`:""}</div>
  <section class="card pad" style="display:grid;gap:14px"><div><h2>Health profile</h2><p class="small muted">Used to badge products, filter the shop, plan meals and guide Mitra's answers. Stored on this device only.</p></div>
-  <div><p class="eyebrow">Diet</p><div class="seg">${[["veg","Vegetarian"],["vegan","Vegan"],["egg","Eggetarian"],["all","Everything"]].map(([k,l])=>`<button data-a="diet" data-v="${k}" aria-pressed="${pr.diet===k}">${l}</button>`).join("")}</div></div>
+  <div><p class="eyebrow">Diet</p><div class="seg" style="flex-wrap:wrap">${[["veg","Vegetarian"],["vegan","Vegan"],["egg","Eggetarian"],["all","Everything"]].map(([k,l])=>`<button data-a="diet" data-v="${k}" aria-pressed="${pr.diet===k}">${l}</button>`).join("")}</div></div>
   <div><p class="eyebrow">Goals</p><div class="seg" style="flex-wrap:wrap">${["diabetic","heart","weight","protein","iron","kids"].map(g=>`<button data-a="goal" data-v="${g}" aria-pressed="${pr.goals.includes(g)}">${esc(TAGS[g].en)}</button>`).join("")}</div></div>
   <div><p class="eyebrow">Allergies & avoid</p><div class="seg" style="flex-wrap:wrap">${Object.entries(ALLERGENS).map(([k,l])=>`<button data-a="allergen" data-v="${k}" aria-pressed="${pr.allergens.includes(k)}">${l}</button>`).join("")}</div></div>
   <label class="toggle"><span><b>Only show products safe for me</b><br><span class="small muted">Hides items with your allergens or diet conflicts</span></span><input class="sw" type="checkbox" id="fitonly" data-in="fitonly" ${pr.fitOnly?"checked":""}></label>
@@ -1427,7 +1441,7 @@ function vQuality(){
   <button class="btn ghost" data-a="side" data-r="quality" data-id="scan">${svg("scan")} Check one with your camera</button></aside></div>`}
  if(tab==="history")return `${head}${tabs}${S.qchecks.length?`<section class="card pad scroll-x"><table class="tbl"><thead><tr><th>When</th><th>Item</th><th>Grade</th><th>Freshness</th><th>Verdict</th><th>How</th></tr></thead><tbody>${S.qchecks.map(c=>`<tr><td>${fmtDate(c.date,{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"})}</td><td>${esc(c.item)}</td><td><span class="lvl ${c.grade==="A"?"lo":c.grade==="B"?"md":"hi"}">${esc(c.grade)} · ${GRADE_TXT[c.grade]||""}</span></td><td class="mono">${c.score}</td><td>${esc(c.verdict||"")}</td><td class="small muted">${c.src==="ai"?"Photo (AI)":"Checklist"}</td></tr>`).join("")}</tbody></table></section><button class="link" data-a="qClear">Clear history</button>`:`<div class="empty"><div class="big">🔍</div><b>No checks yet</b><p class="muted">Scan produce or use the checklist and your results appear here.</p><button class="btn" data-a="side" data-r="quality" data-id="scan">Start a check</button></div>`}`;
  return `${head}${tabs}
- <div class="two"><section style="display:grid;gap:12px;min-width:0">
+ <div class="two"><section style="display:grid;gap:12px;min-width:0;grid-template-columns:minmax(0,1fr)">
   <div class="card pad" style="display:grid;gap:12px"><label class="fld">What are you checking?<select id="qpid" data-in="qpid">${productOptions(p.id)}</select></label>
    <div class="row"><button class="btn" data-a="qShoot" ${S.q.busy?"disabled":""}>${svg("cam")} ${S.q.busy?"Checking…":"Take or upload a photo"}</button><span class="small muted">Good light, item filling the frame. Photos are sent only to the AI check and not stored.</span></div>
    ${S.q.img?`<img class="qprev" src="${S.q.img}" alt="Photo being checked">`:""}
@@ -1563,7 +1577,7 @@ function vFarmer(){
   ${dxCard()}
   <section class="card pad scroll-x"><h2 style="margin-bottom:8px">Pest and disease watch · ${MON[m-1]}</h2><table class="tbl"><thead><tr><th>Crop</th><th>Pest or disease</th><th>Risk now</th><th>Signs</th><th>Organic control</th><th>Act when</th></tr></thead><tbody>${list.map(x=>{const hi=x.months.includes(m),soon=x.months.includes(m%12+1);return `<tr><td>${CROPS.find(c=>c.id===x.crop).e} ${esc(CROPS.find(c=>c.id===x.crop).en)}</td><td><b>${esc(x.pest)}</b></td><td><span class="lvl ${hi?"hi":soon?"md":"lo"}">${hi?"High":soon?"Next month":"Low"}</span></td><td class="small">${esc(x.signs)}</td><td class="small">${esc(x.organic)}</td><td class="small">${esc(x.th)}</td></tr>`}).join("")}</tbody></table></section>
   <p class="tiny muted">General organic guidance. For chemical options and doses, ask your agriculture officer or KVK. Kisan Call Centre: 1800-180-1551 (free).</p>`}
- if(tab==="inputs")body=`<div class="tiles">${INPUTS.map(x=>`<section class="card pad" style="display:grid;gap:6px"><div class="between"><h3>${esc(x.en)}</h3><span class="chip good">${esc(x.use)}</span></div><p class="small muted">${esc(x.ta)}</p><p class="small"><b>You need:</b> ${esc(x.ing)}</p><p class="small"><b>Make:</b> ${esc(x.how)}</p><p class="small"><b>Use:</b> ${esc(x.dose)}</p></section>`).join("")}</div>
+ if(tab==="inputs")body=`<div class="tiles">${INPUTS.map(x=>`<section class="card pad" style="display:grid;gap:6px"><div class="between" style="flex-wrap:wrap;gap:6px"><h3>${esc(x.en)}</h3><span class="chip good">${esc(x.use)}</span></div><p class="small muted">${esc(x.ta)}</p><p class="small"><b>You need:</b> ${esc(x.ing)}</p><p class="small"><b>Make:</b> ${esc(x.how)}</p><p class="small"><b>Use:</b> ${esc(x.dose)}</p></section>`).join("")}</div>
   <section class="card pad" style="display:grid;gap:6px"><h3>Help and references</h3><p class="small">Kisan Call Centre: <b class="mono">1800-180-1551</b> (free, in Tamil). TNAU Agritech Portal for crop production guides. Your district Krishi Vigyan Kendra (KVK) for soil tests and field visits.</p></section>`;
  const ask=`<section class="card pad between" style="flex-wrap:wrap"><span><b>Have a question about your crop?</b><br><span class="small muted">Mitra answers in Tamil or English. For serious outbreaks, confirm with your KVK.</span></span><button class="btn ghost" data-a="askAbout" data-v="I farm in ${esc(d.n)}. In ${MON[m-1]}, which crops should I sow for good demand, and what pests should I watch for?">${svg("spark")} Ask Mitra</button></section>`;
  return `${head}${tabs}${tab!=="weather"&&tab!=="inputs"?`<p class="small muted">District: <b>${esc(d.n)}</b> · ${esc(d.zone)} zone · <button class="link" data-a="side" data-r="farmer" data-id="weather">change</button></p>`:""}${body}${ask}`}

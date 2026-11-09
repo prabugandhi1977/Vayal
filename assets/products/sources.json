@@ -1,0 +1,240 @@
+{
+  "tomato": {
+    "path": "assets/products/tomato.png",
+    "source": "https://www.themealdb.com/images/ingredients/Tomatoes.png",
+    "attribution": "TheMealDB ingredient image; representative ingredient photograph"
+  },
+  "shallot": {
+    "path": "assets/products/shallot.png",
+    "source": "https://www.themealdb.com/images/ingredients/Shallots.png",
+    "attribution": "TheMealDB ingredient image; representative ingredient photograph"
+  },
+  "brinjal": {
+    "path": "assets/products/brinjal.png",
+    "source": "https://www.themealdb.com/images/ingredients/Baby%20Aubergine.png",
+    "attribution": "TheMealDB ingredient image; representative ingredient photograph"
+  },
+  "carrot": {
+    "path": "assets/products/carrot.png",
+    "source": "https://www.themealdb.com/images/ingredients/Carrots.png",
+    "attribution": "TheMealDB ingredient image; representative ingredient photograph"
+  },
+  "rawbanana": {
+    "path": "assets/products/rawbanana-product.jpg",
+    "source": "https://img.cdn4dd.com/cdn-cgi/image/fit%3Dcontain%2Cwidth%3D1200%2Cheight%3D672%2Cformat%3Dauto/https%3A/doordash-static.s3.amazonaws.com/media/photosV2/951dcbfc-8e32-44f8-afc6-61df5efeac2a-retina-large.jpg",
+    "attribution": "https://www.doordash.com/products/green-banana-each/urpc_f583c017-0528-4c88-a32e-d9c89c10b13f",
+    "usage": "Representative product photograph for prototype; confirm reuse rights before commercial publication."
+  },
+  "nendran": {
+    "path": "assets/products/nendran.png",
+    "source": "https://www.themealdb.com/images/ingredients/Banana.png",
+    "attribution": "TheMealDB ingredient image; representative ingredient photograph"
+  },
+  "lemon": {
+    "path": "assets/products/lemon.png",
+    "source": "https://www.themealdb.com/images/ingredients/Lemon.png",
+    "attribution": "TheMealDB ingredient image; representative ingredient photograph"
+  },
+  "coconut": {
+    "path": "assets/products/coconut-product.jpg",
+    "source": "https://images.squarespace-cdn.com/content/v1/64c9c257298eab3872c2beb7/e4bf6ac8-5368-4af4-af6d-702765eac634/The-Buddha-Bar-Newtown-Glebe-Sydney-Natural-Holistic-Therapies-Home-5.ext.jpeg?format=1000w",
+    "attribution": "https://www.thebuddhabarhealingclinic.com/",
+    "usage": "Representative product photograph for prototype; confirm reuse rights before commercial publication."
+  },
+  "a2milk": {
+    "path": "assets/products/a2milk.png",
+    "source": "https://www.themealdb.com/images/ingredients/Milk.png",
+    "attribution": "TheMealDB ingredient image; representative ingredient photograph"
+  },
+  "curd": {
+    "path": "assets/products/curd-product.png",
+    "source": "https://www.punjabibynature.ca/image/cache/catalog/plain_yogurt-550x550.png",
+    "attribution": "https://www.punjabibynature.ca/index.php?product_id=156&route=product%2Fproduct",
+    "usage": "Representative product photograph for prototype; confirm reuse rights before commercial publication."
+  },
+  "ghee": {
+    "path": "assets/products/ghee-product.png",
+    "source": "https://www.indiaorganicagro.com/assets/ghee.png",
+    "attribution": "https://www.indiaorganicagro.com/",
+    "usage": "Representative product photograph for prototype; confirm reuse rights before commercial publication."
+  },
+  "paneer": {
+    "path": "assets/products/paneer-product.jpg",
+    "source": "https://tiimg.tistatic.com/fp/2/009/358/fresh-paneer-481.jpg",
+    "attribution": "https://www.tradeindia.com/pune/fresh-paneer-city-213577.html",
+    "usage": "Representative product photograph for prototype; confirm reuse rights before commercial publication."
+  },
+  "mathi": {
+    "path": "assets/products/mathi-product.jpg",
+    "source": "https://www.starquik.com/cdn/shop/files/SQ109603_1_e51c9706-8798-4af8-a34e-e5ca305ffeb7.jpg?v=1772025038",
+    "attribution": "https://www.starquik.com/products/starfresh-sea-water-sardines-cleaned-250-gm",
+    "usage": "Representative product photograph for prototype; confirm reuse rights before commercial publication."
+  },
+  "eral": {
+    "path": "assets/products/eral.png",
+    "source": "https://www.themealdb.com/images/ingredients/Prawns.png",
+    "attribution": "TheMealDB ingredient image; representative ingredient photograph"
+  },
+  "nattukozhi": {
+    "path": "assets/products/nattukozhi-product.png",
+    "source": "https://www.bbassets.com/media/uploads/p/xl/40196731_1-fresho-jhatka-chicken-curry-cut-anitbiotic-residue-free-growth-hormone.jpg",
+    "attribution": "https://www.bigbasket.com/pd/40196731/fresho-jhatka-chicken-curry-cut-anitbiotic-residue-free-growth-hormone-1-kg/",
+    "usage": "Representative product photograph for prototype; confirm reuse rights before commercial publication."
+  },
+  "chickenbreast": {
+    "path": "assets/products/chickenbreast-product.jpg",
+    "source": "https://www.instacart.com/image-server/1200x1200/www.instacart.com/assets/domains/product-image/file/large_24d29ccc-d474-47de-8d0c-292f594dbb53.jpg",
+    "attribution": "https://www.instacart.com/products/17066024-meijer-boneless-skinless-chicken-breasts-per-lb",
+    "usage": "Representative product photograph for prototype; confirm reuse rights before commercial publication."
+  },
+  "goatmutton": {
+    "path": "assets/products/goatmutton.png",
+    "source": "https://www.themealdb.com/images/ingredients/Goat%20Meat.png",
+    "attribution": "TheMealDB ingredient image; representative ingredient photograph"
+  },
+  "muttonkeema": {
+    "path": "assets/products/muttonkeema.png",
+    "source": "https://www.themealdb.com/images/ingredients/Lamb%20Mince.png",
+    "attribution": "TheMealDB ingredient image; representative ingredient photograph"
+  },
+  "lambleg": {
+    "path": "assets/products/lambleg-product.jpg",
+    "source": "https://www.instacart.com/image-server/1200x1200/www.instacart.com/assets/domains/product-image/file/large_e3a0be45-1a4f-4963-99bf-09f0e3c4b81b.jpg",
+    "attribution": "https://www.instacart.com/products/19164948-whole-boneless-lamb-leg-2-ct",
+    "usage": "Representative product photograph for prototype; confirm reuse rights before commercial publication."
+  },
+  "eggs": {
+    "path": "assets/products/eggs.png",
+    "source": "https://www.themealdb.com/images/ingredients/Eggs.png",
+    "attribution": "TheMealDB ingredient image; representative ingredient photograph"
+  },
+  "groundnut": {
+    "path": "assets/products/groundnut.png",
+    "source": "https://www.themealdb.com/images/ingredients/Peanuts.png",
+    "attribution": "TheMealDB ingredient image; representative ingredient photograph"
+  },
+  "gingelly": {
+    "path": "assets/products/gingelly-product.jpg",
+    "source": "https://www.huihepackagings.com/data/upload/2022/62d79e9c69396.jpg",
+    "attribution": "https://www.huihepackagings.com/sesame-oil-bottle/3oz-clear-small-sesame-oil-glass-bottle-with-plastic-screw-lid.html",
+    "usage": "Representative product photograph for prototype; confirm reuse rights before commercial publication."
+  },
+  "groundnutoil": {
+    "path": "assets/products/groundnutoil-product.png",
+    "source": "https://www.heessoils.com/fileadmin/produkte/erdnussoel-kaltgepresst-kba-gustav-heess.png",
+    "attribution": "https://www.heessoils.com/en/product/organic-peanut-oil-cold-pressed.html",
+    "usage": "Representative product photograph for prototype; confirm reuse rights before commercial publication."
+  },
+  "coconutoil": {
+    "path": "assets/products/coconutoil-product.jpg",
+    "source": "https://static.wixstatic.com/media/2f2432_b3ddbe911bd5419cb10857292ae75f58~mv2.jpg/v1/fill/w_476%2Ch_528%2Cal_c%2Cq_80%2Cusm_0.66_1.00_0.01%2Cenc_avif%2Cquality_auto/2f2432_b3ddbe911bd5419cb10857292ae75f58~mv2.jpg",
+    "attribution": "https://www.vrindavanfarm.com/product-page/virgin-coconut-oil",
+    "usage": "Representative product photograph for prototype; confirm reuse rights before commercial publication."
+  },
+  "turmeric": {
+    "path": "assets/products/turmeric-product.png",
+    "source": "https://media.zid.store/a0059ad0-6a76-4522-b209-a4abe618dd50/81004848-d1a3-402e-bb75-224c0f78e579.png",
+    "attribution": "https://kayfalasala.com/products/%D9%83%D8%B1%D9%83%D9%85-%D9%85%D8%B7%D8%AD%D9%88%D9%86",
+    "usage": "Representative product photograph for prototype; confirm reuse rights before commercial publication."
+  },
+  "pepper": {
+    "path": "assets/products/pepper-product.png",
+    "source": "https://www.santamauraspice.com/cdn/shop/files/black-pepper-whole-featured-image.png?v=1774434067",
+    "attribution": "https://www.santamauraspice.com/products/black-pepper-whole",
+    "usage": "Representative product photograph for prototype; confirm reuse rights before commercial publication."
+  },
+  "honey": {
+    "path": "assets/products/honey.png",
+    "source": "https://www.themealdb.com/images/ingredients/Honey.png",
+    "attribution": "TheMealDB ingredient image; representative ingredient photograph"
+  },
+  "drumstick": {
+    "path": "assets/products/drumstick-product.png",
+    "source": "https://static.wixstatic.com/media/4238e8_480a5a9a20164e2e80a45bd3d0ab95cb~mv2.png/v1/fill/w_872%2Ch_577%2Cal_c%2Cq_90%2Cenc_avif%2Cquality_auto/4238e8_480a5a9a20164e2e80a45bd3d0ab95cb~mv2.png",
+    "attribution": "https://www.dharamdhoor.com/product-page/drumstick-shenga",
+    "usage": "Representative product photograph for prototype; confirm reuse rights before commercial publication."
+  },
+  "moringaleaf": {
+    "path": "assets/products/moringaleaf-product.jpg",
+    "source": "https://www.ekirana.nl/media/catalog/product/f/r/fresh-moringa-leaves-bunch_1.jpg",
+    "attribution": "https://www.ekirana.nl/fresh-moringa-leaves-275g.html",
+    "usage": "Representative product photograph for prototype; confirm reuse rights before commercial publication."
+  },
+  "okra": {
+    "path": "assets/products/okra-product.png",
+    "source": "https://theempressmarket.com/cdn/shop/products/Bhindi_Okra_b8ef68f0-f1aa-41a6-a842-7240b695ac5a_grande.png?v=1535096086",
+    "attribution": "https://theempressmarket.com/products/ladyfingerokra",
+    "usage": "Representative product photograph for prototype; confirm reuse rights before commercial publication."
+  },
+  "amaranth": {
+    "path": "assets/products/amaranth-product.jpg",
+    "source": "https://bhoomifresh.com/image/cache/catalog/Leaves%20and%20Leafy%20Vegetable/arave%20soppu-600x600.jpg",
+    "attribution": "https://bhoomifresh.com/arve-arave-harive-soppu-arai-keerai",
+    "usage": "Representative product photograph for prototype; confirm reuse rights before commercial publication."
+  },
+  "curryleaf": {
+    "path": "assets/products/curryleaf-product.jpg",
+    "source": "https://grocerybee.ca/cdn/shop/files/6000201944948.webp?v=1718982181",
+    "attribution": "https://grocerybee.ca/products/curry-leaves",
+    "usage": "Representative product photograph for prototype; confirm reuse rights before commercial publication."
+  },
+  "guava": {
+    "path": "assets/products/guava.jpg",
+    "source": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/88/Guava_pink_fruit.jpg/330px-Guava_pink_fruit.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "attribution": "https://en.wikipedia.org/wiki/Guava"
+  },
+  "vanjaram": {
+    "path": "assets/products/vanjaram-product.jpg",
+    "source": "https://www.bbassets.com/media/uploads/p/xxl/800329447_1-licious-hyderabad-fish-seer-steaks.jpg",
+    "attribution": "https://www.bigbasket.com/pd/800329447/licious-hyderabad-fish-seer-steaks-500-g/",
+    "usage": "Representative product photograph for prototype; confirm reuse rights before commercial publication."
+  },
+  "ragi": {
+    "path": "assets/products/ragi-product.jpg",
+    "source": "https://kisaonlinestore.com/cdn/shop/files/RagiFlour_FingerMilletFlour-01.jpg?v=1737105067&width=1946",
+    "attribution": "https://kisaonlinestore.com/products/ragi-powder-ragi-atta-finger-millet-flour",
+    "usage": "Representative product photograph for prototype; confirm reuse rights before commercial publication."
+  },
+  "kambu": {
+    "path": "assets/products/kambu-product.png",
+    "source": "https://freshmills.in/cdn/shop/files/pearl-millet-500g-434955.png?v=1717362273&width=1214",
+    "attribution": "https://freshmills.in/products/freshmillspearlmillet",
+    "usage": "Representative product photograph for prototype; confirm reuse rights before commercial publication."
+  },
+  "thinai": {
+    "path": "assets/products/thinai-product.png",
+    "source": "https://www.biobasics.org/cdn/shop/files/shop-organic-foxtail-millet-online-at-bio-basics-store.png?v=1755700237&width=1000",
+    "attribution": "https://www.biobasics.org/products/foxtail-millet-raw",
+    "usage": "Representative product photograph for prototype; confirm reuse rights before commercial publication."
+  },
+  "mappillai": {
+    "path": "assets/products/mappillai-product.jpg",
+    "source": "https://www.evani.co/images/detailed/9/Maapillai_Samba_2_imresizer.jpg",
+    "attribution": "https://www.evani.co/mappillai-samba-rice/",
+    "usage": "Representative product photograph for prototype; confirm reuse rights before commercial publication."
+  },
+  "toor": {
+    "path": "assets/products/toor-product.jpg",
+    "source": "https://tiimg.tistatic.com/fp/1/010/178/organic-toor-dal-939.jpg",
+    "attribution": "https://www.tradeindia.com/products/organic-toor-dal-10178939.html",
+    "usage": "Representative product photograph for prototype; confirm reuse rights before commercial publication."
+  },
+  "moong": {
+    "path": "assets/products/moong-product.jpg",
+    "source": "https://www.instacart.com/image-server/1200x1200/www.instacart.com/assets/domains/product-image/file/large_526187ef-7468-493b-bac4-3f79bc1d9ca4.jpg",
+    "attribution": "https://www.instacart.com/products/71214854-famous-moong-dal-4-lb",
+    "usage": "Representative product photograph for prototype; confirm reuse rights before commercial publication."
+  },
+  "blackchana": {
+    "path": "assets/products/blackchana-product.png",
+    "source": "https://raramarket.jp/media/product/207/677cdaf02e262535a73f1add_kala-chana-amb-1kg.png",
+    "attribution": "https://raramarket.jp/product/kala-chana-amb-1kg",
+    "usage": "Representative product photograph for prototype; confirm reuse rights before commercial publication."
+  },
+  "karupatti": {
+    "path": "assets/products/karupatti-product.jpg",
+    "source": "https://2.wlimg.com/product_images/bc-500/2025/10/14414375/palm-jaggery-block-1760335578-8382350.jpeg",
+    "attribution": "https://www.vvandsonsoverseaspvtltd.in/palm-jaggery-block.htm",
+    "usage": "Representative product photograph for prototype; confirm reuse rights before commercial publication."
+  }
+}

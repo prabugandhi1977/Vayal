@@ -145,6 +145,18 @@ label.fld{display:grid;gap:4px;font-size:.85rem;font-weight:600}
 .stepper button{border:0;background:none;color:inherit;width:30px;height:32px;display:grid;place-items:center;font-weight:800;font-size:1.05rem}
 .stepper span{min-width:20px;text-align:center;font-weight:700;font-family:var(--f-mono);font-size:.9rem}
 
+/* Local ingredient photography, shared by every product surface. */
+.pimg,.pd-art,.thumb{overflow:hidden;position:relative;background:#f7f6f0!important}
+.product-photo{display:block;width:100%;height:100%;object-fit:contain;padding:10%;min-width:0;min-height:0}
+.pimg>.product-photo,.pd-art>.product-photo{position:absolute;inset:0}
+.pimg{isolation:isolate}
+.pimg .tag{z-index:1;box-shadow:0 2px 8px #00000014}
+.pd-art>.product-photo{padding:7%}
+.thumb .product-photo{padding:8%}
+.product-photo.inline-photo{display:inline-block;width:30px;height:30px;padding:3px;vertical-align:middle;background:#f7f6f0;border-radius:6px;margin-right:5px}
+.pimg .product-photo{transition:transform .22s ease}
+@media (hover:hover) and (prefers-reduced-motion:no-preference){.pimg:hover .product-photo{transform:scale(1.045)}}
+
 /* recipe cards */
 .rcard{width:220px;border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:0;text-align:left;overflow:hidden;display:grid}
 .rcard .rart{height:92px;display:grid;place-items:center;font-size:2.6rem;background:var(--turmeric-soft)}
@@ -670,6 +682,13 @@ const nm=o=>S.lang==="ta"?o.ta:o.en; const nm2=o=>S.lang==="ta"?o.en:o.ta;
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const inr=n=>"₹"+Math.round(n).toLocaleString("en-IN");
+const PRODUCT_PHOTOS={"tomato":"assets/products/tomato.png","shallot":"assets/products/shallot.png","brinjal":"assets/products/brinjal.png","carrot":"assets/products/carrot.png","rawbanana":"assets/products/rawbanana-product.jpg","nendran":"assets/products/nendran.png","lemon":"assets/products/lemon.png","coconut":"assets/products/coconut-product.jpg","a2milk":"assets/products/a2milk.png","curd":"assets/products/curd-product.png","ghee":"assets/products/ghee-product.png","paneer":"assets/products/paneer-product.jpg","mathi":"assets/products/mathi-product.jpg","eral":"assets/products/eral.png","nattukozhi":"assets/products/nattukozhi-product.png","chickenbreast":"assets/products/chickenbreast-product.jpg","goatmutton":"assets/products/goatmutton.png","muttonkeema":"assets/products/muttonkeema.png","lambleg":"assets/products/lambleg-product.jpg","eggs":"assets/products/eggs.png","groundnut":"assets/products/groundnut.png","gingelly":"assets/products/gingelly-product.jpg","groundnutoil":"assets/products/groundnutoil-product.png","coconutoil":"assets/products/coconutoil-product.jpg","turmeric":"assets/products/turmeric-product.png","pepper":"assets/products/pepper-product.png","honey":"assets/products/honey.png","drumstick":"assets/products/drumstick-product.png","moringaleaf":"assets/products/moringaleaf-product.jpg","okra":"assets/products/okra-product.png","amaranth":"assets/products/amaranth-product.jpg","curryleaf":"assets/products/curryleaf-product.jpg","guava":"assets/products/guava.jpg","vanjaram":"assets/products/vanjaram-product.jpg","ragi":"assets/products/ragi-product.jpg","kambu":"assets/products/kambu-product.png","thinai":"assets/products/thinai-product.png","mappillai":"assets/products/mappillai-product.jpg","toor":"assets/products/toor-product.jpg","moong":"assets/products/moong-product.jpg","blackchana":"assets/products/blackchana-product.png","karupatti":"assets/products/karupatti-product.jpg"};
+function productPhoto(p,inline=false){
+ const src=PRODUCT_PHOTOS[p.id];
+ if(!src)return `<span role="img" aria-label="${esc(p.en)}">${p.e}</span>`;
+ return `<img class="product-photo${inline?' inline-photo':''}" src="${src}" alt="${esc(p.en)}" loading="lazy" decoding="async" width="700" height="700" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span hidden role="img" aria-label="${esc(p.en)}">${p.e}</span>`;
+}
+
 const PM={...ALL_P}; const RM=Object.fromEntries(RECIPES.map(r=>[r.id,r]));
 const catOf=p=>CATS.find(c=>c.id===p.cat);
 const tint=(hue,pct=22)=>`background:color-mix(in srgb, ${hue} ${pct}%, var(--surface))`;
@@ -727,7 +746,7 @@ function runningLow(){const last={};S.orders.filter(o=>o.stage>=4).forEach(o=>o.
 function pcard(p,extra=""){
  const ui=S.pdUnit[p.id]||0,u=p.units[ui],q=cartQty(p.id,ui),c=catOf(p);
  return `<article class="pcard">
-  <button class="pimg" style="${tint(c.hue)}" data-a="go" data-r="product" data-id="${p.id}" aria-label="${esc(p.en)}">${p.e}${fitChip(p)}</button>
+  <button class="pimg" style="${tint(c.hue)}" data-a="go" data-r="product" data-id="${p.id}" aria-label="${esc(p.en)}">${productPhoto(p)}${fitChip(p)}</button>
   <button class="pname" data-a="go" data-r="product" data-id="${p.id}">${vmark(p)}${esc(nm(p))}<span class="ta">${esc(nm2(p))}</span></button>
   <div class="small muted">${esc(u[0])} · ${esc(FARMS[p.farm].loc.split(",")[0])}${extra}</div>
   <div class="pfoot"><div class="price"><b>${inr(u[1])}</b>${u[2]>u[1]?`<s>${inr(u[2])}</s>`:""}</div>
@@ -867,7 +886,7 @@ function vProduct(id){
  };
  return `${back("shop",nm(c))}
  <section class="pd">
-  <div style="display:grid;gap:12px"><div class="pd-art" style="${tint(c.hue,26)}">${p.e}</div>
+  <div style="display:grid;gap:12px"><div class="pd-art" style="${tint(c.hue,26)}">${productPhoto(p)}</div>
    <div class="facts">${(p.n||[0,0,0,0]).every(x=>!x)?`<div class="fact" style="grid-column:1/-1"><span>Nutrition details coming soon</span></div>`:[["kcal",p.n[0]],["protein",p.n[1]+"g"],["fibre",p.n[2]+"g"],["carbs",p.n[3]+"g"]].map(([l,v])=>`<div class="fact"><b>${v}</b><span>${l} / 100 g</span></div>`).join("")}</div></div>
   <div class="pd-buy">
    <div><p class="eyebrow">${esc(nm(c))} · ${esc(fm.loc)}</p><h1>${vmark(p)}${esc(nm(p))}</h1><p class="muted ta" style="font-size:1.05rem">${esc(nm2(p))}</p></div>
@@ -893,7 +912,7 @@ function vCart(){
  return `<section><h1>${t("cart")}</h1><p class="muted small">${cartCount()} item${cartCount()===1?"":"s"} from ${new Set(b.L.map(l=>l.p.farm)).size} farm${new Set(b.L.map(l=>l.p.farm)).size===1?"":"s"}</p></section>
  <div class="two">
   <div style="display:grid;gap:16px;min-width:0;grid-template-columns:minmax(0,1fr)">
-   <section class="card pad">${b.L.map(l=>`<div class="line"><button class="thumb" style="${tint(catOf(l.p).hue)};border:0" data-a="go" data-r="product" data-id="${l.p.id}">${l.p.e}</button><div style="min-width:0"><b>${esc(nm(l.p))}</b><p class="small muted">${esc(l.unit)} · <span class="mono">${inr(l.price)}</span></p>${l.oos?`<span class="chip warn">Out of stock: remove to check out</span>`:fit(l.p).warn.length?`<span class="chip warn">${esc(fit(l.p).warn[0])}</span>`:""}</div><div style="display:grid;justify-items:end;gap:4px"><div class="stepper"><button data-a="dec" data-id="${l.p.id}" data-ui="${l.ui}">−</button><span>${l.q}</span><button data-a="inc" data-id="${l.p.id}" data-ui="${l.ui}">+</button></div><span class="mono small">${inr(l.price*l.q)}</span></div></div>`).join("")}</section>
+   <section class="card pad">${b.L.map(l=>`<div class="line"><button class="thumb" style="${tint(catOf(l.p).hue)};border:0" data-a="go" data-r="product" data-id="${l.p.id}">${productPhoto(l.p)}</button><div style="min-width:0"><b>${esc(nm(l.p))}</b><p class="small muted">${esc(l.unit)} · <span class="mono">${inr(l.price)}</span></p>${l.oos?`<span class="chip warn">Out of stock: remove to check out</span>`:fit(l.p).warn.length?`<span class="chip warn">${esc(fit(l.p).warn[0])}</span>`:""}</div><div style="display:grid;justify-items:end;gap:4px"><div class="stepper"><button data-a="dec" data-id="${l.p.id}" data-ui="${l.ui}">−</button><span>${l.q}</span><button data-a="inc" data-id="${l.p.id}" data-ui="${l.ui}">+</button></div><span class="mono small">${inr(l.price*l.q)}</span></div></div>`).join("")}</section>
    ${need.length?`<section><div class="sec-head"><h2>Completes your recipes</h2></div><div class="hscroll">${need.map(x=>pcard(PM[x])).join("")}</div></section>`:""}
    <section><div class="sec-head"><h2>Delivery slot</h2><span class="small muted">Free above ₹499</span></div>
     <div class="slots">${sl.map(s=>`<button class="slot" data-a="slot" data-v="${s.id}" aria-pressed="${S.slot===s.id}"><b>${esc(s.lbl)} · ${esc(s.time)}</b><span>${esc(s.note||"Available")}</span></button>`).join("")}</div></section>
@@ -933,7 +952,7 @@ function vCheckout(){
   <section style="display:grid;gap:8px"><h2>Payment</h2>${pays.map(([k,l,d])=>`<label class="opt"><input type="radio" name="pay" id="pay-${k}" data-in="pay" value="${k}" ${S.pay===k?"checked":""}><span style="flex:1"><b>${l}</b><br><span class="small muted">${esc(d)}</span>${k==="upi"&&S.pay==="upi"?`<input id="upiid" placeholder="yourname@okaxis" style="margin-top:8px;width:100%;border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--surface)">`:""}</span></label>`).join("")}
   <p class="tiny muted">Prototype: no payment is taken.</p></section>
  </div>
- <aside class="card pad bill"><h3>Order summary</h3>${b.L.map(l=>`<div class="between small"><span>${l.p.e} ${esc(l.p.en)} × ${l.q}</span><span>${inr(l.price*l.q)}</span></div>`).join("")}
+ <aside class="card pad bill"><h3>Order summary</h3>${b.L.map(l=>`<div class="between small"><span>${productPhoto(l.p,true)} ${esc(l.p.en)} × ${l.q}</span><span>${inr(l.price*l.q)}</span></div>`).join("")}
   <div class="divider"></div><div class="between"><span>Savings</span><span>−${inr(b.save+b.coupon+b.pts)}</span></div><div class="between"><span>Delivery</span><span>${b.delivery?inr(b.delivery):"FREE"}</span></div>
   <div class="between total"><span>To pay</span><span>${inr(b.total)}</span></div><p class="tiny muted">You'll earn ${Math.floor(b.total/20)} Vayal points.</p>
   <button class="btn block warm" data-a="place">${t("placeOrder")} · ${inr(b.total)}</button></aside></div>`;
@@ -945,10 +964,10 @@ function vTrack(id){
  return `${back("orders","Orders")}
  <section class="between"><div><p class="eyebrow">Order ${esc(o.id)}</p><h1>${o.stage>=4?"Delivered":o.stage===3?"Arriving soon":"On its way from the farm"}</h1><p class="muted small">${fmtDate(o.date)} · slot ${esc(o.slot)} · ${esc(o.pay)}</p></div>${o.stage<4?`<div style="text-align:right"><p class="eyebrow">Handover OTP</p><div class="otp">${o.otp||"4821"}</div></div>`:""}</section>
  <div class="two"><section class="card pad"><div class="steps">${STAGES.map(([h,d],i)=>`<div class="stp ${i<o.stage||o.stage===4?"done":""} ${i===o.stage&&o.stage<4?"now":""}"><div class="dot">${i<=o.stage?svg("check"):""}</div><div><b>${h}</b><p class="small muted">${d}</p></div></div>`).join("")}</div>
-  ${o.stage<4?`<button class="btn ghost" data-a="advance" data-id="${o.id}">Simulate next step</button>`:`<div style="display:grid;gap:8px"><b>How fresh was it?</b>${o.items.slice(0,4).map(([pid])=>`<div class="between"><span>${PM[pid].e} ${esc(PM[pid].en)}</span><span>${[1,2,3,4,5].map(n=>`<button class="star ${(o.rating[pid]||0)>=n?"on":""}" data-a="rate" data-id="${o.id}" data-p="${pid}" data-v="${n}" aria-label="${n} stars">★</button>`).join("")}</span></div>`).join("")}<button class="btn ghost" data-a="issue" data-id="${o.id}">Report a quality issue</button></div>`}
+  ${o.stage<4?`<button class="btn ghost" data-a="advance" data-id="${o.id}">Simulate next step</button>`:`<div style="display:grid;gap:8px"><b>How fresh was it?</b>${o.items.slice(0,4).map(([pid])=>`<div class="between"><span>${productPhoto(PM[pid],true)} ${esc(PM[pid].en)}</span><span>${[1,2,3,4,5].map(n=>`<button class="star ${(o.rating[pid]||0)>=n?"on":""}" data-a="rate" data-id="${o.id}" data-p="${pid}" data-v="${n}" aria-label="${n} stars">★</button>`).join("")}</span></div>`).join("")}<button class="btn ghost" data-a="issue" data-id="${o.id}">Report a quality issue</button></div>`}
  </section>
  <aside style="display:grid;gap:12px">${o.stage===3?`<section class="card pad farm"><div class="farm-av">MK</div><div><b>Murugan K.</b><p class="small muted">Rider · EV scooter TN 07 EV 2231</p><p class="mono small">Call via masked number 080-4718-2231</p></div></section>`:""}
-  <section class="card pad bill"><h3>${o.items.length} items</h3>${o.items.map(([pid,ui,q,pr])=>`<div class="between small"><span>${PM[pid].e} ${esc(PM[pid].en)} × ${q}</span><span>${inr(pr*q)}</span></div>`).join("")}<div class="between total"><span>Paid</span><span>${inr(o.total)}</span></div></section>
+  <section class="card pad bill"><h3>${o.items.length} items</h3>${o.items.map(([pid,ui,q,pr])=>`<div class="between small"><span>${productPhoto(PM[pid],true)} ${esc(PM[pid].en)} × ${q}</span><span>${inr(pr*q)}</span></div>`).join("")}<div class="between total"><span>Paid</span><span>${inr(o.total)}</span></div></section>
   <section class="fit good">${svg("shield")}<div><b>Freshness promise.</b> If anything isn't fresh, report it within 24 hours with a photo for an instant refund to your wallet.</div></section></aside></div>`;
 }
 
@@ -971,14 +990,14 @@ function vSubs(){
  const avail=P.filter(p=>p.sub&&!S.subs.some(s=>s.pid===p.id));
  return `<section><h1>${t("subs")}</h1><p class="muted small">Delivered before 7 AM. Change or skip until 10 PM the night before.</p></section>
  <section class="card pad between"><div><p class="eyebrow">Vayal wallet</p><b class="mono" style="font-size:1.3rem">${inr(S.wallet)}</b><p class="small muted">About ${inr(monthly)} a month for active subscriptions (5% off)</p></div><div class="row"><button class="btn ghost" data-a="vacation">Vacation mode</button><button class="btn" data-a="topup">Top up ₹500</button></div></section>
- ${S.subs.map(s=>{const p=PM[s.pid];return `<section class="card pad sub"><div class="thumb" style="${tint(catOf(p).hue)}">${p.e}</div><div style="min-width:0;display:grid;gap:8px">
+ ${S.subs.map(s=>{const p=PM[s.pid];return `<section class="card pad sub"><div class="thumb" style="${tint(catOf(p).hue)}">${productPhoto(p)}</div><div style="min-width:0;display:grid;gap:8px">
   <div class="between" style="flex-wrap:wrap"><div><b>${esc(nm(p))}</b><p class="small muted">${esc(p.units[s.ui][0])} · <span class="mono">${inr(p.units[s.ui][1]*.95)}</span> each · ${esc(s.slot)}</p></div><span class="chip ${s.status==="active"&&!s.until?"good":"gold"}">${s.status!=="active"?"Paused":s.until?"Away till "+fmtDate(s.until,{day:"numeric",month:"short"}):"Active"}</span></div>
   <div class="row"><div class="stepper"><button data-a="subQ" data-id="${s.id}" data-v="-1">−</button><span>${s.q}</span><button data-a="subQ" data-id="${s.id}" data-v="1">+</button></div>
    <select id="freq-${s.id}" data-in="freq" data-id="${s.id}" style="border:1px solid var(--line);border-radius:10px;padding:7px;background:var(--surface)">${Object.entries(FREQ).map(([k,v])=>`<option value="${k}" ${s.freq===k?"selected":""}>${v}</option>`).join("")}</select>
    <button class="link" data-a="subPause" data-id="${s.id}">${s.status==="active"?"Pause":"Resume"}</button><button class="link" style="color:var(--chili)" data-a="subDel" data-id="${s.id}">Remove</button></div>
   <div class="cal">${days.map(d=>{const k=dkey(d),on=deliversOn(s,d),sk=s.skips.includes(k);return `<button class="${on?(sk?"skip":"on"):""}" ${on?`data-a="skipDay" data-id="${s.id}" data-v="${k}"`:"disabled"} aria-label="${fmtDate(d)} ${on?(sk?"skipped":"delivery"):"no delivery"}">${fmtDate(d,{weekday:"narrow"})}<b>${d.getDate()}</b></button>`}).join("")}</div>
   <p class="tiny muted">Tap a highlighted day to skip or restore it.</p></div></section>`}).join("")}
- ${avail.length?`<section><div class="sec-head"><h2>Add a subscription</h2></div><div class="hscroll">${avail.map(p=>`<article class="pcard" style="width:168px"><div class="pimg" style="${tint(catOf(p).hue)}">${p.e}</div><b class="small">${esc(nm(p))}</b><span class="small muted">${esc(p.units[0][0])} · ${inr(p.units[0][1]*.95)}</span><button class="add" data-a="subscribe" data-id="${p.id}">Subscribe</button></article>`).join("")}</div></section>`:""}`;
+ ${avail.length?`<section><div class="sec-head"><h2>Add a subscription</h2></div><div class="hscroll">${avail.map(p=>`<article class="pcard" style="width:168px"><div class="pimg" style="${tint(catOf(p).hue)}">${productPhoto(p)}</div><b class="small">${esc(nm(p))}</b><span class="small muted">${esc(p.units[0][0])} · ${inr(p.units[0][1]*.95)}</span><button class="add" data-a="subscribe" data-id="${p.id}">Subscribe</button></article>`).join("")}</div></section>`:""}`;
 }
 
 /* meal planner */
@@ -1003,7 +1022,7 @@ function vRecipe(id){
  <div class="pd-buy"><div><p class="eyebrow">${r.meal==="breakfast"?"Breakfast":"Lunch / dinner"} · ${r.mins} min</p><h1>${esc(nm(r))}</h1><p class="muted ta">${esc(nm2(r))}</p></div>
   <div class="chips">${r.tags.map(g=>`<span class="chip ${S.profile.goals.includes(g)?"good":""}">${esc(TAGS[g].en)}</span>`).join("")}</div>
   <div class="between"><h2>Ingredients</h2><div class="row"><span class="small muted">Serves</span><div class="stepper"><button data-a="serv" data-id="${id}" data-v="-1">−</button><span>${serv}</span><button data-a="serv" data-id="${id}" data-v="1">+</button></div></div></div>
-  <div class="card pad">${r.ing.map(([pid,q,txt])=>{const p=PM[pid],packs=Math.max(1,Math.ceil(q*serv/4-0.05));return `<div class="line" style="grid-template-columns:40px 1fr auto"><div class="thumb" style="width:40px;height:40px;font-size:1.3rem;${tint(catOf(p).hue)}">${p.e}</div><div><button class="pname" data-a="go" data-r="product" data-id="${pid}">${esc(nm(p))}</button><p class="tiny muted">${esc(txt)} for 4 · buy ${packs} × ${esc(p.units[0][0])}</p></div>${cartQty(pid,0)?`<span class="chip good">In cart</span>`:`<button class="add" data-a="inc" data-id="${pid}" data-ui="0">${t("add")}</button>`}</div>`}).join("")}
+  <div class="card pad">${r.ing.map(([pid,q,txt])=>{const p=PM[pid],packs=Math.max(1,Math.ceil(q*serv/4-0.05));return `<div class="line" style="grid-template-columns:40px 1fr auto"><div class="thumb" style="width:40px;height:40px;font-size:1.3rem;${tint(catOf(p).hue)}">${productPhoto(p)}</div><div><button class="pname" data-a="go" data-r="product" data-id="${pid}">${esc(nm(p))}</button><p class="tiny muted">${esc(txt)} for 4 · buy ${packs} × ${esc(p.units[0][0])}</p></div>${cartQty(pid,0)?`<span class="chip good">In cart</span>`:`<button class="add" data-a="inc" data-id="${pid}" data-ui="0">${t("add")}</button>`}</div>`}).join("")}
    <p class="tiny muted" style="margin-top:8px">Plus pantry basics: salt, mustard, chilli, tamarind.</p></div>
   <div class="row"><button class="btn" data-a="recipeCart" data-id="${id}">${svg("cart")} Add all ingredients</button><button class="btn ghost" data-a="toPlan" data-id="${id}">${svg("cal")} Add to meal plan</button><button class="btn ghost" data-a="askAbout" data-v="For ${esc(r.en)}: any substitutions, and how does it fit my health goals?">${svg("spark")} Ask Mitra</button></div>
   <h2>Method</h2><ol class="list">${r.steps.map(s=>`<li>${esc(s)}</li>`).join("")}</ol></div></section>`;
@@ -1068,7 +1087,7 @@ function sheetInvoice(id){const o=S.orders.find(x=>x.id===id);const rate=p=>({ve
  <p class="tiny muted">Illustrative rates. The production app issues the invoice from the billing system and sends it on WhatsApp and email.</p>`)}
 function sheetIssue(id){const o=S.orders.find(x=>x.id===id);
  sheet(`<h2>Report a quality issue</h2><p class="small muted">Pick the item. Refunds go to your Vayal wallet instantly.</p>
- ${o.items.map(([pid,ui,q,pr],i)=>`<label class="opt"><input type="radio" name="iss" id="iss${i}" value="${pid}" data-price="${pr*q}" ${i===0?"checked":""}><span>${PM[pid].e} ${esc(PM[pid].en)} · <span class="mono">${inr(pr*q)}</span></span></label>`).join("")}
+ ${o.items.map(([pid,ui,q,pr],i)=>`<label class="opt"><input type="radio" name="iss" id="iss${i}" value="${pid}" data-price="${pr*q}" ${i===0?"checked":""}><span>${productPhoto(PM[pid],true)} ${esc(PM[pid].en)} · <span class="mono">${inr(pr*q)}</span></span></label>`).join("")}
  <div class="seg" style="flex-wrap:wrap">${["Not fresh","Damaged","Wrong item","Missing"].map((r,i)=>`<button data-a="issR" data-v="${r}" aria-pressed="${i===0}">${r}</button>`).join("")}</div>
  <label class="fld">Photo (optional)<input type="file" id="issPhoto" accept="image/*"></label>
  <button class="btn block" data-a="issOk">Refund to wallet</button>`)}
@@ -1436,7 +1455,7 @@ function vQuality(){
  const tabs=`<div class="ptabs" role="tablist">${[["scan","scan","qScan"],["guide","eye","qGuide"],["history","check","qHist"]].map(([k,i,l])=>`<button role="tab" data-a="side" data-r="quality" data-id="${k}" aria-selected="${tab===k}">${svg(i)}${t(l)}</button>`).join("")}</div>`;
  if(tab==="guide"){const inSeason=CROPS.filter(c=>c.pid&&c.harv.includes(monthNow())).map(c=>PM[c.pid]).filter(Boolean);
   return `${head}${tabs}<label class="fld" style="max-width:360px">Item<select id="qpid-g" data-in="qpid">${productOptions(p.id)}</select></label>
-  <div class="two"><section class="card pad" style="display:grid;gap:10px"><div class="row"><span style="font-size:2rem">${p.e}</span><div><h2>${esc(nm(p))}</h2><p class="small muted">${esc(nm2(p))} · ${esc(nm(catOf(p)))}</p></div></div>${cueList(p,false)}</section>
+  <div class="two"><section class="card pad" style="display:grid;gap:10px"><div class="row"><span>${productPhoto(p,true)}</span><div><h2>${esc(nm(p))}</h2><p class="small muted">${esc(nm2(p))} · ${esc(nm(catOf(p)))}</p></div></div>${cueList(p,false)}</section>
   <aside class="card pad" style="display:grid;gap:10px;align-content:start"><h3>At their best this month</h3><p class="small muted">In harvest now in Tamil Nadu, so freshest and best value.</p><div class="chips">${inSeason.length?inSeason.map(x=>`<button class="pill-btn" data-a="qPick" data-v="${x.id}">${x.e} ${esc(nm(x))}</button>`).join(""):`<span class="small muted">—</span>`}</div>
   <button class="btn ghost" data-a="side" data-r="quality" data-id="scan">${svg("scan")} Check one with your camera</button></aside></div>`}
  if(tab==="history")return `${head}${tabs}${S.qchecks.length?`<section class="card pad scroll-x"><table class="tbl"><thead><tr><th>When</th><th>Item</th><th>Grade</th><th>Freshness</th><th>Verdict</th><th>How</th></tr></thead><tbody>${S.qchecks.map(c=>`<tr><td>${fmtDate(c.date,{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"})}</td><td>${esc(c.item)}</td><td><span class="lvl ${c.grade==="A"?"lo":c.grade==="B"?"md":"hi"}">${esc(c.grade)} · ${GRADE_TXT[c.grade]||""}</span></td><td class="mono">${c.score}</td><td>${esc(c.verdict||"")}</td><td class="small muted">${c.src==="ai"?"Photo (AI)":"Checklist"}</td></tr>`).join("")}</tbody></table></section><button class="link" data-a="qClear">Clear history</button>`:`<div class="empty"><div class="big">🔍</div><b>No checks yet</b><p class="muted">Scan produce or use the checklist and your results appear here.</p><button class="btn" data-a="side" data-r="quality" data-id="scan">Start a check</button></div>`}`;
@@ -1692,13 +1711,13 @@ function vAdmin(){
   body=`<div class="kpis">${[["Products in shop",P.length,""],["Out of stock",oosN,oosN?"some packs or whole items":"all in stock"],["Added by you",ADM.cat.added.length,""]].map(([l,v,x])=>`<div class="kpi"><span class="k-l">${l}</span><span class="k-v mono">${v}</span><span class="k-s">${x}</span></div>`).join("")}</div>
   <div class="row" style="align-items:end"><label class="fld" style="flex:1;min-width:200px">Search<input id="admq" data-in="admq" value="${esc(S.adm.q||"")}" placeholder="Name, Tamil or Tanglish"></label><label class="fld">Category<select id="admcat" data-in="admcat"><option value="all">All</option>${CATS.map(x=>`<option value="${x.id}" ${x.id===c?"selected":""}>${esc(x.en)}</option>`).join("")}</select></label></div>
   <section class="card pad scroll-x"><table class="tbl"><thead><tr><th>Product</th><th>In stock</th><th>Pack sizes · price · stock</th>${can("remove")?"<th></th>":""}</tr></thead><tbody>${list.map(p=>`<tr>
-   <td><b>${p.e} ${esc(p.en)}</b><br><span class="small muted">${esc(p.ta)} · ${esc(catOf(p)?.en||p.cat)}${p.added?' · <span class="chip gold">added</span>':""}</span></td>
+   <td><b>${productPhoto(p,true)} ${esc(p.en)}</b><br><span class="small muted">${esc(p.ta)} · ${esc(catOf(p)?.en||p.cat)}${p.added?' · <span class="chip gold">added</span>':""}</span></td>
    <td><input class="sw" type="checkbox" id="oos-${p.id}" data-in="admOos" data-id="${p.id}" ${p.oos?"":"checked"} aria-label="${esc(p.en)} in stock" ${can("stock")?"":"disabled"}></td>
    <td>${p.units.map((u,i)=>`<div class="row" style="gap:8px;margin-bottom:4px"><span class="small" style="min-width:74px">${esc(u[0])}</span>${can("price")?`<input id="pr-${p.id}-${i}" data-in="admPrice" data-id="${p.id}" data-ui="${i}" type="number" min="1" max="100000" value="${u[1]}" aria-label="${esc(p.en)} ${esc(u[0])} price" style="width:90px;border:1px solid var(--line);border-radius:8px;padding:5px;background:var(--surface)">`:`<span class="mono small">${inr(u[1])}</span>`}
     <label class="small" style="display:inline-flex;gap:6px;align-items:center"><input type="checkbox" id="oosu-${p.id}-${i}" data-in="admOosU" data-id="${p.id}" data-ui="${i}" ${p.oosU.includes(i)?"":"checked"} ${p.oos||!can("stock")?"disabled":""} style="accent-color:var(--leaf)"> in stock</label></div>`).join("")}
     ${can("add")?`<button class="link small" data-a="admPack" data-id="${p.id}">+ pack size</button>`:""}</td>
    ${can("remove")?`<td><button class="link" style="color:var(--chili)" data-a="admRemove" data-id="${p.id}">Remove</button></td>`:""}</tr>`).join("")||`<tr><td colspan="4" class="muted">No products match.</td></tr>`}</tbody></table></section>
-  ${can("remove")&&removed.length?`<section class="card pad"><h3>Removed from the shop</h3>${removed.map(p=>`<div class="between small" style="padding:4px 0"><span>${p.e} ${esc(p.en)}</span><button class="link" data-a="admRestore" data-id="${p.id}">Restore</button></div>`).join("")}</section>`:""}`}
+  ${can("remove")&&removed.length?`<section class="card pad"><h3>Removed from the shop</h3>${removed.map(p=>`<div class="between small" style="padding:4px 0"><span>${productPhoto(p,true)} ${esc(p.en)}</span><button class="link" data-a="admRestore" data-id="${p.id}">Restore</button></div>`).join("")}</section>`:""}`}
  if(tab==="add"){const tg=Object.keys(TAGS),al=Object.keys(ALLERGENS);
   body=`<section class="card pad" style="display:grid;gap:12px;max-width:760px"><h2>Add a variety</h2>
   <div class="two" style="gap:12px"><label class="fld">Name (English)<input id="av-en" maxlength="60" placeholder="e.g. Karuppu kavuni rice"></label><label class="fld">Name (Tamil)<input id="av-ta" maxlength="60" placeholder="e.g. கருப்பு கவுனி அரிசி"></label></div>

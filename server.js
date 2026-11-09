@@ -161,7 +161,8 @@ app.post("/api/json", express.json({ limit: "8mb" }), guard, async (req, res) =>
   }
 });
 
-// Static storefront. Only the page itself is served, never the server source.
+// Serve only public image assets and the storefront, never server source.
+app.use("/assets", express.static(path.join(here, "assets"), { dotfiles: "deny", maxAge: "7d" }));
 const page = path.join(here, "index.html");
 app.get(["/", "/index.html"], (_req, res) => res.sendFile(page));
 app.use((_req, res) => res.status(404).send("Not found"));

@@ -62,3 +62,12 @@ Without AI: open `index.html` in a browser. On a wide screen it works as the sto
 - Nutrition figures are rough estimates and health text needs expert review before launch.
 
 On claude.ai the AI features use the artifact runtime (`window.claude`); on Render they use `server.js`. Anywhere else (GitHub Pages, opening the file directly) the app falls back to offline answers.
+
+
+## Product photography
+
+Product images are stored locally in `assets/products` and work on both GitHub Pages and Render. The catalogue, product details, cart, subscriptions, and ingredient lists share the same image renderer. Images load lazily and retain an emoji fallback if a file cannot load.
+
+`assets/products/sources.json` records each image source. These are representative ingredient images from TheMealDB, Wikipedia, and public product listings, not photographs of Vayal stock; regional varieties, packaging, and cuts may differ. Confirm image licenses and required credits before commercial publication.
+
+All 42 catalogue products have local photographs.

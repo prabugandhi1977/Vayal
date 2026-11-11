@@ -23,6 +23,18 @@
   }
   const fmtTime = (iso) => new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   const fmtDay = (iso) => new Date(iso).toLocaleDateString([], { day: "numeric", month: "short" });
+  const b64u = {
+    dec: (str) => { const p = str.replace(/-/g, "+").replace(/_/g, "/"); const bin = atob(p + "=".repeat((4 - (p.length % 4)) % 4)); return Uint8Array.from(bin, (c) => c.charCodeAt(0)).buffer; },
+    enc: (buf) => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""),
+  };
+  // Passkeys: the phone's own Face ID / fingerprint / screen lock. Nothing biometric reaches our server.
+  const passkeysSupported = () => Boolean(window.PublicKeyCredential && navigator.credentials?.create);
+  const regOptions = (o) => ({ ...o, challenge: b64u.dec(o.challenge), user: { ...o.user, id: b64u.dec(o.user.id) }, excludeCredentials: (o.excludeCredentials || []).map((c) => ({ ...c, id: b64u.dec(c.id) })) });
+  const regResult = (c) => ({ id: c.id, rawId: b64u.enc(c.rawId), type: c.type, clientExtensionResults: c.getClientExtensionResults(),
+    response: { clientDataJSON: b64u.enc(c.response.clientDataJSON), attestationObject: b64u.enc(c.response.attestationObject), transports: c.response.getTransports?.() || [] } });
+  const authOptions = (o) => ({ ...o, challenge: b64u.dec(o.challenge), allowCredentials: (o.allowCredentials || []).map((c) => ({ ...c, id: b64u.dec(c.id) })) });
+  const authResult = (c) => ({ id: c.id, rawId: b64u.enc(c.rawId), type: c.type, clientExtensionResults: c.getClientExtensionResults(),
+    response: { clientDataJSON: b64u.enc(c.response.clientDataJSON), authenticatorData: b64u.enc(c.response.authenticatorData), signature: b64u.enc(c.response.signature), userHandle: c.response.userHandle ? b64u.enc(c.response.userHandle) : undefined } });
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
   /* ---------------- face + camera ---------------- */
@@ -115,13 +127,16 @@
     const KEY = "vayal-att-token";
     const store = { get: () => { try { return sessionStorage.getItem(KEY); } catch { return null; } }, set: (v) => { try { v ? sessionStorage.setItem(KEY, v) : sessionStorage.removeItem(KEY); } catch {} } };
     let token = store.get(), me = null, pingTimer = null;
+    const qrOffice = new URLSearchParams(location.search).get("office"); // set when the office QR code was scanned
+    const PK = "vayal-att-passkey";
+    const pkFlag = { get: () => { try { return localStorage.getItem(PK) === "1"; } catch { return false; } }, set: () => { try { localStorage.setItem(PK, "1"); } catch {} } };
 
     root.classList.add("va"); root.dataset.theme = "";
     const api = async (method, url, body) => {
       const headers = { "content-type": "application/json", ...(external ? await opts.headers() : token ? { authorization: `Bearer ${token}` } : {}) };
       const res = await fetch(base + url, { method, headers, body: body ? JSON.stringify(body) : undefined });
       const data = await res.json().catch(() => ({}));
-      if (res.status === 401 && !external) { token = null; store.set(null); render(); }
+      if (res.status === 401 && !external && token) { token = null; store.set(null); render(); } // session expired (not a failed sign-in attempt)
       if (!res.ok) throw Object.assign(new Error(data.error || "Request failed"), { code: data.code, data });
       return data;
     };
@@ -146,8 +161,20 @@
       const go = h("button", { class: "primary" }, "Sign in");
       go.onclick = busy(go, async () => { err.textContent = ""; try { const r = await api("POST", "/auth/login", { code: code.value, pin: pin.value }); token = r.token; store.set(token); render(); } catch (e) { err.textContent = e.message; } });
       pin.addEventListener("keydown", (e) => e.key === "Enter" && go.click());
-      view(h("div", {}, h("h1", {}, "Vayal Attendance"), h("div", { class: "mute" }, "Sign in with the employee code and PIN from HR.")),
-        h("div", { class: "card" }, h("label", {}, "Employee code"), code, h("label", {}, "PIN"), pin, err, h("div", { style: "height:10px" }), go));
+      const face = h("button", { class: "primary", style: "margin-bottom:12px" }, "Sign in with Face ID / fingerprint");
+      face.onclick = busy(face, async () => {
+        err.textContent = "";
+        try {
+          const { id, options } = await api("POST", "/auth/passkey/options");
+          const cred = await navigator.credentials.get({ publicKey: authOptions(options) });
+          const r = await api("POST", "/auth/passkey", { id, response: authResult(cred) });
+          token = r.token; store.set(token); render();
+        } catch (e) { err.textContent = e.name === "NotAllowedError" ? "Cancelled. You can use your code and PIN instead." : e.message; }
+      });
+      view(h("div", {}, h("h1", {}, "Vayal Attendance"), h("div", { class: "mute" }, qrOffice ? "Sign in to check in at the office." : "Sign in to mark your attendance.")),
+        h("div", { class: "card" }, passkeysSupported() && pkFlag.get() && [face, h("div", { class: "mute", style: "text-align:center;margin-bottom:8px" }, "or use your code and PIN")],
+          h("label", {}, "Employee code"), code, h("label", {}, "PIN"), pin, err, h("div", { style: "height:10px" }), go,
+          passkeysSupported() && !pkFlag.get() && h("div", { class: "mute", style: "margin-top:10px" }, "After signing in once, you can turn on Face ID / fingerprint sign-in for this phone.")));
     }
 
     function renderPin() {
@@ -193,6 +220,7 @@
         s.state === "missed_checkout" && h("div", { class: "flag", style: "margin-top:8px" }, "You did not check out yesterday. Check out now to close it."),
         open && h("div", { class: "mute", style: "margin-top:8px" }, "Your location is shared with HR every couple of minutes while this page stays open."));
 
+      const scanned = qrOffice && me.offices.find((x) => x.id === qrOffice);
       const slot = h("div"), err = h("div", { class: "err", role: "alert" }), reason = h("textarea", { placeholder: "Why? e.g. Farm visit at Cheyyar, client meeting, work from home" });
       const reasonBox = h("div", { hidden: true }, h("label", {}, "Reason (HR will see this)"), reason);
       const mode = (v, label, on) => h("label", {}, h("input", { type: "radio", name: "va-mode", value: v, checked: on, onchange: () => { reasonBox.hidden = v === "office"; } }), label);
@@ -213,7 +241,7 @@
           slot.textContent = "Getting your location…";
           const position = await posP.catch(() => getPosition()); // retry once if the first fix expired
           slot.textContent = "Sending…";
-          await api("POST", "/punch", { action, mode: m, reason: reason.value, challengeId: ch.id, liveness: { kind: ch.kind, passed: true }, descriptor: cam.descriptors[0], position: { ...position, ts: Date.now() }, photo: cam.photo });
+          await api("POST", "/punch", { action, mode: m, reason: reason.value, challengeId: ch.id, office: qrOffice || undefined, liveness: { kind: ch.kind, passed: true }, descriptor: cam.descriptors[0], position: { ...position, ts: Date.now() }, photo: cam.photo });
           await render();
         } catch (e) {
           slot.replaceChildren(); err.textContent = e.message;
@@ -221,6 +249,20 @@
         }
       });
 
+
+      const pkNote = h("div", { class: "err" });
+      const pkBtn = h("button", { class: "primary" }, "Turn on Face ID / fingerprint sign-in");
+      pkBtn.onclick = busy(pkBtn, async () => {
+        pkNote.style.color = ""; pkNote.textContent = "";
+        try {
+          const options = await api("POST", "/me/passkey/options");
+          const cred = await navigator.credentials.create({ publicKey: regOptions(options) });
+          await api("POST", "/me/passkey", { response: regResult(cred) });
+          pkFlag.set(); pkCard.replaceChildren(h("div", { class: "mute" }, "Done. Next time, tap Sign in with Face ID / fingerprint."));
+        } catch (e) { pkNote.textContent = e.name === "NotAllowedError" ? "Cancelled." : e.message; }
+      });
+      const pkCard = h("div", { class: "card" }, h("h2", {}, "Faster sign-in"), h("div", { class: "mute", style: "margin-bottom:10px" }, "Use this phone's Face ID or fingerprint instead of typing your PIN."), pkBtn, pkNote);
+      const showPk = !external && passkeysSupported() && !pkFlag.get();
       const hist = h("ul", { class: "hist" });
       api("GET", "/me/history?days=7").then((r) => {
         for (const x of r.records.filter((x) => x.type !== "attempt").slice(0, 8)) hist.append(h("li", { class: "row" }, h("span", {}, `${fmtDay(x.at)} ${fmtTime(x.at)} · ${x.type === "in" ? "In" : "Out"} · ${MODE_LABEL[x.mode]}`), x.flags.length ? h("span", { class: "flag" }, "⚠ " + x.flags.join(", ").replaceAll("_", " ")) : ""));
@@ -228,7 +270,8 @@
       }).catch(() => {});
 
       view(header(), status,
-        h("div", { class: "card" }, h("h2", {}, action === "in" ? "Check in" : "Check out"), action === "in" && [modes, reasonBox], slot, err, h("div", { style: "height:10px" }), go),
+        h("div", { class: "card" }, h("h2", {}, action === "in" ? "Check in" : "Check out"), scanned && h("div", { class: "mute", style: "margin-bottom:8px" }, `📍 Office code scanned: ${scanned.name}`), action === "in" && [modes, reasonBox], slot, err, h("div", { style: "height:10px" }), go),
+        showPk && pkCard,
         h("div", { class: "card" }, h("h2", {}, "Recent"), hist),
         !external && h("div", { class: "links" }, h("button", { onclick: () => { token = null; store.set(null); render(); } }, "Sign out")));
 

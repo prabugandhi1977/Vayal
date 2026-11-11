@@ -141,3 +141,30 @@ test("host-app auth: authenticate() replaces built-in login and creates the empl
   assert.equal(live.employees.length, 1); // only the employee, not the HR user
   assert.equal((await fetch(url("/auth/login"), { method: "POST" })).status, 404);
 });
+
+test("QR: public SVG for the staff link and per office; punch records the scan and flags a mismatch", async (t) => {
+  const s = await setup(t);
+  const offices = (await s.call("GET", "/hr/live", null, s.hr)).body.offices;
+  const plain = await s.call("GET", "/qr.svg");
+  assert.equal(plain.status, 200); assert.match(plain.body, /^<svg/);
+  const withOffice = await s.call("GET", `/qr.svg?office=${offices[0].id}`);
+  assert.match(withOffice.body, /^<svg/); assert.notEqual(withOffice.body, plain.body);
+  const ok = await s.punch({ office: offices[0].id });
+  assert.equal(ok.body.record.viaQr, true); assert.deepEqual(ok.body.record.flags, []);
+  await s.punch({ action: "out" });
+  // second office elsewhere; scanning its code while standing in the first office is flagged
+  await s.call("POST", "/hr/offices", { name: "Farm", lat: 12.9, lng: 80.1, radiusM: 100 }, s.hr);
+  const farm = (await s.call("GET", "/hr/live", null, s.hr)).body.offices.find((o) => o.name === "Farm");
+  const bad = await s.punch({ office: farm.id });
+  assert.ok(bad.body.record.flags.includes("qr_office_mismatch"));
+});
+
+test("passkey endpoints need sign-in and do not leak across accounts", async (t) => {
+  const s = await setup(t);
+  assert.equal((await s.call("POST", "/me/passkey/options")).status, 401);
+  const o = await s.call("POST", "/auth/passkey/options");
+  assert.equal(o.status, 200); assert.ok(o.body.id && o.body.options.challenge);
+  const bad = await s.call("POST", "/auth/passkey", { id: o.body.id, response: { id: "nope" } });
+  assert.equal(bad.status, 401);
+  assert.equal((await s.call("POST", "/auth/passkey", { id: o.body.id, response: { id: "nope" } })).body.code, "challenge_invalid"); // challenge is single-use
+});

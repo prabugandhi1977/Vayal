@@ -20,6 +20,16 @@ Use it **standalone**, **inside the Vayal server** (already mounted at `/attenda
 
 Records are flagged, not blocked, for: low GPS accuracy, stale or skewed GPS time, impossible travel since the last punch, check-out outside the office. Failed face matches are logged for HR with a snapshot.
 
+## Sign-in options for staff
+
+- **Code + PIN** from HR (always works).
+- **Face ID / fingerprint:** after one PIN sign-in, staff tap *Turn on Face ID / fingerprint sign-in*. From then on they sign in with the phone's own biometric (a passkey). The phone checks the face or finger; the server never receives biometric data. If someone loses a phone, HR clicks **Lost phone** under People to remove it. Needs HTTPS and a phone with a screen lock set.
+- Check-in itself still always runs the face + liveness + location check described above.
+
+## Office QR code
+
+HR → Offices → **Print poster** gives a printable page with a QR code for that office. Scanning it opens the check-in page with that office selected, and the record shows it was started from a scan. A printed code can be photographed, so it is a shortcut and an extra signal, never proof of presence: the location check still applies. Scanning one office's code while standing at another is flagged.
+
 ## Run it
 
 Standalone:
@@ -68,6 +78,8 @@ Omit `headers` to use the built-in sign-in.
 | `ATTENDANCE_DATA_DIR` / `dataDir` | `./data/attendance` | JSON data + photos |
 | `ATTENDANCE_TZ` / `tz` | `Asia/Kolkata` | Defines "today" |
 | `ATTENDANCE_FACE_THRESHOLD` / `faceThreshold` | `0.5` | Max face distance to accept. Lower is stricter. |
+| `ATTENDANCE_ORIGIN` / `origin` | from the request | Site address used for Face ID passkeys, e.g. `https://vayal.onrender.com`. Changing the domain later invalidates saved passkeys. |
+| `ATTENDANCE_PUBLIC_URL` / `publicUrl` | from the request | Address printed in QR codes |
 | `ATTENDANCE_WEBHOOK_URL` / `webhookUrl` | none | |
 | `store` option | JSON file | Pass your own object with `init/data/save/savePhoto/readPhoto` to use a database |
 
@@ -83,4 +95,4 @@ Omit `headers` to use the built-in sign-in.
 
 ## Tests
 
-`npm test` covers geofencing, face mismatch, liveness replay, flags, auth, host-app auth and CSV safety. The camera/face-api step runs in the browser and was exercised with a stubbed detector, not real faces: try it on a real phone before rolling out.
+`npm test` covers geofencing, QR scan flags, passkey endpoints, face mismatch, liveness replay, flags, auth, host-app auth and CSV safety. The camera/face-api step runs in the browser and was exercised with a stubbed detector, not real faces: try it on a real phone before rolling out.

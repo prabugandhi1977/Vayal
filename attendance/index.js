@@ -9,6 +9,8 @@ import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
 import express from "express";
+import QRCode from "qrcode";
+import { generateRegistrationOptions, verifyRegistrationResponse, generateAuthenticationOptions, verifyAuthenticationResponse } from "@simplewebauthn/server";
 import { FileStore } from "./store.js";
 import { hashPin, checkPin, safeEqual, signToken, verifyToken, makeLimiter } from "./auth.js";
 import { haversineM, nearestOffice, validLatLng } from "./geo.js";
@@ -39,6 +41,8 @@ const newId = () => crypto.randomUUID();
  * @param {string}   [o.tz]             IANA zone for "today", default Asia/Kolkata
  * @param {number}   [o.maxAccuracyM]   GPS accuracy worse than this is flagged, default 150
  * @param {Function} [o.onEvent]        (event) => void for check-in / check-out / failed attempts
+ * @param {string}   [o.origin]        site origin for passkeys, e.g. https://vayal.onrender.com (default: from the request)
+ * @param {string}   [o.publicUrl]     address printed in QR codes (default: from the request)
  * @param {string}   [o.webhookUrl]     POST events here, signed with X-Vayal-Signature (HMAC-SHA256 of the body)
  */
 export async function createAttendanceRouter(o = {}) {
@@ -52,6 +56,8 @@ export async function createAttendanceRouter(o = {}) {
   const maxAccuracy = o.maxAccuracyM ?? 150;
   const webhookUrl = o.webhookUrl ?? process.env.ATTENDANCE_WEBHOOK_URL ?? "";
   const D = store.data;
+  const originOf = (req) => o.origin || process.env.ATTENDANCE_ORIGIN || `${req.protocol}://${req.get("host")}`;
+  const rpIdOf = (req) => new URL(originOf(req)).hostname;
 
   const dateFmt = new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit" });
   const dayKey = (t = Date.now()) => dateFmt.format(t);
@@ -75,7 +81,7 @@ export async function createAttendanceRouter(o = {}) {
   const openSession = (empId) => { const l = lastPunch(empId); return l?.type === "in" ? l : null; };
 
   const publicRecord = (r) => ({ id: r.id, empId: r.empId, type: r.type, date: r.date, at: r.at, mode: r.mode, reason: r.reason, lat: r.lat, lng: r.lng, accuracy: r.accuracy,
-    distanceM: r.distanceM, office: r.office, faceDistance: r.faceDistance, flags: r.flags, hasPhoto: r.hasPhoto, reasonFailed: r.reasonFailed });
+    distanceM: r.distanceM, office: r.office, faceDistance: r.faceDistance, flags: r.flags, viaQr: r.viaQr, hasPhoto: r.hasPhoto, reasonFailed: r.reasonFailed });
 
   function status(e) {
     const open = openSession(e.id);
@@ -157,7 +163,7 @@ export async function createAttendanceRouter(o = {}) {
   router.get("/me", me, (req, res) => {
     const e = req.emp;
     res.json({
-      id: e.id, code: e.code, name: e.name, faceEnrolled: e.faces.length > 0, consent: Boolean(e.consentAt), mustChangePin: Boolean(e.mustChangePin),
+      id: e.id, code: e.code, name: e.name, faceEnrolled: e.faces.length > 0, consent: Boolean(e.consentAt), mustChangePin: Boolean(e.mustChangePin), passkeys: (e.passkeys || []).length,
       requireFace, offices: D.offices.map(({ id, name, radiusM }) => ({ id, name, radiusM })), status: status(e), today: dayKey(),
     });
   });
@@ -173,6 +179,61 @@ export async function createAttendanceRouter(o = {}) {
     if (authenticate) throw new HttpError(404, "host_auth", "PIN is managed by the host app.");
     if (!checkPin(str(req.body?.oldPin, 40), req.emp.pin)) throw new HttpError(401, "bad_login", "Current PIN is wrong.");
     req.emp.pin = hashPin(pin); req.emp.mustChangePin = false; await store.save(); res.json({ ok: true });
+  });
+
+  /* ---------- passkeys: sign in with the phone's own Face ID / fingerprint ---------- */
+  const noHostAuth = () => { if (authenticate) throw new HttpError(404, "host_auth", "Sign-in is handled by the host app."); };
+  const pkLimiter = makeLimiter(30, 10 * 60e3);
+  const takeChallenge = (key) => { const c = D.challenges[key]; delete D.challenges[key]; if (!c || c.kind !== "pk" || c.exp < Date.now()) throw bad("challenge_invalid", "That took too long. Please try again."); return c; };
+
+  router.post("/me/passkey/options", me, async (req, res) => {
+    noHostAuth();
+    const e = req.emp;
+    if ((e.passkeys || []).length >= 5) throw bad("too_many_passkeys", "Too many devices. Ask HR to reset them.");
+    const options = await generateRegistrationOptions({
+      rpName: "Vayal Attendance", rpID: rpIdOf(req), userName: e.code, userDisplayName: e.name, userID: new TextEncoder().encode(e.id), attestationType: "none",
+      excludeCredentials: (e.passkeys || []).map((p) => ({ id: p.id })),
+      authenticatorSelection: { authenticatorAttachment: "platform", residentKey: "required", userVerification: "required" },
+    });
+    D.challenges[`pk-reg:${e.id}`] = { kind: "pk", challenge: options.challenge, exp: Date.now() + 5 * 60e3 };
+    res.json(options);
+  });
+
+  router.post("/me/passkey", me, async (req, res) => {
+    noHostAuth();
+    const e = req.emp, ch = takeChallenge(`pk-reg:${e.id}`);
+    let v;
+    try { v = await verifyRegistrationResponse({ response: req.body?.response, expectedChallenge: ch.challenge, expectedOrigin: originOf(req), expectedRPID: rpIdOf(req), requireUserVerification: true }); }
+    catch { throw bad("passkey_failed", "Could not set up Face ID / fingerprint on this device."); }
+    if (!v.verified) throw bad("passkey_failed", "Could not set up Face ID / fingerprint on this device.");
+    const c = v.registrationInfo.credential;
+    e.passkeys = [...(e.passkeys || []), { id: c.id, publicKey: Buffer.from(c.publicKey).toString("base64url"), counter: c.counter, transports: c.transports || [], name: str(req.body?.name, 40) || "This phone", createdAt: new Date().toISOString() }];
+    await store.save(); res.json({ ok: true });
+  });
+
+  router.post("/auth/passkey/options", async (req, res) => {
+    noHostAuth();
+    if (!pkLimiter(req.ip)) throw new HttpError(429, "too_many", "Too many attempts. Try again in a few minutes.");
+    const options = await generateAuthenticationOptions({ rpID: rpIdOf(req), userVerification: "required" });
+    const id = newId();
+    D.challenges[`pk-auth:${id}`] = { kind: "pk", challenge: options.challenge, exp: Date.now() + 5 * 60e3 };
+    res.json({ id, options });
+  });
+
+  router.post("/auth/passkey", async (req, res) => {
+    noHostAuth();
+    if (!pkLimiter(req.ip)) throw new HttpError(429, "too_many", "Too many attempts. Try again in a few minutes.");
+    const ch = takeChallenge(`pk-auth:${str(req.body?.id, 60)}`);
+    const resp = req.body?.response;
+    const e = D.employees.find((x) => (x.passkeys || []).some((p) => p.id === resp?.id));
+    const p = e?.passkeys.find((x) => x.id === resp.id);
+    if (!e || !e.active) throw new HttpError(401, "bad_login", "This device is not set up for Face ID sign-in. Use your code and PIN.");
+    let v;
+    try { v = await verifyAuthenticationResponse({ response: resp, expectedChallenge: ch.challenge, expectedOrigin: originOf(req), expectedRPID: rpIdOf(req), requireUserVerification: true, credential: { id: p.id, publicKey: Buffer.from(p.publicKey, "base64url"), counter: p.counter, transports: p.transports } }); }
+    catch { throw new HttpError(401, "bad_login", "Face ID sign-in failed. Use your code and PIN."); }
+    if (!v.verified) throw new HttpError(401, "bad_login", "Face ID sign-in failed. Use your code and PIN.");
+    p.counter = v.authenticationInfo.newCounter; await store.save();
+    res.json({ token: signToken({ sub: e.id, role: "employee" }, secret), mustChangePin: Boolean(e.mustChangePin) });
   });
 
   // First enrolment only. Changing a face later is an HR action, so a borrowed phone cannot replace it.
@@ -258,6 +319,10 @@ export async function createAttendanceRouter(o = {}) {
       mode = open.mode; reason = str(b.reason, 300);
     }
 
+    // QR scanned at the office is recorded as an extra signal (a printed code can be photographed, so it never replaces the GPS check).
+    const qrOffice = typeof b.office === "string" ? D.offices.find((x) => x.id === b.office) : null;
+    if (qrOffice && mode === "office" && near && near.office.id !== qrOffice.id) flags.push("qr_office_mismatch");
+
     // 5. plausibility against the previous punch
     const prev = lastPunch(e.id);
     if (prev) {
@@ -267,7 +332,7 @@ export async function createAttendanceRouter(o = {}) {
     if (action === "out" && mode === "office" && near && near.distanceM > near.office.radiusM) flags.push("checkout_outside_office");
 
     const r = { id: newId(), empId: e.id, type: action, date: action === "in" ? dayKey() : open.date, at: new Date().toISOString(), mode, reason,
-      lat: pos.lat, lng: pos.lng, accuracy: pos.accuracy, distanceM: near ? Math.round(near.distanceM) : null, office: near?.office.name || null, faceDistance, flags, hasPhoto: false };
+      lat: pos.lat, lng: pos.lng, accuracy: pos.accuracy, distanceM: near ? Math.round(near.distanceM) : null, office: near?.office.name || null, faceDistance, flags, viaQr: Boolean(qrOffice), hasPhoto: false };
     await maybePhoto(r, b.photo);
     D.records.push(r);
     if (action === "in") D.live[e.id] = { lat: pos.lat, lng: pos.lng, accuracy: pos.accuracy, at: r.at, trail: [[pos.lat, pos.lng, r.at]] };
@@ -323,7 +388,7 @@ export async function createAttendanceRouter(o = {}) {
   });
 
   router.get("/hr/employees", hr, (_req, res) => {
-    res.json({ employees: D.employees.map((e) => ({ id: e.id, code: e.code, name: e.name, active: e.active, faceEnrolled: e.faces.length > 0, consent: Boolean(e.consentAt), external: Boolean(e.extId) })) });
+    res.json({ employees: D.employees.map((e) => ({ id: e.id, code: e.code, name: e.name, active: e.active, faceEnrolled: e.faces.length > 0, passkeys: (e.passkeys || []).length, consent: Boolean(e.consentAt), external: Boolean(e.extId) })) });
   });
 
   const newPin = () => String(crypto.randomInt(100000, 1000000));
@@ -343,6 +408,9 @@ export async function createAttendanceRouter(o = {}) {
   });
   router.post("/hr/employees/:id/reset-face", hr, async (req, res) => {
     const e = target(req); e.faces = []; await store.save(); res.json({ ok: true });
+  });
+  router.post("/hr/employees/:id/reset-passkeys", hr, async (req, res) => {
+    const e = target(req); e.passkeys = []; await store.save(); res.json({ ok: true });
   });
   router.post("/hr/employees/:id/active", hr, async (req, res) => {
     const e = target(req); e.active = req.body?.active !== false; await store.save(); res.json({ ok: true });
@@ -398,6 +466,14 @@ export async function createAttendanceRouter(o = {}) {
     const buf = await store.readPhoto(req.params.id);
     if (!buf) throw new HttpError(404, "not_found", "No photo.");
     res.set("Content-Type", "image/jpeg").send(buf);
+  });
+
+  /* ---------- QR code for the office poster (public: it only encodes the staff link) ---------- */
+  router.get("/qr.svg", async (req, res) => {
+    const office = typeof req.query.office === "string" ? D.offices.find((x) => x.id === req.query.office) : null;
+    const base = (o.publicUrl || process.env.ATTENDANCE_PUBLIC_URL || `${req.protocol}://${req.get("host")}${req.baseUrl}`).replace(/\/$/, "");
+    const svg = await QRCode.toString(`${base}/${office ? `?office=${office.id}` : ""}`, { type: "svg", margin: 2, errorCorrectionLevel: "M" });
+    res.type("image/svg+xml").send(svg);
   });
 
   /* ---------- static: UI, self-hosted face models and map library ---------- */

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vayal Attendance poster</title>
+<style>
+body{margin:0;font:18px/1.4 -apple-system,"Segoe UI",sans-serif;color:#141413;background:#fff;text-align:center}
+main{max-width:640px;margin:0 auto;padding:32px 24px}
+h1{font-size:34px;margin:0}
+h2{font-size:26px;margin:8px 0 0;color:#2f6b3a}
+img{width:min(420px,80vw);height:auto;margin:24px 0 8px}
+ol{display:inline-block;text-align:left;margin:8px 0 0}
+.url{color:#6b6a64;font-size:14px;word-break:break-all}
+button{font:inherit;padding:10px 20px;border-radius:10px;border:1px solid #2f6b3a;background:#2f6b3a;color:#fff;cursor:pointer;margin-bottom:16px}
+@media print{button{display:none}}
+</style></head><body><main>
+<button onclick="print()">Print this poster</button>
+<h1>Vayal · வயல்</h1>
+<h2 id="office">Check in / out</h2>
+<img id="qr" alt="QR code to open the Vayal attendance page">
+<div><ol><li>Scan with your phone camera</li><li>Sign in (Face ID / fingerprint or PIN)</li><li>Look at the camera to check in or out</li></ol></div>
+<p class="url" id="url"></p>
+</main>
+<script>
+const q = new URLSearchParams(location.search);
+if (q.get("name")) document.getElementById("office").textContent = q.get("name");
+const img = document.getElementById("qr");
+img.src = "../qr.svg" + (q.get("office") ? "?office=" + encodeURIComponent(q.get("office")) : "");
+document.getElementById("url").textContent = new URL("../", location.href).href;
+</script></body></html>

@@ -77,8 +77,12 @@
     root.replaceChildren(
       h("div", { class: "top" }, h("div", {}, h("h1", {}, "Vayal Attendance · HR"), h("div", { class: "mute" }, h("span", { id: "live-dot", class: "live-dot off" }), "Connecting…")),
         h("button", { onclick: () => { token = null; tok.set(null); stopStream(); draw(); } }, "Sign out")),
+      h("div", { id: "warn" }),
       h("div", { class: "tabs", role: "tablist" }, tabs.map(([k, l]) => h("button", { role: "tab", "aria-selected": String(tab === k), onclick: () => { tab = k; draw(); } }, l))),
       h("div", { id: "pane" }));
+    fetch(BASE + "/health").then((r) => r.json()).then((hh) => {
+      if (hh.ephemeral) document.getElementById("warn")?.append(h("div", { class: "card", style: "border-color:var(--bad)", role: "alert" }, h("b", { style: "color:var(--bad)" }, "Data is not being saved permanently. "), "This server wipes its disk on every restart, so employees, offices and records will disappear. Set ATTENDANCE_DATABASE_URL (a free Postgres) or attach a disk. See the setup guide."));
+    }).catch(() => {});
     map = null;
     ({ live: showLive, records: showRecords, people: showPeople, offices: showOffices })[tab]();
     if (!streamAbort) startStream();

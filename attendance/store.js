@@ -4,7 +4,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import crypto from "node:crypto";
 
-const EMPTY = () => ({ employees: [], offices: [], records: [], live: {}, challenges: {} });
+export const EMPTY = () => ({ employees: [], offices: [], records: [], live: {}, challenges: {} });
 
 export class FileStore {
   constructor(dir) {

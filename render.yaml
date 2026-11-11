@@ -22,3 +22,6 @@ services:
       # Attendance module (/attendance). HR signs in at /attendance/hr with this key.
       - key: ATTENDANCE_ADMIN_KEY
         sync: false
+      # Free permanent storage for attendance: a Postgres connection string (e.g. from neon.tech).
+      - key: ATTENDANCE_DATABASE_URL
+        sync: false

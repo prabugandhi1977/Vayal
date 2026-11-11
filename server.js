@@ -163,7 +163,13 @@ app.post("/api/json", express.json({ limit: "8mb" }), guard, async (req, res) =>
 });
 
 // Attendance module: employees at /attendance/, HR at /attendance/hr.
-app.use("/attendance", await createAttendanceRouter());
+// A problem in this optional module (e.g. an unwritable data folder) must not take the storefront down.
+try {
+  app.use("/attendance", await createAttendanceRouter());
+} catch (err) {
+  console.error("Attendance disabled:", err.message);
+  app.use("/attendance", (_req, res) => res.status(503).json({ code: "attendance_unavailable", error: "Attendance is not available: check the server's ATTENDANCE_DATA_DIR setting." }));
+}
 
 // Serve only public image assets and the storefront, never server source.
 app.use("/assets", express.static(path.join(here, "assets"), { dotfiles: "deny", maxAge: "7d" }));

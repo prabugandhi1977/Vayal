@@ -19,6 +19,10 @@
     "@vladmandic/face-api": "^1.7.15",
     "express": "^5.1.0",
     "leaflet": "^1.9.4",
+    "pg": "^8.23.1",
     "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.16"
   }
 }

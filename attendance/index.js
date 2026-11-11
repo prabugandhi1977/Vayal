@@ -12,6 +12,7 @@ import express from "express";
 import QRCode from "qrcode";
 import { generateRegistrationOptions, verifyRegistrationResponse, generateAuthenticationOptions, verifyAuthenticationResponse } from "@simplewebauthn/server";
 import { FileStore } from "./store.js";
+import { PgStore } from "./pg-store.js";
 import { hashPin, checkPin, safeEqual, signToken, verifyToken, makeLimiter } from "./auth.js";
 import { haversineM, nearestOffice, validLatLng } from "./geo.js";
 import { bestDistance, validDescriptor } from "./face.js";
@@ -46,7 +47,13 @@ const newId = () => crypto.randomUUID();
  * @param {string}   [o.webhookUrl]     POST events here, signed with X-Vayal-Signature (HMAC-SHA256 of the body)
  */
 export async function createAttendanceRouter(o = {}) {
-  const store = o.store || (await new FileStore(path.resolve(o.dataDir || process.env.ATTENDANCE_DATA_DIR || "data/attendance")).init());
+  // Storage: your own store, else Postgres when a database URL is set (survives restarts on hosts with temporary disks), else a JSON file.
+  const dbUrl = process.env.ATTENDANCE_DATABASE_URL || process.env.DATABASE_URL;
+  const store = o.store || (dbUrl ? await new PgStore(dbUrl).init() : await new FileStore(path.resolve(o.dataDir || process.env.ATTENDANCE_DATA_DIR || "data/attendance")).init());
+  const storage = store.kind || "file";
+  // On Render with no database and no data folder set, the JSON file sits on a disk that is wiped at every restart.
+  const ephemeral = !o.store && storage === "file" && Boolean(process.env.RENDER) && !o.dataDir && !process.env.ATTENDANCE_DATA_DIR;
+  if (ephemeral) console.warn("Attendance: data is on a temporary disk and will be lost on restart. Set ATTENDANCE_DATABASE_URL (free Postgres) or mount a disk and set ATTENDANCE_DATA_DIR.");
   const secret = o.secret || process.env.ATTENDANCE_SECRET || (await store.persistentSecret());
   const adminKey = o.adminKey ?? process.env.ATTENDANCE_ADMIN_KEY ?? "";
   const authenticate = o.authenticate || null;
@@ -137,7 +144,7 @@ export async function createAttendanceRouter(o = {}) {
     req.user = u; next();
   };
 
-  router.get("/health", (_req, res) => res.json({ ok: true, auth: authenticate ? "host" : "builtin", hrLogin: Boolean(adminKey) || Boolean(authenticate), faceThreshold: threshold }));
+  router.get("/health", (_req, res) => res.json({ ok: true, auth: authenticate ? "host" : "builtin", hrLogin: Boolean(adminKey) || Boolean(authenticate), faceThreshold: threshold, storage, ephemeral }));
 
   router.post("/auth/login", (req, res) => {
     if (authenticate) throw new HttpError(404, "host_auth", "Sign-in is handled by the host app.");

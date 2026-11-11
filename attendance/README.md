@@ -75,7 +75,8 @@ Omit `headers` to use the built-in sign-in.
 |---|---|---|
 | `ATTENDANCE_ADMIN_KEY` / `adminKey` | none | HR sign-in key. Unset = no HR login. |
 | `ATTENDANCE_SECRET` / `secret` | generated, saved in the data dir | Signs login tokens and webhooks |
-| `ATTENDANCE_DATA_DIR` / `dataDir` | `./data/attendance` | JSON data + photos |
+| `ATTENDANCE_DATABASE_URL` (or `DATABASE_URL`) | none | Postgres connection string. When set, it is used instead of files. |
+| `ATTENDANCE_DATA_DIR` / `dataDir` | `./data/attendance` | JSON data + photos (used only without a database) |
 | `ATTENDANCE_TZ` / `tz` | `Asia/Kolkata` | Defines "today" |
 | `ATTENDANCE_FACE_THRESHOLD` / `faceThreshold` | `0.5` | Max face distance to accept. Lower is stricter. |
 | `ATTENDANCE_ORIGIN` / `origin` | from the request | Site address used for Face ID passkeys, e.g. `https://vayal.onrender.com`. Changing the domain later invalidates saved passkeys. |
@@ -83,7 +84,14 @@ Omit `headers` to use the built-in sign-in.
 | `ATTENDANCE_WEBHOOK_URL` / `webhookUrl` | none | |
 | `store` option | JSON file | Pass your own object with `init/data/save/savePhoto/readPhoto` to use a database |
 
-**Render free plan has a disk that is wiped on every deploy.** Attach a persistent disk and point `ATTENDANCE_DATA_DIR` at it, or attendance data will be lost.
+## Keeping the data (important on Render)
+
+Render's free plan wipes its disk at every restart (each deploy, and when the service wakes from idle). Without permanent storage, employees, offices and records vanish. Pick one:
+
+- **Free: a Postgres database.** Create a free one at neon.tech or supabase.com, copy its connection string (it ends in `?sslmode=require`), and set `ATTENDANCE_DATABASE_URL` on Render. Tables are created automatically. Data and the login signing secret then survive restarts.
+- **Paid: a Render disk.** Mount it (e.g. `/var/data`) and set `ATTENDANCE_DATA_DIR=/var/data/attendance`. Do not set that variable without a disk mounted.
+
+If neither is set on Render, the HR page shows a red warning.
 
 ## Be clear with your team about what this can and cannot prove
 
@@ -91,7 +99,7 @@ Omit `headers` to use the built-in sign-in.
 - **GPS can be faked** on a rooted or developer-mode phone, and a web page cannot detect that. The flags (accuracy, stale time, impossible travel) and the snapshot catch the lazy cases. A native app with mock-location detection is the next step if you need it.
 - **Tracking only runs while the page is open.** Browsers pause pages in the background, so a field trail has gaps. Check-in and check-out locations are always exact.
 - **This is biometric and location data.** In India that falls under the DPDP Act: keep the consent screen, tell staff what is kept, delete leavers (Deactivate, then Reset face), and don't use the data for anything but attendance. Face templates are stored as numbers, not photos; snapshots are stored as files readable only by HR.
-- The JSON-file store suits a team of a few hundred. Beyond that, plug in a database through `store`.
+- Both built-in stores keep the whole data set in memory and suit a team of a few hundred. Beyond that, pass your own `store` with a proper schema.
 
 ## Tests
 

@@ -19,3 +19,6 @@ services:
         value: "60"
       - key: AI_REQUESTS_PER_DAY
         value: "2000"
+      # Attendance module (/attendance). HR signs in at /attendance/hr with this key.
+      - key: ATTENDANCE_ADMIN_KEY
+        sync: false

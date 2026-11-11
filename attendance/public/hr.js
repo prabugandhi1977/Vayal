@@ -152,10 +152,11 @@
     const act = (label, fn, cls) => h("button", { class: cls || "", onclick: async () => { try { await fn(); } catch (e) { alert(e.message); } } }, label);
     async function load() {
       const { employees } = await api("GET", "/hr/employees");
-      list.replaceChildren(h("table", {}, h("thead", {}, h("tr", {}, ["Employee", "Consent", "Face", "Actions"].map((t) => h("th", {}, t)))), h("tbody", {}, employees.map((e) => h("tr", {},
-        h("td", {}, e.name, h("div", { class: "mute" }, e.code, e.active ? "" : " · inactive")), h("td", {}, e.consent ? "Yes" : "No"), h("td", {}, e.faceEnrolled ? "Enrolled" : "Not yet"),
+      list.replaceChildren(h("table", {}, h("thead", {}, h("tr", {}, ["Employee", "Consent", "Face", "Face ID", "Actions"].map((t) => h("th", {}, t)))), h("tbody", {}, employees.map((e) => h("tr", {},
+        h("td", {}, e.name, h("div", { class: "mute" }, e.code, e.active ? "" : " · inactive")), h("td", {}, e.consent ? "Yes" : "No"), h("td", {}, e.faceEnrolled ? "Enrolled" : "Not yet"), h("td", {}, e.passkeys ? `${e.passkeys} device${e.passkeys > 1 ? "s" : ""}` : "None"),
         h("td", {}, !e.external && act("New PIN", async () => { const r = await api("POST", `/hr/employees/${e.id}/reset-pin`); alert(`New PIN for ${e.name}: ${r.pin}`); }), " ",
           e.faceEnrolled && act("Reset face", async () => { if (confirm(`Delete ${e.name}'s face template? They will have to enrol again.`)) { await api("POST", `/hr/employees/${e.id}/reset-face`); load(); } }), " ",
+          e.passkeys > 0 && act("Lost phone", async () => { if (confirm(`Remove ${e.name}'s Face ID / fingerprint sign-in on all phones?`)) { await api("POST", `/hr/employees/${e.id}/reset-passkeys`); load(); } }), " ",
           act(e.active ? "Deactivate" : "Activate", async () => { await api("POST", `/hr/employees/${e.id}/active`, { active: !e.active }); load(); }, e.active ? "danger" : "")))))));
     }
     document.getElementById("pane").append(h("div", { class: "card" }, h("h2", {}, "Add employee"), h("div", { class: "grid2" }, h("div", {}, h("label", {}, "Employee code"), code), h("div", {}, h("label", {}, "Name"), name)), note, h("div", { style: "height:10px" }), add), list);
@@ -169,9 +170,10 @@
     const add = h("button", { class: "primary", onclick: async () => { try { await api("POST", "/hr/offices", { name: name.value, lat: Number(lat.value), lng: Number(lng.value), radiusM: Number(rad.value) }); note.textContent = ""; name.value = lat.value = lng.value = ""; load(); } catch (e) { note.textContent = e.message; } } }, "Add office");
     async function load() {
       const { offices } = await api("GET", "/hr/live");
-      list.replaceChildren(offices.length ? h("table", {}, h("thead", {}, h("tr", {}, ["Office", "Location", "Radius", ""].map((t) => h("th", {}, t)))), h("tbody", {}, offices.map((o) => h("tr", {}, h("td", {}, o.name), h("td", {}, `${o.lat.toFixed(5)}, ${o.lng.toFixed(5)}`), h("td", {}, `${o.radiusM} m`), h("td", {}, h("button", { class: "danger", onclick: async () => { if (confirm(`Remove ${o.name}?`)) { await api("DELETE", `/hr/offices/${o.id}`); load(); } } }, "Remove")))))) : h("div", { class: "mute" }, "No office yet. Without one, staff can only check in as On duty or Remote."));
+      list.replaceChildren(offices.length ? h("table", {}, h("thead", {}, h("tr", {}, ["Office", "Location", "Radius", "QR code", ""].map((t) => h("th", {}, t)))), h("tbody", {}, offices.map((o) => h("tr", {}, h("td", {}, o.name), h("td", {}, `${o.lat.toFixed(5)}, ${o.lng.toFixed(5)}`), h("td", {}, `${o.radiusM} m`), h("td", {}, h("a", { href: `${BASE}/ui/poster.html?office=${encodeURIComponent(o.id)}&name=${encodeURIComponent(o.name)}`, target: "_blank", rel: "noopener" }, "Print poster")), h("td", {}, h("button", { class: "danger", onclick: async () => { if (confirm(`Remove ${o.name}?`)) { await api("DELETE", `/hr/offices/${o.id}`); load(); } } }, "Remove")))))) : h("div", { class: "mute" }, "No office yet. Without one, staff can only check in as On duty or Remote."));
     }
-    document.getElementById("pane").append(h("div", { class: "card" }, h("h2", {}, "Add office or site"), h("div", { class: "mute" }, "Staff can check in as \"In office\" only within the radius. Stand at the site and use your current location."),
+    document.getElementById("pane").append(h("div", { class: "card" }, h("h2", {}, "Staff QR code"), h("div", { class: "mute" }, "Print a poster for each office (see the table below). Staff scan it with their phone camera to open the check-in page. It is a shortcut, not proof of presence: the location check still applies."), h("a", { href: `${BASE}/ui/poster.html`, target: "_blank", rel: "noopener" }, "Print a general staff QR poster")),
+      h("div", { class: "card" }, h("h2", {}, "Add office or site"), h("div", { class: "mute" }, "Staff can check in as \"In office\" only within the radius. Stand at the site and use your current location."),
       h("label", {}, "Name"), name, h("div", { class: "grid2" }, h("div", {}, h("label", {}, "Latitude"), lat), h("div", {}, h("label", {}, "Longitude"), lng)), h("label", {}, "Radius (metres, 20 to 5000)"), rad, note, h("div", { style: "display:flex;gap:8px;margin-top:10px" }, here, add)), list);
     load();
   }

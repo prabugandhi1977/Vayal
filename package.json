@@ -15,8 +15,10 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.131.0",
+    "@simplewebauthn/server": "^13.3.3",
     "@vladmandic/face-api": "^1.7.15",
     "express": "^5.1.0",
-    "leaflet": "^1.9.4"
+    "leaflet": "^1.9.4",
+    "qrcode": "^1.5.4"
   }
 }

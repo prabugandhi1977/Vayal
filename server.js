@@ -5,6 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import express from "express";
 import Anthropic from "@anthropic-ai/sdk";
+import { createAttendanceRouter } from "./attendance/index.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3000;
@@ -160,6 +161,9 @@ app.post("/api/json", express.json({ limit: "8mb" }), guard, async (req, res) =>
     res.status(err instanceof Anthropic.RateLimitError ? 429 : 502).json({ code: errorCode(err), upstream: err.status ?? null, detail: String(err.message || "").slice(0, 300) });
   }
 });
+
+// Attendance module: employees at /attendance/, HR at /attendance/hr.
+app.use("/attendance", await createAttendanceRouter());
 
 // Serve only public image assets and the storefront, never server source.
 app.use("/assets", express.static(path.join(here, "assets"), { dotfiles: "deny", maxAge: "7d" }));

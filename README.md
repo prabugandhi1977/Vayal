@@ -34,6 +34,10 @@ Settings (Render environment variables):
 
 Limits are kept in memory and reset when the service restarts.
 
+## Attendance (face + location)
+
+Employees check in with a face check and a location stamp at `/attendance/`; HR watches live at `/attendance/hr`. Set `ATTENDANCE_ADMIN_KEY` to enable HR sign-in. It also runs standalone or inside other apps. See [attendance/README.md](attendance/README.md).
+
 ## Run locally
 
 With AI: `npm install`, then `ANTHROPIC_API_KEY=... npm start` and open http://localhost:3000.

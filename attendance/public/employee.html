@@ -1,0 +1,9 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Vayal Attendance</title>
+<link rel="stylesheet" href="ui/attendance.css">
+<style>body{margin:0;background:var(--bg)}</style></head>
+<body><div id="att"></div>
+<script src="ui/vayal-attendance.js"></script>
+<script>VayalAttendance.mount("#att", { base: location.pathname.replace(/\/$/, "") });</script>
+</body></html>

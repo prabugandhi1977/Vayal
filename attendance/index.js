@@ -22,6 +22,19 @@ const require = createRequire(import.meta.url);
 const MODES = new Set(["office", "on_duty", "remote"]);
 const MODE_LABEL = { office: "Office", on_duty: "On duty (field)", remote: "Remote" };
 
+/** Plain-English reason the module could not start (safe to show: no secrets or host names). */
+export function explainStartupError(err) {
+  const m = String(err?.message || ""), c = err?.code;
+  if (c === "ERR_INVALID_URL" || /invalid url|invalid connection string/i.test(m)) return "The database address (ATTENDANCE_DATABASE_URL) is not valid. It must start with postgres:// or postgresql:// with no quotes or spaces.";
+  if (c === "28P01" || c === "28000") return "The database refused the user name or password in ATTENDANCE_DATABASE_URL.";
+  if (c === "3D000") return "That database name does not exist on the database server.";
+  if (c === "ENOTFOUND" || c === "EAI_AGAIN") return "The database host name in ATTENDANCE_DATABASE_URL could not be found.";
+  if (c === "ECONNREFUSED" || c === "ETIMEDOUT" || /timeout/i.test(m)) return "Could not reach the database. Check the address and that the database is running.";
+  if (/ssl|tls/i.test(m)) return "The database connection needs SSL. Add ?sslmode=require to ATTENDANCE_DATABASE_URL.";
+  if (["EACCES", "ENOTDIR", "EROFS", "ENOENT", "EPERM"].includes(c)) return "The data folder (ATTENDANCE_DATA_DIR) cannot be written. Remove that setting, or mount a disk there.";
+  return "Attendance could not start. See the server log line that begins with \"Attendance disabled\".";
+}
+
 class HttpError extends Error {
   constructor(status, code, message, extra = {}) { super(message); this.status = status; this.code = code; this.extra = extra; }
 }

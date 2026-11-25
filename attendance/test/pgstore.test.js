@@ -24,3 +24,10 @@ test("Postgres store: data, photos and the signing secret survive a restart", as
   await b.save();
   assert.equal((await new PgStore(null, pool).init()).data.employees.length, 2); // later save replaces, not duplicates
 });
+
+test("Postgres address: pasted quotes / psql snippet are accepted, junk is rejected clearly", () => {
+  for (const ok of ["postgres://u:p@h/db?sslmode=require", "'postgresql://u:p@h/db'", "psql 'postgresql://u:p@h/db?sslmode=require'", "  postgres://u:p@h/db\n"])
+    assert.doesNotThrow(() => new PgStore(ok), ok);
+  for (const bad of ["", "not-a-url", "mysql://u:p@h/db", undefined])
+    assert.throws(() => new PgStore(bad), (e) => e.code === "ERR_INVALID_URL", String(bad));
+});

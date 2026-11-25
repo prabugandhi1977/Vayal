@@ -11,7 +11,13 @@ export class PgStore {
   /** @param {string} url  postgres:// connection string (include ?sslmode=require for hosted databases)
    *  @param {object} [pool] an existing pg-compatible pool (used by tests) */
   constructor(url, pool) {
-    this.pool = pool || new pg.Pool({ connectionString: url, max: 3 });
+    if (!pool) {
+      // Be forgiving about how the address was pasted (quotes, spaces, or Neon's "psql '...'" snippet), strict about the rest.
+      const m = /postgres(?:ql)?:\/\/[^\s'"]+/.exec(String(url || ""));
+      if (!m) throw Object.assign(new Error("Invalid URL"), { code: "ERR_INVALID_URL" });
+      url = m[0];
+    }
+    this.pool = pool || new pg.Pool({ connectionString: url, max: 3, connectionTimeoutMillis: 15000 });
     this.data = EMPTY();
     this._queue = Promise.resolve();
   }

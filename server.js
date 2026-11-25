@@ -5,7 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import express from "express";
 import Anthropic from "@anthropic-ai/sdk";
-import { createAttendanceRouter } from "./attendance/index.js";
+import { createAttendanceRouter, explainStartupError } from "./attendance/index.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3000;
@@ -167,8 +167,8 @@ app.post("/api/json", express.json({ limit: "8mb" }), guard, async (req, res) =>
 try {
   app.use("/attendance", await createAttendanceRouter());
 } catch (err) {
-  console.error("Attendance disabled:", err.message);
-  app.use("/attendance", (_req, res) => res.status(503).json({ code: "attendance_unavailable", error: "Attendance is not available: check the server's ATTENDANCE_DATA_DIR setting." }));
+  console.error("Attendance disabled:", err.code || "", err.message);
+  app.use("/attendance", (_req, res) => res.status(503).json({ code: "attendance_unavailable", error: `Attendance is not available. ${explainStartupError(err)}` }));
 }
 
 // Serve only public image assets and the storefront, never server source.
